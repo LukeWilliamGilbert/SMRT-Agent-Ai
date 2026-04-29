@@ -1,0 +1,634 @@
+{
+  "updatedAt": "2026-04-15T01:02:34.506Z",
+  "createdAt": "2026-04-08T18:43:37.546Z",
+  "id": "iMG9ggquVeLbmKuv",
+  "name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "sticky-main",
+      "name": "Sticky Note - Main",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        80
+      ],
+      "parameters": {
+        "width": 760,
+        "height": 220,
+        "color": 4,
+        "content": "## \ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup\n\nTriggered by Part 1 (DB Enrichment) ONLY when all required fields are validated.\n\nReceives an `onboarding_request_id` \u2192 loads the staged record \u2192 creates GHL sub-account \u2192 applies snapshot \u2192 saves full agent config to Supabase.\n\n**Safety gate:** If GHL creation fails, the workflow stops immediately. No partial state is created."
+      }
+    },
+    {
+      "id": "sticky-ghl",
+      "name": "Sticky Note - GHL",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        840,
+        80
+      ],
+      "parameters": {
+        "width": 500,
+        "height": 220,
+        "color": 4,
+        "content": "## GHL Sub-Account Creation\nCreate new sub-account and apply SMRT snapshot.\n\n**SNAPSHOT_ID** must be set as an n8n variable (`$vars.SNAPSHOT_ID`) or hardcoded here.\n\nGHL Created? gate stops the flow if creation fails."
+      }
+    },
+    {
+      "id": "sticky-db",
+      "name": "Sticky Note - DB Config",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        80
+      ],
+      "parameters": {
+        "width": 460,
+        "height": 220,
+        "color": 5,
+        "content": "## Database Configuration\nInserts full agent config into Supabase agents table using location_id returned by GHL.\n\nData sourced from onboarding_requests staging record."
+      }
+    },
+    {
+      "id": "sticky-pipeline",
+      "name": "Sticky Note - Pipeline Config",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2300,
+        80
+      ],
+      "parameters": {
+        "width": 580,
+        "height": 220,
+        "color": 4,
+        "content": "## Pipeline Config Auto-Pull\nAfter snapshot applied, fetches all pipelines and builds pipeline_config JSONB for agents table.\n\nMatches pipelines by name keywords: incubator/nurture/lead, buyer/buying, seller/selling/listing\n\nStage names normalized to UPPER_SNAKE_CASE."
+      }
+    },
+    {
+      "id": "sticky-manual",
+      "name": "Sticky Note - Manual Actions",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        0
+      ],
+      "parameters": {
+        "width": 532,
+        "height": 688,
+        "color": 3,
+        "content": "[REDACTED]"
+      }
+    },
+    {
+      "id": "sticky-calendar",
+      "name": "Sticky Note - Calendar Setup",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        720
+      ],
+      "parameters": {
+        "width": 500,
+        "height": 380,
+        "color": 2,
+        "content": "## Calendar Setup (Post-Snapshot)\n\nAfter GHL snapshot is applied, the agent's calendar ID needs to be stored in Supabase.\n\n### agents table field\n- buyer_calendar_id \u2014 stores the agent's single calendar ID\n\n### To do after W2 is live\n1. HTTP GET https://services.leadconnectorhq.com/calendars/?[REDACTED_QUERY]\n2. Find the correct calendar by name\n3. UPDATE agents SET buyer_calendar_id = ... WHERE location_id = ...\n\n### Collect during onboarding call\n- Calendar name (for auto-pull matching)\n- ghl_\u2026[TRUNCATED]"
+      }
+    },
+    {
+      "id": "ewt-001",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        380
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "wh-rerun",
+      "name": "Webhook - Manual Rerun",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        160,
+        540
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "onboarding-ghl-setup",
+        "responseMode": "lastNode",
+        "options": {},
+        "authentication": "headerAuth"
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "normalize-wh",
+      "name": "Normalize Webhook Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        540
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "norm-1",
+              "name": "onboarding_request_id",
+              "value": "={{ $json.body.onboarding_request_id }}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "load-request",
+      "name": "Load Onboarding Request",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        640,
+        460
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM onboarding_requests WHERE id = '{{ $json.onboarding_request_id }}'::uuid AND status = 'pending_ghl' LIMIT 1;"
+      }
+    },
+    {
+      "id": "ghl-create",
+      "name": "Create GHL Sub-Account",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        460
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/locations/",
+        "authentication": "[REDACTED]",
+        "nodeCredentialType": "[REDACTED]",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"{{ $('Load Onboarding Request').first().json.business_name }}\",\n  \"email\": \"{{ $('Load Onboarding Request').first().json.agent_email }}\",\n  \"phone\": \"{{ $('Load Onboarding Request').first().json.agent_phone }}\",\n  \"address\": \"{{ $('Load Onboarding Request').first().json.market_area }}\"\n}"
+      }
+    },
+    {
+      "id": "ghl-check",
+      "name": "GHL Created?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        460
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-1",
+              "leftValue": "={{ $json.location.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "mark-failed",
+      "name": "Mark Onboarding Failed",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1120,
+        660
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "[REDACTED]"
+      }
+    },
+    {
+      "id": "extract-loc",
+      "name": "Extract Location ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        460
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ext-1",
+              "name": "location_id",
+              "value": "={{ $json.location.id }}",
+              "type": "string"
+            },
+            {
+              "id": "ext-2",
+              "name": "[REDACTED]",
+              "value": "[REDACTED]",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "apply-snap",
+      "name": "Apply GHL Snapshot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        460
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://services.leadconnectorhq.com/snapshots/jLXUgLpYQvN7XrqscvLv/locations/{{ $json.location_id }}",
+        "authentication": "[REDACTED]",
+        "nodeCredentialType": "[REDACTED]"
+      }
+    },
+    {
+      "id": "save-config",
+      "name": "Save Agent Config to Supabase",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1840,
+        460
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "[REDACTED]",
+        "options": {}
+      }
+    },
+    {
+      "id": "insert-rules",
+      "name": "Insert Default Agent Rules",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        2080,
+        460
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO agent_rules (location_id, rule_type, rule_content, priority) VALUES \n  ('{{ $('Extract Location ID').first().json.location_id }}', 'greeting', 'Always greet leads warmly and professionally', 1),\n  ('{{ $('Extract Location ID').first().json.location_id }}', 'scheduling', 'Push for appointments when lead shows interest', 2),\n  ('{{ $('Extract Location ID').first().json.location_id }}', 'escalation', 'Transfer to human if lead asks for specific agent or becomes frustrated', 3);",
+        "options": {}
+      }
+    },
+    {
+      "id": "get-pipelines",
+      "name": "GET GHL Pipelines",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2320,
+        460
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://services.leadconnectorhq.com/opportunities/pipelines?[REDACTED_QUERY] $(''Extract Location ID'').first().json.location_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "[REDACTED]",
+              "value": "[REDACTED]"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gather-pipeline",
+      "name": "Gather Pipeline Context",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2560,
+        460
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "gp-1",
+              "name": "pipelines",
+              "value": "={{ $input.first().json.pipelines || [] }}",
+              "type": "array"
+            },
+            {
+              "id": "gp-2",
+              "name": "location_id",
+              "value": "={{ $('Extract Location ID').first().json.location_id }}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "build-pipeline",
+      "name": "Build Pipeline Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2800,
+        460
+      ],
+      "parameters": {
+        "jsCode": "// n8n 2.x safe: uses $input only \u2014 no $() calls\nconst { pipelines: pipelinesRaw, location_id: locationId } = $input.first().json;\nconst pipelines = Array.isArray(pipelinesRaw) ? pipelinesRaw : [];\n\nfunction findPipeline(list, keywords) {\n  return list.find(p => keywords.some(k => p.name.toLowerCase().includes(k.toLowerCase())));\n}\n\nfunction buildStageMap(stages) {\n  const map = {};\n  if (!stages) return map;\n  for (const s of stages) {\n    const name = s.name.toUpperCase().replace(/[^A-Z0-9_]/g\u2026[TRUNCATED]"
+      }
+    },
+    {
+      "id": "save-pipeline",
+      "name": "Save Pipeline Config",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        3040,
+        460
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE agents SET pipeline_config = '{{ JSON.stringify($json.pipeline_config) }}'::jsonb, updated_at = NOW() WHERE location_id = '{{ $json.location_id }}';"
+      }
+    },
+    {
+      "id": "mark-live",
+      "name": "Mark Agent as Live",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        3280,
+        460
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE agents SET active = true, onboarding_completed_at = NOW(), updated_at = NOW() WHERE location_id = '{{ $(''Extract Location ID'').first().json.location_id }}';"
+      }
+    },
+    {
+      "id": "complete-req",
+      "name": "Complete Onboarding Request",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        3520,
+        460
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE onboarding_requests SET status = 'ghl_complete', location_id = '{{ $(''Extract Location ID'').first().json.location_id }}', updated_at = NOW() WHERE id = '{{ $(''Load Onboarding Request'').first().json.id }}'::uuid;"
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Load Onboarding Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Manual Rerun": {
+      "main": [
+        [
+          {
+            "node": "Normalize Webhook Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Webhook Input": {
+      "main": [
+        [
+          {
+            "node": "Load Onboarding Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Onboarding Request": {
+      "main": [
+        [
+          {
+            "node": "Create GHL Sub-Account",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create GHL Sub-Account": {
+      "main": [
+        [
+          {
+            "node": "GHL Created?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GHL Created?": {
+      "main": [
+        [
+          {
+            "node": "Extract Location ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark Onboarding Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Location ID": {
+      "main": [
+        [
+          {
+            "node": "Apply GHL Snapshot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply GHL Snapshot": {
+      "main": [
+        [
+          {
+            "node": "Save Agent Config to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Agent Config to Supabase": {
+      "main": [
+        [
+          {
+            "node": "Insert Default Agent Rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Default Agent Rules": {
+      "main": [
+        [
+          {
+            "node": "GET GHL Pipelines",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET GHL Pipelines": {
+      "main": [
+        [
+          {
+            "node": "Gather Pipeline Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gather Pipeline Context": {
+      "main": [
+        [
+          {
+            "node": "Build Pipeline Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Pipeline Config": {
+      "main": [
+        [
+          {
+            "node": "Save Pipeline Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Pipeline Config": {
+      "main": [
+        [
+          {
+            "node": "Mark Agent as Live",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Agent as Live": {
+      "main": [
+        [
+          {
+            "node": "Complete Onboarding Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "IrqmItlifeBYhZkl",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "b225ecc3-3258-49b8-b78b-fb12f0b59df6",
+  "activeVersionId": null,
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-08T18:43:37.546Z",
+      "createdAt": "2026-04-08T18:43:37.546Z",
+      "role": "workflow:owner",
+      "workflowId": "iMG9ggquVeLbmKuv",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

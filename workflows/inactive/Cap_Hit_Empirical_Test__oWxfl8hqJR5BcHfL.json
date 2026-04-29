@@ -1,0 +1,446 @@
+{
+  "updatedAt": "2026-04-25T17:32:24.488Z",
+  "createdAt": "2026-04-25T17:32:24.488Z",
+  "id": "oWxfl8hqJR5BcHfL",
+  "name": "\ud83c\udfaf Cap Hit Empirical Test",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "ct-001",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1000,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "ct-002",
+      "name": "Test Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -780,
+        300
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "loc",
+              "name": "location_id",
+              "value": "kv1Af9i1qYK7KfIiT0U3",
+              "type": "string"
+            },
+            {
+              "id": "max_sends",
+              "name": "max_sends",
+              "value": 260,
+              "type": "number"
+            },
+            {
+              "id": "contact_a",
+              "name": "contact_a",
+              "value": "JQD45vnycfHE00GPQPfa",
+              "type": "string"
+            },
+            {
+              "id": "contact_b",
+              "name": "contact_b",
+              "value": "fPo84Bot6bjOLKnzYGwd",
+              "type": "string"
+            },
+            {
+              "id": "halt_on_first_nonzero",
+              "name": "halt_on_first_non200",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "notes": "Hardcoded to 2 of Hobaid's own contacts. NO query to leads table \u2014 these are the ONLY 2 contact_ids that will receive sends. Other leads are physically unreachable from this workflow."
+    },
+    {
+      "id": "ct-003",
+      "name": "Get Agent API Key",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        300
+      ],
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "agents",
+        "limit": 1,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "location_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.location_id }}"
+            }
+          ]
+        }
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "ct-004",
+      "name": "Generate Send Plan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -340,
+        300
+      ],
+      "parameters": {
+        "jsCode": "[REDACTED]"
+      },
+      "notes": "Pre-builds the full send plan. Alternates between contact_a and contact_b."
+    },
+    {
+      "id": "ct-005",
+      "name": "Throttle Loop",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -120,
+        300
+      ],
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      }
+    },
+    {
+      "id": "ct-006",
+      "name": "Send Test SMS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        100,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "[REDACTED]",
+              "value": "[REDACTED]"
+            },
+            {
+              "name": "Version",
+              "value": "2021-04-15"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"type\": \"SMS\", \"contactId\": \"{{ $json.target_contactId }}\", \"message\": \"{{ $json.test_message }}\" }",
+        "options": {
+          "timeout": 30000
+        },
+        "onError": "continueErrorOutput",
+        "alwaysOutputData": true
+      },
+      "notes": "onError: continueErrorOutput \u2014 when GHL returns 4xx/5xx the response goes out main[1] for error logging."
+    },
+    {
+      "id": "ct-007",
+      "name": "Wait 1.5s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        240
+      ],
+      "parameters": {
+        "unit": "seconds",
+        "amount": 1.5
+      },
+      "notes": "Throttle to ~40 sends/min so we don't trigger per-second rate limits before daily cap."
+    },
+    {
+      "id": "ct-008",
+      "name": "Log Success",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        540,
+        240
+      ],
+      "parameters": {
+        "operation": "create",
+        "tableId": "message_log",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "contact_id",
+              "fieldValue": "={{ $('Throttle Loop').item.json.target_contactId }}"
+            },
+            {
+              "fieldId": "location_id",
+              "fieldValue": "={{ $('Throttle Loop').item.json.location_id }}"
+            },
+            {
+              "fieldId": "direction",
+              "fieldValue": "outbound"
+            },
+            {
+              "fieldId": "channel",
+              "fieldValue": "sms"
+            },
+            {
+              "fieldId": "message_body",
+              "fieldValue": "={{ $('Throttle Loop').item.json.test_message }}"
+            },
+            {
+              "fieldId": "ghl_message_id",
+              "fieldValue": "={{ $json.messageId }}"
+            },
+            {
+              "fieldId": "ghl_conversation_id",
+              "fieldValue": "={{ $json.conversationId }}"
+            },
+            {
+              "fieldId": "ghl_accepted_at",
+              "fieldValue": "={{ $now.toUTC().toISO() }}"
+            },
+            {
+              "fieldId": "delivery_status",
+              "fieldValue": "sent"
+            },
+            {
+              "fieldId": "ai_processed",
+              "fieldValue": "false"
+            },
+            {
+              "fieldId": "timestamp",
+              "fieldValue": "={{ $now.toUTC().toISO() }}"
+            }
+          ]
+        }
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "ct-009",
+      "name": "Log Failure (CRITICAL)",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        320,
+        380
+      ],
+      "parameters": {
+        "operation": "create",
+        "tableId": "message_send_errors",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "contact_id",
+              "fieldValue": "={{ $('Throttle Loop').item.json.target_contactId }}"
+            },
+            {
+              "fieldId": "location_id",
+              "fieldValue": "={{ $('Throttle Loop').item.json.location_id }}"
+            },
+            {
+              "fieldId": "http_status",
+              "fieldValue": "={{ $json.error?.httpCode || $json.statusCode || null }}"
+            },
+            {
+              "fieldId": "ghl_error_code",
+              "fieldValue": "={{ $json.error?.code || $json.code || null }}"
+            },
+            {
+              "fieldId": "ghl_error_name",
+              "fieldValue": "={{ $json.error?.name || $json.name || 'unknown' }}"
+            },
+            {
+              "fieldId": "raw_message",
+              "fieldValue": "={{ $json.error?.message || $json.message || JSON.stringify($json) }}"
+            },
+            {
+              "fieldId": "raw_response",
+              "fieldValue": "={{ $json }}"
+            },
+            {
+              "fieldId": "classification",
+              "fieldValue": "cap_test_capture"
+            }
+          ]
+        }
+      },
+      "credentials": "[REDACTED]",
+      "notes": "\ud83c\udfaf GOLDMINE \u2014 captures the FULL raw GHL response when the cap is hit. raw_response is jsonb so we can query it post-hoc."
+    },
+    {
+      "id": "ct-010",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1080,
+        80
+      ],
+      "parameters": {
+        "content": "## \ud83c\udfaf Cap Hit Empirical Test\n\n**Purpose:** Send up to 260 test SMS to ONLY 2 hardcoded contacts (Daddy Sayeed + Sayeed Hobaid \u2014 Hobaid's own numbers) until GHL returns a non-200 (cap hit).\n\n**Safety:**\n- Other leads are unreachable \u2014 no query to leads table\n- onError: continueErrorOutput so loop continues + logs each failure\n- 1.5s throttle between sends\n\n**What it captures:**\n- Success \u2192 row in message_log with delivery_status=sent, ghl_message_id\n- Failure \u2192 FULL raw response in message_send_er\u2026[TRUNCATED]",
+        "height": 280,
+        "width": 540,
+        "color": 6
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Test Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Config": {
+      "main": [
+        [
+          {
+            "node": "Get Agent API Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Agent API Key": {
+      "main": [
+        [
+          {
+            "node": "Generate Send Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Send Plan": {
+      "main": [
+        [
+          {
+            "node": "Throttle Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Throttle Loop": {
+      "main": [
+        [
+          {
+            "node": "Send Test SMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Test SMS": {
+      "main": [
+        [
+          {
+            "node": "Wait 1.5s",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Failure (CRITICAL)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1.5s": {
+      "main": [
+        [
+          {
+            "node": "Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Success": {
+      "main": [
+        [
+          {
+            "node": "Throttle Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Failure (CRITICAL)": {
+      "main": [
+        [
+          {
+            "node": "Throttle Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "IrqmItlifeBYhZkl",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "1a56b20b-1d72-4d16-aaeb-43231907ddeb",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-25T17:32:24.488Z",
+      "createdAt": "2026-04-25T17:32:24.488Z",
+      "role": "workflow:owner",
+      "workflowId": "oWxfl8hqJR5BcHfL",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

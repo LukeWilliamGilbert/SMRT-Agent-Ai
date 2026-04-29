@@ -1,0 +1,373 @@
+{
+  "updatedAt": "2026-04-15T23:05:13.698Z",
+  "createdAt": "2026-04-15T22:39:03.898Z",
+  "id": "CVHL7qHNCzQOhaqE",
+  "name": "\u23f0 Appointment Reminders",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Every 30 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "[REDACTED]",
+        "options": {}
+      },
+      "id": "query-reminders",
+      "name": "Query Pending Reminders",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        224,
+        304
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-data",
+              "leftValue": "={{ $json.contact_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "has-reminders",
+      "name": "Has Reminders?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const d = item.json;\n  const startTime = new Date(d.start_time);\n  const now = new Date();\n  const hoursUntil = (startTime.getTime() - now.getTime()) / (1000 * 60 * 60);\n  \n  let reminderType = null;\n  let sentAtColumn = null;\n  \n  if (!d.reminder_24h_sent_at && hoursUntil >= 23 && hoursUntil <= 25) {\n    reminderType = '24h';\n    sentAtColumn = 'reminder_24h_sent_at';\n  } else if (!d.reminder_5h_sent_at && hoursUntil\u2026[TRUNCATED]"
+      },
+      "id": "determine-type",
+      "name": "Determine Reminder Type",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "not-skip",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "skip-check",
+      "name": "Should Send?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "appointments",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Determine Reminder Type').item.json.appointment_id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "={{ $('Determine Reminder Type').item.json.sentAtColumn }}",
+              "fieldValue": "={{ $now }}"
+            }
+          ]
+        }
+      },
+      "id": "mark-sent",
+      "name": "Mark Reminder Sent",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        112
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "content": "## Appointment Reminders\n\nSends SMS reminders at 3 intervals before scheduled appointments:\n- **24 hours** before\n- **5 hours** before  \n- **1 hour** before\n\n**Safety guards:**\n- No reminders to DNC/opted-out leads\n- No reminders for cancelled appointments\n- No reminders if lead has no phone\n- Messages logged to message_log so Brain Engine has context\n- Reminder flags prevent duplicate sends\n\n**Schedule:** Every 30 minutes",
+        "height": 380,
+        "width": 340
+      },
+      "id": "sticky-info",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "message_log",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "contact_id",
+              "fieldValue": "={{ $('Determine Reminder Type').item.json.contact_id }}"
+            },
+            {
+              "fieldId": "location_id",
+              "fieldValue": "={{ $('Determine Reminder Type').item.json.location_id }}"
+            },
+            {
+              "fieldId": "message_body",
+              "fieldValue": "={{ $('Determine Reminder Type').item.json.message }}"
+            },
+            {
+              "fieldId": "direction",
+              "fieldValue": "outbound"
+            },
+            {
+              "fieldId": "channel",
+              "fieldValue": "sms"
+            },
+            {
+              "fieldId": "ai_processed",
+              "fieldValue": "false"
+            },
+            {
+              "fieldId": "ai_intent",
+              "fieldValue": "appointment_reminder"
+            },
+            {
+              "fieldId": "timestamp",
+              "fieldValue": "={{ $now }}"
+            }
+          ]
+        }
+      },
+      "id": "log-message",
+      "name": "Log to message_log",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        112
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://services.leadconnectorhq.com/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "[REDACTED]",
+              "value": "[REDACTED]"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"SMS\",\n  \"contactId\": \"{{ $json.contact_id }}\",\n  \"message\": \"{{ $json.message }}\"\n}",
+        "options": {}
+      },
+      "id": "972f5b2e-e806-4cbf-9167-d570765d642a",
+      "name": "Send SMS via GHL1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1168,
+        112
+      ]
+    }
+  ],
+  "connections": {
+    "Every 30 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Query Pending Reminders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Pending Reminders": {
+      "main": [
+        [
+          {
+            "node": "Has Reminders?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Reminders?": {
+      "main": [
+        [
+          {
+            "node": "Determine Reminder Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Determine Reminder Type": {
+      "main": [
+        [
+          {
+            "node": "Should Send?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Send?": {
+      "main": [
+        [
+          {
+            "node": "Send SMS via GHL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send SMS via GHL1": {
+      "main": [
+        [
+          {
+            "node": "Log to message_log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to message_log": {
+      "main": [
+        [
+          {
+            "node": "Mark Reminder Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Denver",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "errorWorkflow": "IrqmItlifeBYhZkl",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Every 30 Minutes": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "28062769-4c93-44d5-be81-e73fca2b6524",
+  "activeVersionId": "28062769-4c93-44d5-be81-e73fca2b6524",
+  "versionCounter": 33,
+  "triggerCount": 1,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-15T22:39:03.898Z",
+      "createdAt": "2026-04-15T22:39:03.898Z",
+      "role": "workflow:owner",
+      "workflowId": "CVHL7qHNCzQOhaqE",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

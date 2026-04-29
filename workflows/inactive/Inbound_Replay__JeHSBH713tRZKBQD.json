@@ -1,0 +1,269 @@
+{
+  "updatedAt": "2026-04-25T01:21:16.731Z",
+  "createdAt": "2026-04-25T01:21:16.731Z",
+  "id": "JeHSBH713tRZKBQD",
+  "name": "\ud83d\udd01 Inbound Replay",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "rp-001",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "rp-002",
+      "name": "Get Unprocessed Messages",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -380,
+        300
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, payload, headers, ghl_message_id, captured_at, replay_count FROM inbound_capture WHERE processed = false ORDER BY captured_at ASC LIMIT 100",
+        "options": {}
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "rp-003",
+      "name": "Has Items?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "has-items",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "rp-004",
+      "name": "Mark As Processed",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        60,
+        240
+      ],
+      "parameters": {
+        "operation": "update",
+        "tableId": "inbound_capture",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "processed",
+              "fieldValue": "true"
+            },
+            {
+              "fieldId": "processed_at",
+              "fieldValue": "={{ $now.toUTC().toISO() }}"
+            },
+            {
+              "fieldId": "replay_count",
+              "fieldValue": "={{ ($json.replay_count || 0) + 1 }}"
+            }
+          ]
+        }
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "rp-005",
+      "name": "Replay To Brain Engine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        280,
+        240
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://twodegreesnorth.tech/webhook/80ceecaf-7e88-403c-b229-0855030701b8",
+        "authentication": "[REDACTED]",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-replay",
+              "value": "1"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Get Unprocessed Messages').item.json.payload }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "rp-006",
+      "name": "Done No Items",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        60,
+        360
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "rp-007",
+      "name": "Wait 2s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        240
+      ],
+      "parameters": {
+        "unit": "seconds",
+        "amount": 2
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Unprocessed Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Unprocessed Messages": {
+      "main": [
+        [
+          {
+            "node": "Has Items?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Items?": {
+      "main": [
+        [
+          {
+            "node": "Mark As Processed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Done No Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark As Processed": {
+      "main": [
+        [
+          {
+            "node": "Replay To Brain Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replay To Brain Engine": {
+      "main": [
+        [
+          {
+            "node": "Wait 2s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "IrqmItlifeBYhZkl",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "86d04734-f145-42a7-9b76-a8aee81e1a60",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-25T01:21:16.731Z",
+      "createdAt": "2026-04-25T01:21:16.731Z",
+      "role": "workflow:owner",
+      "workflowId": "JeHSBH713tRZKBQD",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

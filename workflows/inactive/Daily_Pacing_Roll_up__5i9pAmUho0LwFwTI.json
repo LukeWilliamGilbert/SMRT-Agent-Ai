@@ -1,0 +1,195 @@
+{
+  "updatedAt": "2026-04-25T01:03:37.942Z",
+  "createdAt": "2026-04-25T01:03:37.942Z",
+  "id": "5i9pAmUho0LwFwTI",
+  "name": "\ud83d\udcc8 Daily Pacing Roll-up",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "ru-001",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        200
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 12 * * *"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ru-002",
+      "name": "Run Daily Roll-up",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -180,
+        200
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM run_daily_pacing_rollup()",
+        "options": {}
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "ru-003",
+      "name": "Has Bump Recommendations?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        40,
+        200
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bump-check",
+              "leftValue": "={{ $json.out_recommends_level_bump }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "ru-004",
+      "name": "Format Bump Alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        120
+      ],
+      "parameters": {
+        "jsCode": "// Build a summary of agents that earned level bumps\nconst bumps = $input.all().map(item => {\n  const j = item.json;\n  return {\n    location_id: j.out_location_id,\n    current_level: j.out_level,\n    new_level: j.out_recommended_new_level,\n    sent_yesterday: j.out_sent,\n    delivery_rate: j.out_delivery_rate\n  };\n});\n\nreturn [{\n  json: {\n    summary: `${bumps.length} agent(s) earned a level bump`,\n    details: bumps,\n    next_action: 'Manually bump agents.sending_level via Supabase UI (audit tr\u2026[TRUNCATED]"
+      }
+    },
+    {
+      "id": "ru-005",
+      "name": "End No Bumps",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        260,
+        280
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "ru-006",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -40
+      ],
+      "parameters": {
+        "content": "## \ud83d\udcc8 Daily Pacing Roll-up\n\n**Schedule:** Cron `0 12 * * *` = 12:00 UTC daily = 6am MT (works with DST too \u2014 close enough).\n\n**What it does:**\n1. Runs `run_daily_pacing_rollup()` SQL function\n2. Per agent: counts yesterday's sent+delivered, inserts agent_sending_stats row\n3. Flags agents that hit cap = recommend level bump\n\n**Manual step:** Level bump UPDATE blocked by audit trigger bug. Admin bumps `agents.sending_level` manually via Supabase UI when notified.\n\n**Activate after Phase 1.5 test da\u2026[TRUNCATED]",
+        "height": 240,
+        "width": 480,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Run Daily Roll-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Daily Roll-up": {
+      "main": [
+        [
+          {
+            "node": "Has Bump Recommendations?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Bump Recommendations?": {
+      "main": [
+        [
+          {
+            "node": "Format Bump Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "End No Bumps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "IrqmItlifeBYhZkl",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "3118df4a-45f9-4d8c-91cf-4d9d879280ea",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-25T01:03:37.942Z",
+      "createdAt": "2026-04-25T01:03:37.942Z",
+      "role": "workflow:owner",
+      "workflowId": "5i9pAmUho0LwFwTI",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

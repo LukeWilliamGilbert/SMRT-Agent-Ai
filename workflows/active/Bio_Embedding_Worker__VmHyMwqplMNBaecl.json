@@ -1,0 +1,288 @@
+{
+  "updatedAt": "2026-04-28T02:00:43.264Z",
+  "createdAt": "2026-04-28T01:56:15.124Z",
+  "id": "VmHyMwqplMNBaecl",
+  "name": "\ud83e\udde0 Bio Embedding Worker",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        400
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fetch-claim-rows",
+      "name": "Fetch + Claim Pending Rows",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        464,
+        400
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH candidates AS (\n  SELECT id\n  FROM documents\n  WHERE document_type = 'agent_bio'\n    AND metadata->>'needs_embedding' = 'true'\n    AND COALESCE((metadata->>'embedding_attempts')::int, 0) < 5\n    AND length(content) BETWEEN 1 AND 50000\n    AND (\n      metadata->>'embedding_started_at' IS NULL\n      OR (metadata->>'embedding_started_at')::timestamptz < (now() - interval '10 minutes')\n    )\n  ORDER BY (metadata->>'updated_at')::timestamptz ASC NULLS LAST\n  LIMIT 50\n  FOR UPDATE SKIP LOCKED\n)\nU\u2026[TRUNCATED]",
+        "options": {}
+      }
+    },
+    {
+      "id": "build-openai-batch",
+      "name": "Build OpenAI Batch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        400
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const items = $input.all();\nconst validItems = items.filter(i => i.json && i.json.id && i.json.content);\nif (validItems.length === 0) {\n  return [];\n}\nconst inputs = validItems.map(i => i.json.content);\nconst ids = validItems.map(i => i.json.id);\nreturn [{\n  json: {\n    payload: {\n      model: 'text-embedding-3-small',\n      input: inputs\n    },\n    rowIds: ids\n  }\n}];"
+      }
+    },
+    {
+      "id": "openai-embeddings-api",
+      "name": "OpenAI Embeddings API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        912,
+        400
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "[REDACTED]",
+        "nodeCredentialType": "[REDACTED]",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "pair-embeddings",
+      "name": "Pair Embeddings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        400
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const apiResponse = $input.first().json;\nconst data = apiResponse.data || [];\nconst previousNode = $('Build OpenAI Batch').first().json;\nconst rowIds = previousNode.rowIds || [];\nif (data.length !== rowIds.length) {\n  throw new Error(`Embedding count mismatch: got ${data.length}, expected ${rowIds.length}`);\n}\nconst updates = data.map((d, i) => ({\n  id: rowIds[i],\n  embedding: '[' + d.embedding.join(',') + ']'\n}));\nreturn [{ json: { updates } }];"
+      }
+    },
+    {
+      "id": "apply-embeddings",
+      "name": "Apply Embeddings",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1360,
+        400
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT public.embed_agent_bio_batch('{{ JSON.stringify($json.updates).replace(/'/g, \"''\") }}'::jsonb) AS rows_updated;",
+        "options": {}
+      }
+    },
+    {
+      "id": "mark-batch-failed",
+      "name": "Mark Batch Failed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        624
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const errorObj = $input.first().json;\nconst errorMsg = (errorObj.error && errorObj.error.message) || errorObj.message || JSON.stringify(errorObj).substring(0, 500);\nlet rowIds = [];\ntry {\n  rowIds = $('Build OpenAI Batch').first().json.rowIds || [];\n} catch(e) {}\nconst validIds = rowIds.filter(id => id && typeof id === 'string' && id.length > 0);\nif (validIds.length === 0) {\n  return [];\n}\nreturn validIds.map(id => ({ json: { id, error: errorMsg.substring(0, 1000) } }));"
+      }
+    },
+    {
+      "id": "bump-attempts",
+      "name": "Bump Attempts",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1136,
+        624
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT public.mark_bio_embedding_failed('{{ $json.id }}'::uuid, '{{ ($json.error || '').replace(/'/g, \"''\") }}'::text);",
+        "options": {}
+      }
+    },
+    {
+      "id": "log-system-error",
+      "name": "Log to system_errors",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1360,
+        624
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO system_errors (source, workflow_name, node_name, error_message, error_level, payload, created_at)\nVALUES (\n  'bio-embedding-worker',\n  'Bio Embedding Worker',\n  'OpenAI Embeddings API',\n  '{{ ($json.error || '').replace(/'/g, \"''\") }}',\n  'error',\n  jsonb_build_object('document_id', '{{ $json.id }}'),\n  now()\n);",
+        "options": {}
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch + Claim Pending Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch + Claim Pending Rows": {
+      "main": [
+        [
+          {
+            "node": "Build OpenAI Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build OpenAI Batch": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Embeddings API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Embeddings API": {
+      "main": [
+        [
+          {
+            "node": "Pair Embeddings",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark Batch Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pair Embeddings": {
+      "main": [
+        [
+          {
+            "node": "Apply Embeddings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Batch Failed": {
+      "main": [
+        [
+          {
+            "node": "Bump Attempts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bump Attempts": {
+      "main": [
+        [
+          {
+            "node": "Log to system_errors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "IrqmItlifeBYhZkl",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "79a4718e-e91b-4472-a33e-de408e00198c",
+  "activeVersionId": "79a4718e-e91b-4472-a33e-de408e00198c",
+  "versionCounter": 8,
+  "triggerCount": 1,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-28T01:56:15.124Z",
+      "createdAt": "2026-04-28T01:56:15.124Z",
+      "role": "workflow:owner",
+      "workflowId": "VmHyMwqplMNBaecl",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

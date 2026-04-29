@@ -1,0 +1,534 @@
+{
+  "updatedAt": "2026-04-16T01:25:37.146Z",
+  "createdAt": "2026-04-06T16:24:26.149Z",
+  "id": "XDcom3gft8yqwa5O",
+  "name": "\ud83d\udcec Newsletter Dispatch",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "id": "7dbc2def-ec73-41ad-9506-366e0661d969",
+      "name": "Weekly Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -640,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "agents",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "newsletter_enabled",
+              "condition": "eq",
+              "keyValue": "true"
+            }
+          ]
+        }
+      },
+      "id": "5c77437c-9d53-4e9b-84c5-dd95b175f173",
+      "name": "Fetch Active Agents",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        224
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "92faef2f-5157-4915-bcb4-750d0a70850f",
+      "name": "Loop Agents",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -160,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "[REDACTED]"
+      },
+      "id": "9e796ceb-1759-45b6-985a-0c9e4eea8f4f",
+      "name": "Get Newest Newsletter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "nl-skip-check",
+              "leftValue": "={{ $json._skip }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2440ab32-d710-4289-8491-ad1b4bc7e646",
+      "name": "Newsletter Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "[REDACTED]"
+      },
+      "id": "f2267155-04f4-4ec7-a62c-aa610c411638",
+      "name": "Fetch Eligible Leads",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "eligible-check",
+              "leftValue": "={{ $json._skip }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d2840c00-29fc-44c2-a0e5-22b6bff754ca",
+      "name": "Has Eligible Leads?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "[REDACTED]"
+      },
+      "id": "2cfda966-caad-43ae-9ed1-1c504a1c632d",
+      "name": "Build HTML Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "[REDACTED]",
+              "value": "[REDACTED]"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"Email\",\n  \"contactId\": \"{{ $json.contact_id }}\",\n  \"emailFrom\": \"{{ $json.coordinatorEmail }}\",\n  \"html\": {{ JSON.stringify($json.html) }},\n  \"subject\": \"{{ $json.subject }}\"\n}",
+        "options": {}
+      },
+      "id": "8fafdcda-a0aa-45fd-b809-d7e1d9c631e5",
+      "name": "Send Email via GHL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1280,
+        224
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "tableId": "newsletter_deliveries",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "newsletter_id",
+              "fieldValue": "={{ $('Build HTML Email').first().json.newsletterId }}"
+            },
+            {
+              "fieldId": "lead_id",
+              "fieldValue": "={{ $('Build HTML Email').first().json.id }}"
+            },
+            {
+              "fieldId": "contact_id",
+              "fieldValue": "={{ $('Build HTML Email').first().json.contact_id }}"
+            },
+            {
+              "fieldId": "location_id",
+              "fieldValue": "={{ $('Get Newest Newsletter').first().json.location_id }}"
+            },
+            {
+              "fieldId": "subject_line",
+              "fieldValue": "={{ $('Build HTML Email').first().json.subject }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "sent"
+            },
+            {
+              "fieldId": "sent_at",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            }
+          ]
+        }
+      },
+      "id": "0ed5702a-6325-4f41-9984-9020f8893e9b",
+      "name": "Log Delivery",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        224
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "content": "## 1. TRIGGER & AGENT FETCH\n**Weekly Schedule** fires every Monday at 10 AM (America/Denver).\n**Fetch Active Agents** pulls all agents where `newsletter_enabled = true`.\nLoop iterates one agent at a time.",
+        "width": 560
+      },
+      "id": "cd0d1258-b3da-43f6-98f8-d2bce1101792",
+      "name": "Sticky Note - Trigger",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2. NEWSLETTER + CADENCE FILTERING\n**Get Newest Newsletter** fetches latest by `week_start_date DESC` for this agent's location.\n**Fetch Eligible Leads** pulls opted-in leads, then filters by cadence:\n- WEEKLY/APPT_SET/APPT_OFFERED: every week\n- BIWEEKLY: every 2 weeks\n- MONTHLY/cold: every 4 weeks\nChecks `newsletter_deliveries` for last send date per lead.",
+        "height": 180,
+        "width": 560
+      },
+      "id": "d770ada7-cf93-4fcb-920d-cb72fd580ac7",
+      "name": "Sticky Note - Newsletter + Cadence",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3. BUILD, SEND & LOG\n**Build HTML Email** wraps `full_content` in HTML template with unsubscribe footer (Reply STOP).\n**Send Email via GHL** sends as Email type via conversations/messages API.\n**Log Delivery** inserts into `newsletter_deliveries` with status=sent + lead_id.\nAfter logging, loops back to next agent.\n\n**To test:** Hit Test Workflow in the editor. Your lead (Hobaid) is opted in with APPT_OFFERED stage = WEEKLY cadence.",
+        "height": 180,
+        "width": 640
+      },
+      "id": "9c8131dc-8d37-468f-816e-1a3d9c030968",
+      "name": "Sticky Note - Send & Log",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        960,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "[REDACTED]"
+      },
+      "id": "59e73160-6b13-496e-8b56-fd3b6a6886e2",
+      "name": "Update Send Counts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sb1",
+              "name": "_sbUrl",
+              "value": "https://kfoijgcbkjeizxxyiwxv.supabase.co",
+              "type": "string"
+            },
+            {
+              "id": "sb2",
+              "name": "_sbKey",
+              "value": "[REDACTED]",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "3de2aaa8-41a7-4a4b-a972-84a05f57bbf6",
+      "name": "Stamp Supabase Key",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        304
+      ]
+    }
+  ],
+  "connections": {
+    "Weekly Schedule": {
+      "main": [
+        [
+          {
+            "node": "Fetch Active Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Agents": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Newest Newsletter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Newest Newsletter": {
+      "main": [
+        [
+          {
+            "node": "Newsletter Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Newsletter Found?": {
+      "main": [
+        [
+          {
+            "node": "Fetch Eligible Leads",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Eligible Leads": {
+      "main": [
+        [
+          {
+            "node": "Has Eligible Leads?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Eligible Leads?": {
+      "main": [
+        [
+          {
+            "node": "Build HTML Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build HTML Email": {
+      "main": [
+        [
+          {
+            "node": "Send Email via GHL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email via GHL": {
+      "main": [
+        [
+          {
+            "node": "Log Delivery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Delivery": {
+      "main": [
+        [
+          {
+            "node": "Update Send Counts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Send Counts": {
+      "main": [
+        [
+          {
+            "node": "Loop Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Active Agents": {
+      "main": [
+        [
+          {
+            "node": "Stamp Supabase Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stamp Supabase Key": {
+      "main": [
+        [
+          {
+            "node": "Loop Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "IrqmItlifeBYhZkl"
+  },
+  "staticData": {
+    "node:Weekly Schedule": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "85f66f2d-6693-4a07-bd1a-1973b9e5d5b4",
+  "activeVersionId": "85f66f2d-6693-4a07-bd1a-1973b9e5d5b4",
+  "versionCounter": 50,
+  "triggerCount": 1,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-06T16:24:26.149Z",
+      "createdAt": "2026-04-06T16:24:26.149Z",
+      "role": "workflow:owner",
+      "workflowId": "XDcom3gft8yqwa5O",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

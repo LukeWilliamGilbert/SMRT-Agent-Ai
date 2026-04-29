@@ -1,0 +1,45 @@
+{
+  "updatedAt": "2026-04-23T13:56:28.328Z",
+  "createdAt": "2026-04-23T13:55:03.718Z",
+  "id": "RHXiFGHs9vFlwTfGuKt_q",
+  "name": "My workflow 3",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "575ad6dc-3777-45be-9023-89c6d0b7eb89",
+  "activeVersionId": null,
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-23T13:55:03.718Z",
+      "createdAt": "2026-04-23T13:55:03.718Z",
+      "role": "workflow:owner",
+      "workflowId": "RHXiFGHs9vFlwTfGuKt_q",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

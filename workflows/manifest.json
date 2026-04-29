@@ -1,0 +1,175 @@
+{
+  "generated_from": "sanitized n8n workflow exports captured during read-only SMRT audit",
+  "source_inventory": "/home/ubuntu/smrt_analysis/raw_export/root/smrt_n8n_export_20260428_194357/workflow_inventory.json",
+  "warning": "These JSON files are sanitized working exports for review and Git diffing. Do not assume they are deploy-ready until a live pull/deploy pipeline is installed and verified.",
+  "workflows": [
+    {
+      "id": "CVHL7qHNCzQOhaqE",
+      "name": "⏰ Appointment Reminders",
+      "active": true,
+      "path": "workflows/active/Appointment_Reminders__CVHL7qHNCzQOhaqE.json",
+      "updatedAt": "2026-04-15T23:05:13.698Z",
+      "node_count": 9
+    },
+    {
+      "id": "57VOr1qmDwdO2mZj",
+      "name": "☀️ Contact Created -> Brain Engine",
+      "active": true,
+      "path": "workflows/active/Contact_Created_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "updatedAt": "2026-04-27T19:38:17.419Z",
+      "node_count": 26
+    },
+    {
+      "id": "4hojpHNg50GyCOJB",
+      "name": "📄 Document Ingestion",
+      "active": true,
+      "path": "workflows/active/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "updatedAt": "2026-04-15T00:08:14.668Z",
+      "node_count": 27
+    },
+    {
+      "id": "PbnY3U8jOANRd1yB",
+      "name": "📬 GHL Delivery Status Handler",
+      "active": true,
+      "path": "workflows/active/GHL_Delivery_Status_Handler__PbnY3U8jOANRd1yB.json",
+      "updatedAt": "2026-04-25T23:27:21.659Z",
+      "node_count": 16
+    },
+    {
+      "id": "XDcom3gft8yqwa5O",
+      "name": "📬 Newsletter Dispatch",
+      "active": true,
+      "path": "workflows/active/Newsletter_Dispatch__XDcom3gft8yqwa5O.json",
+      "updatedAt": "2026-04-16T01:25:37.146Z",
+      "node_count": 15
+    },
+    {
+      "id": "gI097yamrw7gDU6C",
+      "name": "📰 Data Source & Newsletter Creation",
+      "active": true,
+      "path": "workflows/active/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "updatedAt": "2026-04-15T17:44:06.396Z",
+      "node_count": 37
+    },
+    {
+      "id": "KsuBnpK9sEXUPgJC",
+      "name": "🔍 GHL Send Status Checker",
+      "active": true,
+      "path": "workflows/active/GHL_Send_Status_Checker__KsuBnpK9sEXUPgJC.json",
+      "updatedAt": "2026-04-27T19:28:19.871Z",
+      "node_count": 14
+    },
+    {
+      "id": "IrqmItlifeBYhZkl",
+      "name": "🔥 Error Catch",
+      "active": true,
+      "path": "workflows/active/Error_Catch__IrqmItlifeBYhZkl.json",
+      "updatedAt": "2026-04-25T03:14:42.258Z",
+      "node_count": 3
+    },
+    {
+      "id": "VmHyMwqplMNBaecl",
+      "name": "🧠 Bio Embedding Worker",
+      "active": true,
+      "path": "workflows/active/Bio_Embedding_Worker__VmHyMwqplMNBaecl.json",
+      "updatedAt": "2026-04-28T02:00:43.264Z",
+      "node_count": 9
+    },
+    {
+      "id": "mlR5dZuzXxP_JYGaqrqpu",
+      "name": "🧠 SMRT Brain Engine",
+      "active": true,
+      "path": "workflows/active/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "updatedAt": "2026-04-28T02:41:01.059Z",
+      "node_count": 174
+    },
+    {
+      "id": "XTyRuyi47ZKYfpCO",
+      "name": "My workflow",
+      "active": false,
+      "path": "workflows/inactive/My_workflow__XTyRuyi47ZKYfpCO.json",
+      "updatedAt": "2026-03-09T12:53:38.603Z",
+      "node_count": 0
+    },
+    {
+      "id": "g2vytwODh7c4a5f7",
+      "name": "My workflow 2",
+      "active": false,
+      "path": "workflows/inactive/My_workflow_2__g2vytwODh7c4a5f7.json",
+      "updatedAt": "2026-03-09T12:53:41.250Z",
+      "node_count": 2
+    },
+    {
+      "id": "RHXiFGHs9vFlwTfGuKt_q",
+      "name": "My workflow 3",
+      "active": false,
+      "path": "workflows/inactive/My_workflow_3__RHXiFGHs9vFlwTfGuKt_q.json",
+      "updatedAt": "2026-04-23T13:56:28.328Z",
+      "node_count": 0
+    },
+    {
+      "id": "i3aF2rmEAZRJbKYp",
+      "name": "⏱️ Contact Intake Queue Processor",
+      "active": false,
+      "path": "workflows/inactive/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "updatedAt": "2026-04-27T19:38:20.960Z",
+      "node_count": 28
+    },
+    {
+      "id": "XJxoDt1SJ6SWUIim",
+      "name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "active": false,
+      "path": "workflows/inactive/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "updatedAt": "2026-04-27T23:48:26.552Z",
+      "node_count": 23
+    },
+    {
+      "id": "oWxfl8hqJR5BcHfL",
+      "name": "🎯 Cap Hit Empirical Test",
+      "active": false,
+      "path": "workflows/inactive/Cap_Hit_Empirical_Test__oWxfl8hqJR5BcHfL.json",
+      "updatedAt": "2026-04-25T17:32:24.488Z",
+      "node_count": 10
+    },
+    {
+      "id": "iMG9ggquVeLbmKuv",
+      "name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "active": false,
+      "path": "workflows/inactive/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "updatedAt": "2026-04-15T01:02:34.506Z",
+      "node_count": 23
+    },
+    {
+      "id": "5i9pAmUho0LwFwTI",
+      "name": "📈 Daily Pacing Roll-up",
+      "active": false,
+      "path": "workflows/inactive/Daily_Pacing_Roll_up__5i9pAmUho0LwFwTI.json",
+      "updatedAt": "2026-04-25T01:03:37.942Z",
+      "node_count": 6
+    },
+    {
+      "id": "JeHSBH713tRZKBQD",
+      "name": "🔁 Inbound Replay",
+      "active": false,
+      "path": "workflows/inactive/Inbound_Replay__JeHSBH713tRZKBQD.json",
+      "updatedAt": "2026-04-25T01:21:16.731Z",
+      "node_count": 7
+    },
+    {
+      "id": "LA83yImjwZBdhYqw",
+      "name": "🔍 GHL Conversation Backfill",
+      "active": false,
+      "path": "workflows/inactive/GHL_Conversation_Backfill__LA83yImjwZBdhYqw.json",
+      "updatedAt": "2026-04-25T17:27:05.259Z",
+      "node_count": 8
+    },
+    {
+      "id": "nyASXOhcHfffb959",
+      "name": "🧪 Altos Image Test",
+      "active": false,
+      "path": "workflows/inactive/Altos_Image_Test__nyASXOhcHfffb959.json",
+      "updatedAt": "2026-04-15T00:08:16.809Z",
+      "node_count": 12
+    }
+  ]
+}

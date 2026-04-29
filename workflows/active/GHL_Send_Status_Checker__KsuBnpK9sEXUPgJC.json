@@ -1,0 +1,539 @@
+{
+  "updatedAt": "2026-04-27T19:28:19.871Z",
+  "createdAt": "2026-04-26T00:39:02.503Z",
+  "id": "KsuBnpK9sEXUPgJC",
+  "name": "\ud83d\udd0d GHL Send Status Checker",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "sc-001",
+      "name": "Execute Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        304
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "sc-002",
+      "name": "Wait 5s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -496,
+        304
+      ],
+      "webhookId": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "url": "=https://services.leadconnectorhq.com/conversations/messages/{{ $('Execute Trigger').item.json.messageId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "[REDACTED]",
+              "value": "[REDACTED]"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "sc-003",
+      "name": "GET Message Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -288,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const trigger = $('Execute Trigger').first().json;\nconst raw = $input.first().json || {};\n\n// GHL message endpoint shape: { message: { id, status, error, body, ... }, traceId }\nconst msg = raw.message || raw.data || raw;\n\nconst status = String(msg.status || msg.deliveryStatus || '').toLowerCase();\nconst errorCode = String(msg.errorCode || msg.error_code || '');\nconst errorMessage = String(msg.error || msg.errorMessage || msg.error_message || msg.errorMsg || '');\nconst body = String(msg.body || m\u2026[TRUNCATED]"
+      },
+      "id": "sc-004",
+      "name": "Parse Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "message_log",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "ghl_message_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.messageId }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "delivery_status",
+              "fieldValue": "={{ $json.status || ($json.is_failure ? 'failed' : 'sent') }}"
+            },
+            {
+              "fieldId": "last_delivery_event_at",
+              "fieldValue": "={{ $json.checked_at }}"
+            },
+            {
+              "fieldId": "delivered_at",
+              "fieldValue": "={{ $json.status === 'delivered' ? $json.checked_at : null }}"
+            },
+            {
+              "fieldId": "failure_reason",
+              "fieldValue": "={{ $json.is_failure ? ($json.errorMessage || $json.status) : null }}"
+            },
+            {
+              "fieldId": "failure_carrier_code",
+              "fieldValue": "={{ $json.is_failure ? ($json.errorCode || null) : null }}"
+            }
+          ]
+        }
+      },
+      "id": "sc-005",
+      "name": "Update Message Log",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        160,
+        304
+      ],
+      "credentials": "[REDACTED]",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "is-fail",
+              "leftValue": "={{ $('Parse Response').item.json.is_failure }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "sc-006",
+      "name": "Is Failure?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        384,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "message_send_errors",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "contact_id",
+              "fieldValue": "={{ $('Parse Response').item.json.contact_id }}"
+            },
+            {
+              "fieldId": "location_id",
+              "fieldValue": "={{ $('Parse Response').item.json.location_id }}"
+            },
+            {
+              "fieldId": "ghl_error_code",
+              "fieldValue": "={{ $('Parse Response').item.json.errorCode }}"
+            },
+            {
+              "fieldId": "ghl_error_name",
+              "fieldValue": "={{ $('Parse Response').item.json.status }}"
+            },
+            {
+              "fieldId": "raw_message",
+              "fieldValue": "={{ $('Parse Response').item.json.errorMessage || $('Parse Response').item.json.body_snippet }}"
+            },
+            {
+              "fieldId": "raw_response",
+              "fieldValue": "={{ JSON.stringify($('Parse Response').item.json.raw_response) }}"
+            },
+            {
+              "fieldId": "classification",
+              "fieldValue": "={{ $('Parse Response').item.json.is_cap_hit ? 'cap_hit' : ($('Parse Response').item.json.is_terminal_carrier ? 'terminal_carrier' : 'delivery_failed') }}"
+            }
+          ]
+        }
+      },
+      "id": "sc-007",
+      "name": "Log Send Error",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        608,
+        240
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cap-hit",
+              "leftValue": "={{ $('Parse Response').item.json.is_cap_hit }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "sc-008",
+      "name": "Is Cap Hit?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        832,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT public.record_cap_hit('{{ $('Parse Response').item.json.location_id }}', '{{ $('Parse Response').item.json.checked_at }}'::timestamptz, NULLIF('{{ $('Parse Response').item.json.parsed_reset_at }}', '')::timestamptz) AS result;",
+        "options": {}
+      },
+      "id": "sc-009",
+      "name": "Record Cap Hit",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1040,
+        128
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "terminal",
+              "leftValue": "={{ $('Parse Response').item.json.is_terminal_carrier }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "sc-010",
+      "name": "Is Terminal Carrier?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "leads",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "contact_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Parse Response').item.json.contact_id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "send_blocked",
+              "fieldValue": "true"
+            },
+            {
+              "fieldId": "send_block_reason",
+              "fieldValue": "=twilio_{{ $('Parse Response').item.json.errorCode }}_auto_blocked"
+            },
+            {
+              "fieldId": "send_blocked_at",
+              "fieldValue": "={{ $('Parse Response').item.json.checked_at }}"
+            }
+          ]
+        }
+      },
+      "id": "sc-011",
+      "name": "Auto Block Lead",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1264,
+        208
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {},
+      "id": "sc-012",
+      "name": "Delivered/Other",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        608,
+        400
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "sc-013",
+      "name": "Not Terminal",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1264,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "content": "[REDACTED]",
+        "height": 360,
+        "width": 480,
+        "color": 5
+      },
+      "id": "sc-014",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -112
+      ]
+    }
+  ],
+  "connections": {
+    "Execute Trigger": {
+      "main": [
+        [
+          {
+            "node": "Wait 5s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5s": {
+      "main": [
+        [
+          {
+            "node": "GET Message Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Message Status": {
+      "main": [
+        [
+          {
+            "node": "Parse Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Response": {
+      "main": [
+        [
+          {
+            "node": "Update Message Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Message Log": {
+      "main": [
+        [
+          {
+            "node": "Is Failure?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Failure?": {
+      "main": [
+        [
+          {
+            "node": "Log Send Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delivered/Other",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Send Error": {
+      "main": [
+        [
+          {
+            "node": "Is Cap Hit?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Cap Hit?": {
+      "main": [
+        [
+          {
+            "node": "Record Cap Hit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Terminal Carrier?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Terminal Carrier?": {
+      "main": [
+        [
+          {
+            "node": "Auto Block Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Not Terminal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "IrqmItlifeBYhZkl",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Execute Trigger": [
+      {
+        "json": {
+          "messageId": "pxsNMyeTDHMmX0kDdRzK",
+          "ghl_api_key": "[REDACTED]",
+          "contact_id": "JQD45vnycfHE00GPQPfa",
+          "location_id": "kv1Af9i1qYK7KfIiT0U3"
+        }
+      }
+    ]
+  },
+  "versionId": "3e6acc16-3eed-4d9f-bd07-33fd10ca6019",
+  "activeVersionId": "3e6acc16-3eed-4d9f-bd07-33fd10ca6019",
+  "versionCounter": 15,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-26T00:39:02.503Z",
+      "createdAt": "2026-04-26T00:39:02.503Z",
+      "role": "workflow:owner",
+      "workflowId": "KsuBnpK9sEXUPgJC",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

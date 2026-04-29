@@ -1,0 +1,808 @@
+{
+  "updatedAt": "2026-04-27T23:48:26.552Z",
+  "createdAt": "2026-04-06T16:25:20.619Z",
+  "id": "XJxoDt1SJ6SWUIim",
+  "name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "6e1bf571-bd09-47d4-a4cb-af7fa8af3ddf",
+      "name": "Sticky Note: Main",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        544,
+        0
+      ],
+      "parameters": {
+        "content": "## \ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment\n\nHandles all safe, reversible onboarding work:\n1. Validates all required fields (stops here if missing)\n2. Fetches personality chunks and assembles personality prompt\n3. Creates Google Drive KB folder\n4. Creates FAQ Google Doc\n5. Saves everything to the onboarding_requests staging table\n6. Triggers Part 2 (GHL Setup) only if ALL fields are complete\n\n**Nothing irreversible happens in this workflow.**",
+        "height": 1100,
+        "width": 3200,
+        "color": 7
+      }
+    },
+    {
+      "id": "77472b66-64d2-42ae-a7ba-50a4a49ab10d",
+      "name": "Sticky Note: Form Section",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        576,
+        50
+      ],
+      "parameters": {
+        "content": "[REDACTED]",
+        "height": 320,
+        "width": 464,
+        "color": 3
+      }
+    },
+    {
+      "id": "eeb9a963-5941-452c-bdc9-66f7f01ba464",
+      "name": "Sticky Note: KB Assets Section",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        50
+      ],
+      "parameters": {
+        "content": "## KB & Asset Setup\nCreates Google Drive folder structure and FAQ Google Doc template.\n\nKB file uploads are handled separately via the Document Ingestion workflow after onboarding is complete.",
+        "height": 320,
+        "width": 480,
+        "color": 6
+      }
+    },
+    {
+      "id": "f5b8dcd2-7773-4989-ae49-eb51be24130f",
+      "name": "Sticky Note: DB Staging Section",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2808,
+        50
+      ],
+      "parameters": {
+        "content": "## Database Staging\nSaves all enriched onboarding data to the onboarding_requests table.\n\nThis is the handoff point \u2014 the staging record ID is passed to Part 2 (GHL Setup).\n\nIf GHL setup fails, re-trigger Part 2 via POST /onboarding-ghl-setup with the onboarding_request_id.",
+        "height": 320,
+        "width": 480,
+        "color": 5
+      }
+    },
+    {
+      "id": "def03a43-2b68-41eb-84eb-9d27bd08e55d",
+      "name": "Note: Onboarding Call Checklist",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "content": "## Onboarding Call Checklist\nCollect all of the following before or during the onboarding call.\n\n### Agent Info\n- Full name\n- Business name\n- Email address\n- Phone number\n- Timezone\n- City and state\n- Target ZIP codes (service area)\n\n### GHL Sub-Account\n- Sub-account Location ID\n  (Agency -> Locations -> click location -> Settings -> grab ID from URL)\n- Buyer calendar ID\n  (GHL -> Calendars -> click calendar -> grab ID from URL)\n- Seller calendar ID\n- GHL user ID\n  (GHL -> Settings -> My Profile\u2026[TRUNCATED]",
+        "height": 776,
+        "width": 532,
+        "color": 5
+      }
+    },
+    {
+      "id": "a3427832-6eff-4ed6-a038-5ad6bf369173",
+      "name": "Onboarding Form Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        608,
+        432
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agent-onboarding",
+        "responseMode": "responseNode",
+        "options": {},
+        "authentication": "headerAuth"
+      },
+      "credentials": "[REDACTED]",
+      "webhookId": "732a8304-33ce-409b-9fdc-dbb34dec3072",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "93994faa-74cc-4ced-87e7-0f17d51b28ba",
+      "name": "Extract Agent Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        432
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "agent_name",
+              "value": "={{ $json.body.agent_name }}",
+              "type": "string"
+            },
+            {
+              "name": "agent_email",
+              "value": "={{ $json.body.agent_email }}",
+              "type": "string"
+            },
+            {
+              "name": "agent_phone",
+              "value": "={{ $json.body.agent_phone }}",
+              "type": "string"
+            },
+            {
+              "name": "business_name",
+              "value": "={{ $json.body.business_name }}",
+              "type": "string"
+            },
+            {
+              "name": "market_area",
+              "value": "={{ $json.body.market_area }}",
+              "type": "string"
+            },
+            {
+              "name": "brand_voice",
+              "value": "={{ $json.body.brand_voice }}",
+              "type": "string"
+            },
+            {
+              "name": "calendar_link",
+              "value": "={{ $json.body.calendar_link }}",
+              "type": "string"
+            },
+            {
+              "name": "[REDACTED]",
+              "value": "[REDACTED]",
+              "type": "string"
+            },
+            {
+              "name": "personality_tone",
+              "value": "={{ $json.body.personality_tone }}",
+              "type": "string"
+            },
+            {
+              "name": "personality_style",
+              "value": "={{ $json.body.personality_style }}",
+              "type": "string"
+            },
+            {
+              "name": "personality_communication",
+              "value": "={{ $json.body.personality_communication }}",
+              "type": "string"
+            },
+            {
+              "name": "knowledge_files",
+              "value": "={{ $json.body.knowledge_files }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "14bb0b65-cd35-4a9b-9462-149344df3658",
+      "name": "Set Default Personality",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        432
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "personality_prompt",
+              "value": "# Agent Personality\n\nYou are calm, steady, and structurally precise. You speak the way a competent professional thinks \u2014 clearly, without filler, without performance.\n\nYour presence is the point. You show up consistently, deliver something useful, and leave space. You are not trying to earn a response. You are not measuring whether your messages \"work.\" You are maintaining a rhythm of awareness that the other person can lean into whenever they're ready \u2014 or never.\n\nYou are diagnostic, not reacti\u2026[TRUNCATED]",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "includeOtherFields": true
+        }
+      }
+    },
+    {
+      "id": "validate-required-fields",
+      "name": "Validate Required Fields",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        432
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "cond-1",
+              "leftValue": "={{ $json.agent_name }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "cond-2",
+              "leftValue": "={{ $json.agent_email }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "cond-3",
+              "leftValue": "={{ $json.agent_phone }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "cond-4",
+              "leftValue": "={{ $json.business_name }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "cond-5",
+              "leftValue": "={{ $json.market_area }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "cond-6",
+              "leftValue": "[REDACTED]",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1728,
+        640
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 400,
+        "responseBody": "[REDACTED]",
+        "options": {}
+      }
+    },
+    {
+      "id": "2a109924-5855-4bf0-a805-faffc33eb3f9",
+      "name": "Create Knowledge Base Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1952,
+        432
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "resource": "folder",
+        "operation": "create",
+        "name": "={{ $('Extract Agent Data').first().json.business_name }} - Knowledge Base [{{ $('Extract Agent Data').first().json.market_area }}]",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1dDg7dKcl-zAauTAzatMCzBybZhN3QSTL",
+          "mode": "list",
+          "cachedResultName": "SMRT",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1dDg7dKcl-zAauTAzatMCzBybZhN3QSTL"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "46749f53-f662-40ff-a3a0-a427fa86bded",
+      "name": "Set Folder ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2176,
+        432
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "knowledge_base_folder_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "name": "knowledge_base_folder_name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "1de6454a-936f-4d14-9134-d535c8331792",
+      "name": "Create FAQ Google Doc",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2400,
+        900
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "resource": "file",
+        "operation": "create",
+        "name": "={{ $('Extract Agent Data').first().json.business_name }} - FAQ",
+        "mimeType": "application/vnd.google-apps.document",
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Set Folder ID').first().json.knowledge_base_folder_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "disabled": true
+    },
+    {
+      "id": "2ff90c38-6ee9-4ea9-8eeb-aa13828030eb",
+      "name": "Add FAQ Questions",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2624,
+        900
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insertText",
+              "text": "SMRT Knowledge Base - Agent FAQ\n\nPlease fill out the answers below. This document will be used by your AI assistant (SMRT) to respond to leads on your behalf.\n\n---\n\n1. What areas do you serve?\nAnswer: \n\n2. What types of clients do you work with?\nAnswer: \n\n3. What is your typical process from first contact to closing?\nAnswer: \n\n4. How do you prefer to communicate with leads?\nAnswer: \n\n5. What sets you apart from other agents?\nAnswer: \n\n6. What questions do leads most commonly ask?\nAnswer: \n\n7. Ar\u2026[TRUNCATED]",
+              "insertLocation": "end"
+            }
+          ]
+        }
+      },
+      "disabled": true
+    },
+    {
+      "id": "save-to-staging",
+      "name": "Save to onboarding_requests",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        2848,
+        432
+      ],
+      "credentials": "[REDACTED]",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "[REDACTED]",
+        "options": {}
+      }
+    },
+    {
+      "id": "prepare-ghl-handoff",
+      "name": "Prepare GHL Handoff",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3744,
+        432
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "onboarding_request_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "name": "agent_name",
+              "value": "={{ $('Extract Agent Data').first().json.agent_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "trigger-ghl-setup",
+      "name": "Trigger GHL Setup",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        3968,
+        432
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "iMG9ggquVeLbmKuv",
+          "mode": "id"
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      }
+    },
+    {
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        4192,
+        432
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 200,
+        "responseBody": "={\"success\": true, \"message\": \"Agent {{ $('Extract Agent Data').first().json.agent_name }} onboarding started. GHL setup triggered.\", \"onboarding_request_id\": \"{{ $('Prepare GHL Handoff').first().json.onboarding_request_id }}\"}",
+        "options": {}
+      }
+    },
+    {
+      "id": "34cdda23-062f-460e-8d1d-7a3394aa01d7",
+      "name": "Build Bio Paragraphs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3072,
+        432
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const body = $('Onboarding Form Webhook').first().json.body || {};\nconst location_id = body.agent_info?.location_id;\n\nif (!location_id) {\n  throw new Error('location_id missing \u2014 expected at body.agent_info.location_id');\n}\n\nconst paragraphs = body.bio_template?.paragraphs || {};\nconst topics = ['areas_served', 'specialties', 'style', 'background', 'faq'];\n\nconst items = [];\nfor (const topic of topics) {\n  const content = (paragraphs[topic] || '').trim();\n  if (!content) continue;\n  items.push({\u2026[TRUNCATED]"
+      }
+    },
+    {
+      "id": "2fad5243-4b02-4ffb-a67b-845d3b826044",
+      "name": "Delete Old Agent Bio",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        3296,
+        432
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=DELETE FROM documents\nWHERE location_id = '{{ $json.location_id }}'\n  AND document_type = 'agent_bio';",
+        "options": {}
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "6c4abb11-4a59-4a08-919e-434d70632dc2",
+      "name": "Insert Bio to Vectorstore",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.1,
+      "position": [
+        3520,
+        432
+      ],
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "67d6229b-6527-47c5-a326-98d61248c986",
+      "name": "Bio Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        3520,
+        640
+      ],
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "21b3b827-3bbf-4a2a-8422-c2c9ab182216",
+      "name": "Bio Doc Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        3680,
+        640
+      ],
+      "parameters": {
+        "dataType": "json",
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.content }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "location_id",
+                "value": "={{ $json.location_id }}"
+              },
+              {
+                "name": "document_type",
+                "value": "={{ $json.document_type }}"
+              },
+              {
+                "name": "topic",
+                "value": "={{ $json.topic }}"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Onboarding Form Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Agent Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Default Personality": {
+      "main": [
+        [
+          {
+            "node": "Validate Required Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Required Fields": {
+      "main": [
+        [
+          {
+            "node": "Create Knowledge Base Folder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Knowledge Base Folder": {
+      "main": [
+        [
+          {
+            "node": "Set Folder ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create FAQ Google Doc": {
+      "main": [
+        [
+          {
+            "node": "Add FAQ Questions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare GHL Handoff": {
+      "main": [
+        [
+          {
+            "node": "Trigger GHL Setup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger GHL Setup": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Agent Data": {
+      "main": [
+        [
+          {
+            "node": "Set Default Personality",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Folder ID": {
+      "main": [
+        [
+          {
+            "node": "Save to onboarding_requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to onboarding_requests": {
+      "main": [
+        [
+          {
+            "node": "Build Bio Paragraphs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Bio Paragraphs": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Agent Bio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Agent Bio": {
+      "main": [
+        [
+          {
+            "node": "Insert Bio to Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Bio to Vectorstore": {
+      "main": [
+        [
+          {
+            "node": "Prepare GHL Handoff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Insert Bio to Vectorstore",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Doc Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Insert Bio to Vectorstore",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "IrqmItlifeBYhZkl"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "141fbbb3-87bb-45f9-b234-77dd3b0111b7",
+  "activeVersionId": null,
+  "versionCounter": 11,
+  "triggerCount": 0,
+  "tags": [
+    {
+      "updatedAt": "2026-04-06T15:34:04.053Z",
+      "createdAt": "2026-04-06T15:34:04.053Z",
+      "id": "Zr6Frn8AiF86oAXf",
+      "name": "Luke Gilbert"
+    }
+  ],
+  "shared": [
+    {
+      "updatedAt": "2026-04-06T16:25:20.619Z",
+      "createdAt": "2026-04-06T16:25:20.619Z",
+      "role": "workflow:owner",
+      "workflowId": "XJxoDt1SJ6SWUIim",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

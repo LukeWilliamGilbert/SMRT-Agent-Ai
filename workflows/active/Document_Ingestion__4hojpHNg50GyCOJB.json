@@ -1,0 +1,890 @@
+{
+  "updatedAt": "2026-04-15T00:08:14.668Z",
+  "createdAt": "2026-04-06T16:25:50.218Z",
+  "id": "4hojpHNg50GyCOJB",
+  "name": "\ud83d\udcc4 Document Ingestion",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "file_id",
+                "value": "={{ $('Set Location from Lookup').first().json.file_id }}"
+              },
+              {
+                "name": "location_id",
+                "value": "={{ $('Set Location from Lookup').first().json.location_id }}"
+              },
+              {
+                "name": "agent_name",
+                "value": "={{ $('Set Location from Lookup').first().json.agent_name }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "90039a57-0a97-4e9e-ac95-4fd385c2245a",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        2384,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "b1578fc2-7955-4589-b999-ddf0c733e206",
+      "name": "Embeddings OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        2208,
+        512
+      ],
+      "credentials": "[REDACTED]",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Set Location from Lookup').first().json.file_id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        }
+      },
+      "id": "0aa2b2d0-d4d9-4b5a-a337-9bdfcaeb3940",
+      "name": "Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1664,
+        208
+      ],
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000,
+      "credentials": "[REDACTED]",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "id": "9c1e1bc0-b60d-4209-8752-084d15fbca16",
+      "name": "Extract Document Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        208
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e2016cc9-2285-4aa2-94fb-efadf6ebdda9",
+      "name": "Recursive Character Text Splitter",
+      "type": "[REDACTED]",
+      "typeVersion": 1,
+      "position": [
+        2528,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10646eae-ae46-4327-a4dc-9987c2d76173",
+              "name": "file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "parent-folder-id",
+              "name": "parent_folder_id",
+              "value": "={{ $json.parents[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "parents-passthrough",
+              "name": "parents",
+              "value": "={{ $json.parents }}",
+              "type": "array"
+            },
+            {
+              "id": "mime-type",
+              "name": "mimeType",
+              "value": "={{ $json.mimeType }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "519b08bf-a1f1-4276-80f5-c6275e76fbfd",
+      "name": "Set File ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        368,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "id": "7be20624-8598-4f6a-bc9f-605ee2f00d54",
+      "name": "Insert into Supabase Vectorstore",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        2272,
+        208
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": "[REDACTED]",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "## \ud83d\udce5 Document Ingestion Flow (Polling)\n\n**Trigger:** Polls every 60 minutes for new files\n\n**How it works:**\n1. Get all agent folder IDs from `agents` table\n2. Search Google Drive for files created in last 65 mins in those folders\n3. For each new file \u2192 Lookup agent by parent folder\n4. Check for duplicates in `documents` table\n5. If new \u2192 Download, extract text, generate embeddings\n6. Store in Supabase with metadata\n\n**Folder Structure:**\n```\nSMRT/\n  \u251c\u2500\u2500 Agent Name (locID)/\n  \u2502   \u251c\u2500\u2500 FAQ.pdf\n  \u2502\u2026[TRUNCATED]",
+        "height": 524,
+        "width": 560,
+        "color": 5
+      },
+      "id": "5bb31bf1-5099-4330-8bf5-90008346e094",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        448,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT id FROM documents WHERE metadata->>'file_id' = '{{ $('Set File ID').first().json.file_id }}' LIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1248,
+        224
+      ],
+      "id": "85725f71-2e41-41dd-8660-62bf0360ee01",
+      "name": "Check for Duplicate",
+      "alwaysOutputData": true,
+      "credentials": "[REDACTED]",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT location_id, agent_name, knowledge_base_folder_name FROM agents WHERE TRIM(REPLACE(knowledge_base_folder_id, E'\\n', '')) = '{{ $json.parent_folder_id }}' LIMIT 1;",
+        "options": {}
+      },
+      "id": "d0aeaf40-6830-4088-ad91-e20656785d8e",
+      "name": "Lookup Agent by Folder",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        592,
+        240
+      ],
+      "alwaysOutputData": true,
+      "credentials": "[REDACTED]",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "file-id-set",
+              "name": "file_id",
+              "value": "={{ $('Set File ID').first().json.file_id }}",
+              "type": "string"
+            },
+            {
+              "id": "location-id-set",
+              "name": "location_id",
+              "value": "={{ $json.location_id }}",
+              "type": "string"
+            },
+            {
+              "id": "agent-name-set",
+              "name": "agent_name",
+              "value": "={{ $json.agent_name }}",
+              "type": "string"
+            },
+            {
+              "id": "mime-type-set",
+              "name": "mimeType",
+              "value": "={{ $('Set File ID').first().json.mimeType }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0fddc869-2129-4979-83be-5610efca5009",
+      "name": "Set Location from Lookup",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "check-no-duplicate",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "66683075-8b20-4137-ad3a-73fe42f9de81",
+      "name": "If Not Duplicate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1408,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "document-cleanup",
+        "responseMode": "responseNode",
+        "options": {},
+        "authentication": "headerAuth"
+      },
+      "id": "485d28dd-5e45-4df6-a606-e252f3eccedc",
+      "name": "Cleanup Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        608
+      ],
+      "webhookId": "41526451-0217-4322-81f2-317821259d95",
+      "disabled": true,
+      "onError": "continueRegularOutput",
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=DELETE FROM documents WHERE \n  (metadata->>'file_id' = '{{ $json.file_id }}' AND '{{ $json.file_id }}' != '')\n  OR (metadata->>'location_id' = '{{ $json.location_id }}' AND '{{ $json.location_id }}' != '')\n  OR (metadata->>'agent_name' = '{{ $json.agent_name }}' AND '{{ $json.agent_name }}' != '')\nRETURNING id;",
+        "options": {}
+      },
+      "id": "d2e94318-06d9-4ccf-9e4c-5cfb9f2e076c",
+      "name": "Delete Documents",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -448,
+        608
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"deleted_count\": $input.all().length, \"message\": \"Documents cleaned up successfully\" } }}",
+        "options": {},
+        "authentication": "headerAuth"
+      },
+      "id": "f658fcbe-e15b-455c-8723-eaae089e98a4",
+      "name": "Cleanup Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        608
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "content": "## \ud83d\uddd1\ufe0f Document Cleanup (Offboarding)\nPOST to /webhook/document-cleanup with:\n- file_id: Delete specific file\n- location_id: Delete all docs for a location\n- agent_name: Delete all docs for an agent",
+        "height": 360,
+        "width": 744,
+        "color": 3
+      },
+      "id": "5352821b-b179-4d5d-beba-a006e7557065",
+      "name": "Sticky Note Cleanup",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -768,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 60
+            }
+          ]
+        }
+      },
+      "id": "0e3eb411-84a6-4cc4-9371-9d9260c4ac8d",
+      "name": "Poll Every Minute",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -976,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT knowledge_base_folder_id FROM agents WHERE knowledge_base_folder_id IS NOT NULL;",
+        "options": {}
+      },
+      "id": "2b0f41df-5861-4f66-9d10-4908647f29a8",
+      "name": "Get Agent Folders",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        -752,
+        240
+      ],
+      "alwaysOutputData": true,
+      "credentials": "[REDACTED]",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const folderIds = $input.all()\n  .map(item => item.json.knowledge_base_folder_id)\n  .filter(id => id)\n  .map(id => String(id).trim().replace(/\\n/g, ''));\n\nif (folderIds.length === 0) {\n  return [{ json: { skip: true, reason: 'No agent folders configured' } }];\n}\n\nconst parentsQuery = folderIds.map(id => `'${id}' in parents`).join(' or ');\nconst sixtyFiveMinutesAgo = new Date(Date.now() - 65 * 60 * 1000).toISOString();\n\n// Google Docs only\nconst searchQuery = `(${parentsQuery}) and createdTime > \u2026[TRUNCATED]"
+      },
+      "id": "c32ba2b2-abd5-4e04-b804-a0f98d971516",
+      "name": "Build Search Query",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "={{ $json.searchQuery }}",
+        "returnAll": true,
+        "filter": {},
+        "options": {
+          "fields": [
+            "*"
+          ]
+        }
+      },
+      "id": "c1ce70c2-3cd1-463e-b3b6-7e4d748dc89a",
+      "name": "Search New Files",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -80,
+        224
+      ],
+      "alwaysOutputData": true,
+      "credentials": "[REDACTED]",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "check-has-files",
+              "leftValue": "={{ ($json.id || '').length }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e1705f6e-5e94-40f0-9996-1571350b8193",
+      "name": "Has New Files?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## \u23f0 Polling Trigger\nRuns every 60 minutes, searches for new files in all registered agent folders",
+        "height": 292,
+        "width": 1396,
+        "color": 4
+      },
+      "id": "b86f530c-44be-43b2-89ac-b14bd3c76d7c",
+      "name": "Sticky Note Polling",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 972,
+        "width": 3024,
+        "color": 5
+      },
+      "id": "0ac7baa7-c474-49a7-aeaf-07933f6c7f79",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Enhanced sanitization for DOCX and other document types\n// Prevents vector database corruption from binary artifacts and formatting codes\n\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  // Get text from either 'data' or 'text' field\n  let text = item.json.data || item.json.text || '';\n  \n  // Skip empty items\n  if (!text || text.length === 0) {\n    console.log('Skipping item: empty data');\n    continue;\n  }\n  \n  // === PHASE 1: Remove binary and control charact\u2026[TRUNCATED]"
+      },
+      "id": "928f662f-fad4-44cf-9027-50ef768cea24",
+      "name": "Sanitize Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2096,
+        208
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "check-agent-found",
+              "leftValue": "={{ $json.location_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "7eb9cd4a-a080-4ab5-80b0-9165fa24d0e0",
+      "name": "Has Agent?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "check-not-skip",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "5e7a5e9a-e883-4c7d-95c6-a498b2393612",
+      "name": "Should Search?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -304,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## \ud83d\udee1\ufe0f Edge Cases Handled\n\n| Scenario | How It's Handled |\n|----------|------------------|\n| **No agent folders configured** | `Should Search?` skips Google Drive search |\n| **No new files found** | `Has New Files?` skips processing |\n| **File in unregistered folder** | `Has Agent?` skips if no agent match |\n| **Duplicate file** | `If Not Duplicate` skips if file_id exists |\n| **Download fails** | `onError: continueRegularOutput` + retry 3x |\n| **Text extraction fails** | `onError: continueRegula\u2026[TRUNCATED]",
+        "height": 420,
+        "width": 560,
+        "color": 6
+      },
+      "id": "92be90e0-296b-4979-96b9-2baef847290d",
+      "name": "Edge Cases Handled",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        448
+      ]
+    }
+  ],
+  "connections": {
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Duplicate": {
+      "main": [
+        [
+          {
+            "node": "If Not Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Location from Lookup": {
+      "main": [
+        [
+          {
+            "node": "Check for Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File ID": {
+      "main": [
+        [
+          {
+            "node": "Lookup Agent by Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleanup Trigger": {
+      "main": [
+        [
+          {
+            "node": "Delete Documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Documents": {
+      "main": [
+        [
+          {
+            "node": "Cleanup Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll Every Minute": {
+      "main": [
+        [
+          {
+            "node": "Get Agent Folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Agent Folders": {
+      "main": [
+        [
+          {
+            "node": "Build Search Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search New Files": {
+      "main": [
+        [
+          {
+            "node": "Has New Files?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has New Files?": {
+      "main": [
+        [
+          {
+            "node": "Set File ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup Agent by Folder": {
+      "main": [
+        [
+          {
+            "node": "Has Agent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Agent?": {
+      "main": [
+        [
+          {
+            "node": "Set Location from Lookup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Search Query": {
+      "main": [
+        [
+          {
+            "node": "Should Search?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Search?": {
+      "main": [
+        [
+          {
+            "node": "Search New Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sanitize Text": {
+      "main": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Not Duplicate": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Extract Document Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Document Text": {
+      "main": [
+        [
+          {
+            "node": "Sanitize Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "IrqmItlifeBYhZkl"
+  },
+  "staticData": {
+    "node:Poll Every Minute": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "5b1c41dd-454d-4e6e-9bfc-dcab5f4d318d",
+  "activeVersionId": "5b1c41dd-454d-4e6e-9bfc-dcab5f4d318d",
+  "versionCounter": 24,
+  "triggerCount": 1,
+  "tags": [
+    {
+      "updatedAt": "2026-04-06T15:34:04.053Z",
+      "createdAt": "2026-04-06T15:34:04.053Z",
+      "id": "Zr6Frn8AiF86oAXf",
+      "name": "Luke Gilbert"
+    }
+  ],
+  "shared": [
+    {
+      "updatedAt": "2026-04-06T16:25:50.218Z",
+      "createdAt": "2026-04-06T16:25:50.218Z",
+      "role": "workflow:owner",
+      "workflowId": "4hojpHNg50GyCOJB",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1381 @@
+{
+  "updatedAt": "2026-04-15T17:44:06.396Z",
+  "createdAt": "2026-04-06T16:24:58.968Z",
+  "id": "gI097yamrw7gDU6C",
+  "name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 3
+            }
+          ]
+        }
+      },
+      "id": "8d4ecd25-8259-46b8-a057-7b6495ff4f34",
+      "name": "Weekly Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -128,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "agents",
+        "returnAll": true
+      },
+      "id": "eeb84616-ba38-442d-8db4-7530019c073b",
+      "name": "Get Newsletter Agents",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        96,
+        1240
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d8010abd-7358-406d-a4c0-fa668fd5812e",
+      "name": "Loop Agents",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        320,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const agentData = $('Prepare Agent Data').first().json;\nconst targetZips = agentData.target_zips || [];\nconst state = agentData.state;\nconst pai = agentData.pai;\n\nconst countyFips = agentData.county_fips || '16001';\n\nconst stats = [\n  'price_median', 'count', 'per_sqft_median', 'dom_median',\n  'new_price_median',\n  'price_decreased_percent', 'price_increased_percent',\n  'price_mean', 'dom_mean', 'mai'\n];\n\nconst allZipData = [];\nconst errors = [];\n\ntry {\n  const reportsResp = await globalThis.fet\u2026[TRUNCATED]"
+      },
+      "id": "ef6d7309-ac7f-41fa-8a61-0f3641d77bad",
+      "name": "Altos Get Stats",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        832
+      ],
+      "alwaysOutputData": true,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "modelId": "gpt-4.1",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=## Agent Context\n\nYou are writing on behalf of **{{ $('Prepare Agent Data').first().json.agent.agent_name }}**{{ $('Prepare Agent Data').first().json.agent.business_name ? ', ' + $('Prepare Agent Data').first().json.agent.business_name : '' }}, serving the **{{ $json.market_name }}** real estate market.\n\n---\n\n## Who You Are\n\nYou are a trusted local advisor writing to real people -- buyers, sellers, homeowners, and curious neighbors. You are NOT a research analyst writing a market report. Your t\u2026[TRUNCATED]"
+            },
+            {
+              "content": "=Generate a weekly market newsletter for **{{ $json.market_name }}**.\n\n## Local Market Data (Altos Research)\n{{ JSON.stringify($json.altos_data, null, 2) }}\n\n## National/Global Context & Local Impact\n{{ JSON.stringify($json.perplexity_data, null, 2) }}\n\n## Previous Newsletters (last 2 weeks -- for continuity and week-over-week context)\n{{ $json.previous_newsletters && $json.previous_newsletters.length > 0 ? JSON.stringify($json.previous_newsletters, null, 2) : 'No previous newsletters available \u2026[TRUNCATED]"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "68d2db95-73e5-4e49-9ac7-7498898dbbbc",
+      "name": "Generate Newsletter",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        3456,
+        832
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "modelId": "gpt-4.1",
+        "messages": {
+          "values": [
+            {
+              "content": "SMRT NEWSLETTER SPLINTER LAYER - CANONICAL RECORD GENERATOR\n\nYou are a post-newsletter processing layer inside the SMRT system. Your job is to take a completed weekly real estate market newsletter and convert it into a small set of structured market splinter records.\n\nPRIMARY OBJECTIVE: Convert one completed newsletter into 3 to 5 canonical market splinter records.\n\nEach splinter record should:\n1. capture one distinct market shift, tension, or behavioral insight\n2. be semantically rich enough fo\u2026[TRUNCATED]",
+              "role": "system"
+            },
+            {
+              "content": "=newsletter_id: pending\nmarket: {{ $('Prep Data for AI').first().json.market_name }}\nnewsletter_date: {{ $('Prep Data for AI').first().json.weekStartDate }}\n\nWeek-over-week market data:\n{{ $('Condense Altos Data').first().json.altosTextSummary }}\n\nRaw WoW changes:\n{{ JSON.stringify($('Condense Altos Data').first().json.wowChanges) }}\n\nFull newsletter text:\n{{ $('Generate Newsletter').first().json.message.content }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": "[REDACTED]",
+          "temperature": 0.3
+        }
+      },
+      "id": "ef940d5d-79e5-4b30-83dc-6170da5a4045",
+      "name": "Extract Splinters",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        4704,
+        832
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "jsCode": "const sourceData = $('Prep Data for AI').first().json;\nconst newsletterContent = $('Generate Newsletter').first().json.message?.content || '';\nconst rawSplinters = $('Extract Splinters').first().json.message?.content?.trim() || '[]';\n\n// Build permanent Supabase Storage URL\nconst locationId = sourceData.location_id;\nconst weekStart = sourceData.weekStartDate;\nconst imageUrl = `https://kfoijgcbkjeizxxyiwxv.supabase.co/storage/v1/object/public/newsletter-images/${locationId}/${weekStart}.jpeg`\ncon\u2026[TRUNCATED]"
+      },
+      "id": "b227781f-f633-45ed-a881-5f21471ee47a",
+      "name": "Prepare Storage Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5056,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "newsletters",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "agent_id",
+              "fieldValue": "={{ $json.newsletter.agent_id }}"
+            },
+            {
+              "fieldId": "location_id",
+              "fieldValue": "={{ $json.newsletter.location_id }}"
+            },
+            {
+              "fieldId": "week_start_date",
+              "fieldValue": "={{ $json.newsletter.week_start_date }}"
+            },
+            {
+              "fieldId": "full_content",
+              "fieldValue": "={{ $json.newsletter.full_content }}"
+            },
+            {
+              "fieldId": "subject_line",
+              "fieldValue": "={{ $json.newsletter.subject_line }}"
+            },
+            {
+              "fieldId": "raw_altos_data",
+              "fieldValue": "={{ JSON.stringify($json.newsletter.raw_altos_data) }}"
+            },
+            {
+              "fieldId": "raw_perplexity_data",
+              "fieldValue": "={{ JSON.stringify($json.newsletter.raw_perplexity_data) }}"
+            },
+            {
+              "fieldId": "image_url",
+              "fieldValue": "={{ $json.newsletter.image_url }}"
+            },
+            {
+              "fieldId": "active",
+              "fieldValue": "=true"
+            },
+            {
+              "fieldId": "generation_status",
+              "fieldValue": "=completed"
+            }
+          ]
+        }
+      },
+      "id": "c0492768-c44f-42a7-bf7e-330c601ebf52",
+      "name": "Store Newsletter",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        5280,
+        496
+      ],
+      "executeOnce": true,
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "tableId": "content_splinters",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "location_id",
+              "fieldValue": "={{ $json.splinter.location_id }}"
+            },
+            {
+              "fieldId": "content",
+              "fieldValue": "={{ $json.splinter.content }}"
+            },
+            {
+              "fieldId": "topic",
+              "fieldValue": "={{ $json.splinter.topic }}"
+            },
+            {
+              "fieldId": "data_point",
+              "fieldValue": "={{ $json.splinter.data_point }}"
+            },
+            {
+              "fieldId": "active",
+              "fieldValue": "true"
+            },
+            {
+              "fieldId": "priority",
+              "fieldValue": "={{ $json.splinter.priority }}"
+            },
+            {
+              "fieldId": "week_start_date",
+              "fieldValue": "={{ $json.splinter.week_start_date }}"
+            },
+            {
+              "fieldId": "splinter_title",
+              "fieldValue": "={{ $json.splinter.splinter_title }}"
+            },
+            {
+              "fieldId": "dominant_theme",
+              "fieldValue": "={{ $json.splinter.dominant_theme }}"
+            },
+            {
+              "fieldId": "signal_type",
+              "fieldValue": "={{ $json.splinter.signal_type }}"
+            },
+            {
+              "fieldId": "insight_core",
+              "fieldValue": "={{ $json.splinter.insight_core }}"
+            },
+            {
+              "fieldId": "interpretation",
+              "fieldValue": "={{ $json.splinter.interpretation }}"
+            },
+            {
+              "fieldId": "behavioral_implication",
+              "fieldValue": "={{ $json.splinter.behavioral_implication }}"
+            },
+            {
+              "fieldId": "audience_fit",
+              "fieldValue": "={{ $json.splinter.audience_fit }}"
+            },
+            {
+              "fieldId": "stage_fit",
+              "fieldValue": "={{ $json.splinter.stage_fit }}"
+            },
+            {
+              "fieldId": "relevance_tags",
+              "fieldValue": "={{ $json.splinter.relevance_tags }}"
+            },
+            {
+              "fieldId": "send_eligibility_note",
+              "fieldValue": "={{ $json.splinter.send_eligibility_note }}"
+            },
+            {
+              "fieldId": "rationale",
+              "fieldValue": "={{ $json.splinter.rationale }}"
+            },
+            {
+              "fieldId": "source_excerpt",
+              "fieldValue": "={{ $json.splinter.source_excerpt }}"
+            },
+            {
+              "fieldId": "embedding_text",
+              "fieldValue": "={{ $json.splinter.embedding_text }}"
+            },
+            {
+              "fieldId": "delivery_variants",
+              "fieldValue": "={{ JSON.stringify($json.splinter.delivery_variants) }}"
+            }
+          ]
+        }
+      },
+      "id": "02bb1b6c-ee39-4bfe-8995-536344d6415b",
+      "name": "Store Splinter",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        5952,
+        832
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {},
+      "id": "8ccf1704-df35-4bb9-8fd0-4a4ffd271c68",
+      "name": "Back to Agent Loop",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        6176,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "content": "[REDACTED]",
+        "height": 528,
+        "width": 480
+      },
+      "id": "45202237-393a-4a45-954e-04c6247b0ffa",
+      "name": "Workflow Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Content Splinters\n\n1-2 sentence micro-insights for conversational AI.\nUsed in SMS/email outbound touches.\n\nTopics:\n- inventory\n- pricing\n- construction\n- rates\n- seller_behavior\n- national_context"
+      },
+      "id": "1617f1da-512a-474f-9fde-97fe10f7cf34",
+      "name": "Splinter Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        1152
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prepData = $('Prep Data for AI').first().json;\nconst storageData = $('Prepare Storage Data').first().json;\nconst newsletterContent = storageData.newsletter.full_content;\n\nconst weekStart = new Date(prepData.weekStartDate);\nconst dateStr = weekStart.toISOString().split('T')[0];\nconst weekNum = Math.ceil((weekStart - new Date(weekStart.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));\nconst year = weekStart.getFullYear();\n\nconst agentName = prepData.agent_name || 'Agent';\nconst marketName \u2026[TRUNCATED]"
+      },
+      "id": "6a677fd7-6a4c-4360-be04-bdcad6b0ffb7",
+      "name": "Create Newsletter Doc",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5504,
+        496
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst binaryData = Buffer.from(data.docContent, 'utf8');\n\nreturn {\n  json: data,\n  binary: {\n    data: {\n      data: binaryData.toString('base64'),\n      mimeType: 'text/markdown',\n      fileName: data.fileName + '.md'\n    }\n  }\n};"
+      },
+      "id": "0952224b-360d-469f-b80c-03f3315e34ea",
+      "name": "Set File Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5728,
+        496
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.fileName }}.md",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.knowledgeBaseFolderId }}"
+        },
+        "options": {}
+      },
+      "id": "5eb82ce3-ad4c-4d53-a492-72fd6ccff5a3",
+      "name": "Upload to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        5952,
+        496
+      ],
+      "executeOnce": true,
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "jsCode": "[REDACTED]"
+      },
+      "id": "1119b047-188a-4960-9886-72e2fb0de0d7",
+      "name": "Condense Altos Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "altos_weekly_stats",
+        "limit": 1,
+        "filterType": "string",
+        "filterString": "location_id=eq.{{ $json.location_id }}&order=week_start_date.desc"
+      },
+      "id": "6065e6bf-2d81-4888-bb6a-61f8d9712355",
+      "name": "Get Last Week Stats",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        832
+      ],
+      "alwaysOutputData": true,
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "jsCode": "[REDACTED]"
+      },
+      "id": "ef046ace-6949-4bf0-958e-a16a74378c94",
+      "name": "Prepare Agent Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const condensedData = $('Condense Altos Data').first().json;\nconst grokResponse = $('Grok National Context').first().json;\n\nlet nationalContext = '';\nif (grokResponse.choices && grokResponse.choices[0]?.message?.content) {\n  nationalContext = grokResponse.choices[0].message.content;\n} else if (grokResponse.message?.content) {\n  nationalContext = grokResponse.message.content;\n} else if (grokResponse.content) {\n  nationalContext = grokResponse.content;\n}\n\n// Previous newsletters for week-over-week\u2026[TRUNCATED]"
+      },
+      "id": "1917075f-dad4-4d00-98da-14c89e91f7de",
+      "name": "Prep Data for AI",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3232,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.x.ai/v1/chat/completions",
+        "authentication": "[REDACTED]",
+        "nodeCredentialType": "[REDACTED]",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "[REDACTED]",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "04fb1deb-c342-46b1-9fb9-f009654c5b5f",
+      "name": "Grok National Context",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2784,
+        832
+      ],
+      "alwaysOutputData": true,
+      "credentials": "[REDACTED]",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "tableId": "altos_weekly_stats",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "location_id",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.location_id }}"
+            },
+            {
+              "fieldId": "week_start_date",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.weekStartDate }}"
+            },
+            {
+              "fieldId": "zips_processed",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.zipsProcessed }}"
+            },
+            {
+              "fieldId": "total_zips",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.totalZips }}"
+            },
+            {
+              "fieldId": "price_median",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.price_median?.current }}"
+            },
+            {
+              "fieldId": "count",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.count?.current }}"
+            },
+            {
+              "fieldId": "per_sqft_median",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.per_sqft_median?.current }}"
+            },
+            {
+              "fieldId": "dom_median",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.dom_median?.current }}"
+            },
+            {
+              "fieldId": "absorbed_price_median",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.absorbed_price_median?.current }}"
+            },
+            {
+              "fieldId": "absorbed_dom_median",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.absorbed_dom_median?.current }}"
+            },
+            {
+              "fieldId": "median_ppsqft_absorbed",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.median_ppsqft_of_listings_absorbed?.current }}"
+            },
+            {
+              "fieldId": "new_price_median",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.new_price_median?.current }}"
+            },
+            {
+              "fieldId": "price_decreased_percent",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.price_decreased_percent?.current }}"
+            },
+            {
+              "fieldId": "price_increased_percent",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.price_increased_percent?.current }}"
+            },
+            {
+              "fieldId": "price_mean",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.price_mean?.current }}"
+            },
+            {
+              "fieldId": "dom_mean",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.dom_mean?.current }}"
+            },
+            {
+              "fieldId": "mai",
+              "fieldValue": "={{ $('Condense Altos Data').first().json.altosSummary.mai?.current }}"
+            },
+            {
+              "fieldId": "raw_summary",
+              "fieldValue": "={{ JSON.stringify($('Condense Altos Data').first().json.altosSummary) }}"
+            }
+          ]
+        }
+      },
+      "id": "b216611b-839a-4c68-9854-75fb3881adf8",
+      "name": "Store Weekly Stats",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        1096
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "altos_weekly_stats",
+        "limit": 1,
+        "filterType": "string",
+        "filterString": "=location_id=eq.{{ $('Condense Altos Data').first().json.location_id }}&week_start_date=eq.{{ $('Condense Altos Data').first().json.weekStartDate }}"
+      },
+      "id": "d9a77914-626f-4267-93a9-a8ef64cd10c3",
+      "name": "Check Week Stats Exist",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2112,
+        832
+      ],
+      "alwaysOutputData": true,
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "week-exists-check",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "59bf52ae-cbd1-420b-adab-1310dcc58ac5",
+      "name": "Week Already Processed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2336,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "newsletters",
+        "limit": 1,
+        "filterType": "string",
+        "filterString": "=agent_id=eq.{{ $json.agent_id }}&week_start_date=eq.{{ $json.weekStartDate }}"
+      },
+      "id": "f22cc849-4993-4208-a014-e18ff1788332",
+      "name": "Check Newsletter For Week",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        768,
+        832
+      ],
+      "alwaysOutputData": true,
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "early-newsletter-check",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e1d2faab-87ff-40ce-8bda-466e3e4e0767",
+      "name": "Newsletter Exists For Week?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        992,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "content_splinters",
+        "filterType": "string",
+        "filterString": "location_id=eq.{{ $json.location_id }}&active=eq.true",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "active",
+              "fieldValue": "false"
+            }
+          ]
+        }
+      },
+      "id": "c7c50998-4b86-48ff-866f-91e2fb1842d4",
+      "name": "Delete Old Splinters",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        5280,
+        688
+      ],
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "credentials": "[REDACTED]",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "## Ensure the ai news letter generator can see the last 2-3 last news letters previously.",
+        "height": 432,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2096,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "78638e27-c33d-47c0-aebe-dec90ed7d952",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Change AI to grok, work out the image get api key\n ",
+        "height": 432,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2448,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "d6565abf-48f8-4c0f-ae72-afb8030f21a4",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "documents",
+        "filterType": "string",
+        "filterString": "location_id=eq.{{ $json.location_id }}&document_type=eq.market_weekly"
+      },
+      "id": "5c9ea5e9-d62f-4e71-9cde-04760c85c2ec",
+      "name": "Remove Old Market Docs",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        5280,
+        976
+      ],
+      "executeOnce": false,
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "[REDACTED]",
+        "nodeCredentialType": "[REDACTED]",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'text-embedding-3-small', input: $json.market_doc.content }) }}",
+        "options": {}
+      },
+      "id": "38e7eaef-1cf3-4f31-9ccb-72cc2914eab1",
+      "name": "Generate Embedding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5504,
+        1048
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kfoijgcbkjeizxxyiwxv.supabase.co/rest/v1/documents",
+        "authentication": "[REDACTED]",
+        "nodeCredentialType": "[REDACTED]",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ (() => { const doc = $('Prepare Storage Data').item.json.market_doc; const emb = $json.data[0].embedding; return JSON.stringify({ content: doc.content, metadata: doc.metadata, embedding: '[' + emb.join(',') + ']', location_id: doc.location_id, document_type: 'market_weekly', week_start_date: doc.week_start_date }); })() }}",
+        "options": {}
+      },
+      "id": "5350559e-48b3-4acb-8ed4-8d0f562cdcfe",
+      "name": "Store Embedded Doc",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5728,
+        1048
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://kfoijgcbkjeizxxyiwxv.supabase.co/storage/v1/object/newsletter-images/{{ $('Condense Altos Data').first().json.location_id }}/{{ $('Condense Altos Data').first().json.weekStartDate }}.jpeg",
+        "authentication": "[REDACTED]",
+        "nodeCredentialType": "[REDACTED]",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "image/jpeg"
+            },
+            {
+              "name": "x-upsert",
+              "value": "true"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "e6e8ebcb-23a1-4614-837c-f45b853c021a",
+      "name": "Upload to Supabase Storage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4480,
+        832
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "url": "=https://altos.re/api/v2/share?[REDACTED_QUERY] $json.hash }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "fetch-altos-share-001",
+      "name": "Fetch Altos Share",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4032,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "crop",
+        "width": 600,
+        "height": 327,
+        "positionY": 135,
+        "options": {
+          "format": "jpeg",
+          "quality": 90
+        }
+      },
+      "id": "crop-share-image-001",
+      "name": "Crop Share Image",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        4256,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const agentData = $('Prepare Agent Data').first().json;\nconst countyFips = agentData.county_fips || '16001';\nconst pai = agentData.pai || '690acaf9';\nconst resp = await globalThis.fetch('https://altos.re/api/v2/reports?[REDACTED_QUERY]' + countyFips + '&pai=' + pai);\nconst data = await resp.json();\nif (!data.id) throw new Error('No hash from Altos: ' + JSON.stringify(data));\nreturn [{ json: { hash: data.id } }];"
+      },
+      "id": "get-altos-hash-001",
+      "name": "Get Altos Hash",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3808,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "newsletters",
+        "limit": 2,
+        "filterType": "string",
+        "filterString": "=location_id=eq.{{ $('Prepare Agent Data').first().json.location_id }}&active=eq.true&order=week_start_date.desc"
+      },
+      "id": "get-prev-newsletters-001",
+      "name": "Get Previous Newsletters",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3008,
+        832
+      ],
+      "credentials": "[REDACTED]"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "pass-location-id-001",
+      "name": "Pass Location ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        832
+      ]
+    }
+  ],
+  "connections": {
+    "Weekly Schedule": {
+      "main": [
+        [
+          {
+            "node": "Get Newsletter Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Newsletter Agents": {
+      "main": [
+        [
+          {
+            "node": "Loop Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Last Week Stats": {
+      "main": [
+        [
+          {
+            "node": "Altos Get Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Altos Get Stats": {
+      "main": [
+        [
+          {
+            "node": "Condense Altos Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prep Data for AI": {
+      "main": [
+        [
+          {
+            "node": "Generate Newsletter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Splinters": {
+      "main": [
+        [
+          {
+            "node": "Prepare Storage Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Newsletter": {
+      "main": [
+        [
+          {
+            "node": "Create Newsletter Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Newsletter Doc": {
+      "main": [
+        [
+          {
+            "node": "Set File Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File Content": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Back to Agent Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Splinter": {
+      "main": [
+        [
+          {
+            "node": "Back to Agent Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Back to Agent Loop": {
+      "main": [
+        [
+          {
+            "node": "Loop Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Condense Altos Data": {
+      "main": [
+        [
+          {
+            "node": "Check Week Stats Exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Week Stats Exist": {
+      "main": [
+        [
+          {
+            "node": "Week Already Processed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Week Already Processed?": {
+      "main": [
+        [
+          {
+            "node": "Grok National Context",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Store Weekly Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Weekly Stats": {
+      "main": [
+        [
+          {
+            "node": "Grok National Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Agent Data": {
+      "main": [
+        [
+          {
+            "node": "Check Newsletter For Week",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Newsletter For Week": {
+      "main": [
+        [
+          {
+            "node": "Newsletter Exists For Week?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Newsletter Exists For Week?": {
+      "main": [
+        [
+          {
+            "node": "Loop Agents",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pass Location ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Storage Data": {
+      "main": [
+        [
+          {
+            "node": "Store Newsletter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Delete Old Splinters",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Remove Old Market Docs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Store Splinter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Agents": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Prepare Agent Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Old Market Docs": {
+      "main": [
+        [
+          {
+            "node": "Generate Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Embedding": {
+      "main": [
+        [
+          {
+            "node": "Store Embedded Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Embedded Doc": {
+      "main": [
+        [
+          {
+            "node": "Back to Agent Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Supabase Storage": {
+      "main": [
+        [
+          {
+            "node": "Extract Splinters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Altos Share": {
+      "main": [
+        [
+          {
+            "node": "Crop Share Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crop Share Image": {
+      "main": [
+        [
+          {
+            "node": "Upload to Supabase Storage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Newsletter": {
+      "main": [
+        [
+          {
+            "node": "Get Altos Hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Altos Hash": {
+      "main": [
+        [
+          {
+            "node": "Fetch Altos Share",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Grok National Context": {
+      "main": [
+        [
+          {
+            "node": "Get Previous Newsletters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Previous Newsletters": {
+      "main": [
+        [
+          {
+            "node": "Prep Data for AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pass Location ID": {
+      "main": [
+        [
+          {
+            "node": "Get Last Week Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "IrqmItlifeBYhZkl"
+  },
+  "staticData": {
+    "node:Weekly Schedule": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "c248fb3c-c26f-4a3b-a537-99e1524f09fc",
+  "activeVersionId": "c248fb3c-c26f-4a3b-a537-99e1524f09fc",
+  "versionCounter": 80,
+  "triggerCount": 1,
+  "tags": [
+    {
+      "updatedAt": "2026-04-06T15:34:04.053Z",
+      "createdAt": "2026-04-06T15:34:04.053Z",
+      "id": "Zr6Frn8AiF86oAXf",
+      "name": "Luke Gilbert"
+    }
+  ],
+  "shared": [
+    {
+      "updatedAt": "2026-04-06T16:24:58.968Z",
+      "createdAt": "2026-04-06T16:24:58.968Z",
+      "role": "workflow:owner",
+      "workflowId": "gI097yamrw7gDU6C",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

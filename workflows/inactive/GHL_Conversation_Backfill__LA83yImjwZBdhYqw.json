@@ -1,0 +1,382 @@
+{
+  "updatedAt": "2026-04-25T17:27:05.259Z",
+  "createdAt": "2026-04-25T17:27:05.259Z",
+  "id": "LA83yImjwZBdhYqw",
+  "name": "\ud83d\udd0d GHL Conversation Backfill",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "bf-001",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "bf-002",
+      "name": "Set Backfill Window",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -580,
+        300
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "loc",
+              "name": "location_id",
+              "value": "kv1Af9i1qYK7KfIiT0U3",
+              "type": "string"
+            },
+            {
+              "id": "start",
+              "name": "start_date_iso",
+              "value": "={{ $now.minus({hours: 48}).toUTC().toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "end",
+              "name": "end_date_iso",
+              "value": "={{ $now.toUTC().toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "start_ms",
+              "name": "start_ms",
+              "value": "={{ $now.minus({hours: 48}).toMillis() }}",
+              "type": "number"
+            },
+            {
+              "id": "end_ms",
+              "name": "end_ms",
+              "value": "={{ $now.toMillis() }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "notes": "Edit start/end here for custom windows. Default: last 48h."
+    },
+    {
+      "id": "bf-003",
+      "name": "Get Agent API Key",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -380,
+        300
+      ],
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "agents",
+        "limit": 1,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "location_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.location_id }}"
+            }
+          ]
+        }
+      },
+      "credentials": "[REDACTED]"
+    },
+    {
+      "id": "bf-004",
+      "name": "Search Conversations",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -160,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://services.leadconnectorhq.com/conversations/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "locationId",
+              "value": "={{ $('Set Backfill Window').first().json.location_id }}"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "sortBy",
+              "value": "last_message_date"
+            },
+            {
+              "name": "sort",
+              "value": "desc"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "[REDACTED]",
+              "value": "[REDACTED]"
+            },
+            {
+              "name": "Version",
+              "value": "2021-04-15"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "notes": "Lists conversations for this location, sorted by most recent message. We'll filter client-side."
+    },
+    {
+      "id": "bf-005",
+      "name": "Extract Conversations",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// GHL response shape: {conversations: [...], total, traceId}\nconst convs = $input.first().json.conversations || [];\nconst startMs = $('Set Backfill Window').first().json.start_ms;\nconst endMs = $('Set Backfill Window').first().json.end_ms;\n\n// Filter conversations whose lastMessageDate falls in the window\nconst inWindow = convs.filter(c => {\n  const ts = c.lastMessageDate || c.dateUpdated;\n  if (!ts) return false;\n  const ms = typeof ts === 'number' ? ts : new Date(ts).getTime();\n  return ms >=\u2026[TRUNCATED]"
+      },
+      "notes": "Filters conversations whose last activity was in our backfill window."
+    },
+    {
+      "id": "bf-006",
+      "name": "Get Messages In Conv",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        280,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://services.leadconnectorhq.com/conversations/{{ $json.conversationId }}/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "20"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "[REDACTED]",
+              "value": "[REDACTED]"
+            },
+            {
+              "name": "Version",
+              "value": "2021-04-15"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "batching": {
+            "batch": {
+              "batchSize": 5,
+              "batchInterval": 1000
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "bf-007",
+      "name": "Filter Inbound In Window",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Find inbound messages within window from each conv response\nconst startMs = $('Set Backfill Window').first().json.start_ms;\nconst endMs = $('Set Backfill Window').first().json.end_ms;\nconst locationId = $('Set Backfill Window').first().json.location_id;\n\nconst output = [];\nfor (const item of $input.all()) {\n  const messages = item.json.messages?.messages || item.json.messages || [];\n  for (const m of messages) {\n    if (m.direction !== 'inbound') continue;\n    const ts = m.dateAdded || m.date\u2026[TRUNCATED]"
+      }
+    },
+    {
+      "id": "bf-008",
+      "name": "Save To Inbound Capture",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        720,
+        300
+      ],
+      "parameters": {
+        "operation": "create",
+        "tableId": "inbound_capture",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "source",
+              "fieldValue": "ghl_backfill"
+            },
+            {
+              "fieldId": "payload",
+              "fieldValue": "={{ $json.payload }}"
+            },
+            {
+              "fieldId": "ghl_message_id",
+              "fieldValue": "={{ $json.ghl_message_id }}"
+            },
+            {
+              "fieldId": "contact_id",
+              "fieldValue": "={{ $json.contact_id }}"
+            },
+            {
+              "fieldId": "location_id",
+              "fieldValue": "={{ $json.location_id }}"
+            },
+            {
+              "fieldId": "captured_at",
+              "fieldValue": "={{ $json.captured_at_iso }}"
+            },
+            {
+              "fieldId": "processed",
+              "fieldValue": "false"
+            },
+            {
+              "fieldId": "notes",
+              "fieldValue": "Backfilled from GHL during recovery"
+            }
+          ]
+        }
+      },
+      "credentials": "[REDACTED]"
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Backfill Window",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Backfill Window": {
+      "main": [
+        [
+          {
+            "node": "Get Agent API Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Agent API Key": {
+      "main": [
+        [
+          {
+            "node": "Search Conversations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Conversations": {
+      "main": [
+        [
+          {
+            "node": "Extract Conversations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Conversations": {
+      "main": [
+        [
+          {
+            "node": "Get Messages In Conv",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Messages In Conv": {
+      "main": [
+        [
+          {
+            "node": "Filter Inbound In Window",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Inbound In Window": {
+      "main": [
+        [
+          {
+            "node": "Save To Inbound Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "IrqmItlifeBYhZkl",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "3577d368-d573-4459-9095-289a743d7b3b",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-04-25T17:27:05.259Z",
+      "createdAt": "2026-04-25T17:27:05.259Z",
+      "role": "workflow:owner",
+      "workflowId": "LA83yImjwZBdhYqw",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}

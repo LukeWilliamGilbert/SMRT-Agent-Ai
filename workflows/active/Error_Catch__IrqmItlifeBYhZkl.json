@@ -1,0 +1,194 @@
+{
+  "updatedAt": "2026-04-25T03:14:42.258Z",
+  "createdAt": "2026-04-06T16:25:31.359Z",
+  "id": "IrqmItlifeBYhZkl",
+  "name": "\ud83d\udd25 Error Catch",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "03512883-4d3e-4a6a-9f24-1a9a8bd0f34f",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "[REDACTED]",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "5533d361-ecc4-415f-bbc6-eb9b5584ef63",
+      "name": "HTTP Request"
+    },
+    {
+      "id": "supabase-system-errors-001",
+      "name": "Log to system_errors",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        208,
+        224
+      ],
+      "parameters": {
+        "operation": "insert",
+        "tableId": "system_errors",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "source",
+              "fieldValue": "n8n_workflow"
+            },
+            {
+              "fieldId": "workflow_id",
+              "fieldValue": "={{ $json.workflow?.id }}"
+            },
+            {
+              "fieldId": "workflow_name",
+              "fieldValue": "={{ $json.workflow?.name }}"
+            },
+            {
+              "fieldId": "execution_id",
+              "fieldValue": "={{ $json.execution?.id }}"
+            },
+            {
+              "fieldId": "node_name",
+              "fieldValue": "={{ $json.execution?.lastNodeExecuted }}"
+            },
+            {
+              "fieldId": "error_message",
+              "fieldValue": "={{ $json.execution?.error?.message }}"
+            },
+            {
+              "fieldId": "error_stack",
+              "fieldValue": "={{ $json.execution?.error?.stack }}"
+            },
+            {
+              "fieldId": "error_level",
+              "fieldValue": "={{ $json.execution?.error?.level }}"
+            },
+            {
+              "fieldId": "payload",
+              "fieldValue": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        }
+      },
+      "credentials": "[REDACTED]"
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log to system_errors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Error Trigger": [
+      {
+        "json": {
+          "execution": {
+            "id": "15",
+            "url": "https://twodegreesnorth.tech/workflow/E4Mi27i0vp6CMgpk/executions/15",
+            "error": {
+              "level": "warning",
+              "tags": {},
+              "message": "Unknown error",
+              "stack": "[REDACTED]"
+            },
+            "lastNodeExecuted": "Prepare Sentiment Context",
+            "mode": "webhook",
+            "executionContext": {
+              "version": 1,
+              "establishedAt": 1775498720471,
+              "source": "webhook",
+              "triggerNode": {
+                "name": "Webhook",
+                "type": "n8n-nodes-base.webhook"
+              }
+            }
+          },
+          "workflow": {
+            "id": "E4Mi27i0vp6CMgpk",
+            "name": "\ud83e\udde0 SMRT Brain Engine"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "5488c67e-4b53-45d4-ac67-601e365ad5ce",
+  "activeVersionId": "5488c67e-4b53-45d4-ac67-601e365ad5ce",
+  "versionCounter": 30,
+  "triggerCount": 0,
+  "tags": [
+    {
+      "updatedAt": "2026-04-06T15:34:04.053Z",
+      "createdAt": "2026-04-06T15:34:04.053Z",
+      "id": "Zr6Frn8AiF86oAXf",
+      "name": "Luke Gilbert"
+    }
+  ],
+  "shared": [
+    {
+      "updatedAt": "2026-04-06T16:25:31.359Z",
+      "createdAt": "2026-04-06T16:25:31.359Z",
+      "role": "workflow:owner",
+      "workflowId": "IrqmItlifeBYhZkl",
+      "projectId": "QBxb6DqO3UDw1ydL",
+      "project": {
+        "updatedAt": "2026-02-20T18:20:49.143Z",
+        "createdAt": "2026-02-20T16:49:08.408Z",
+        "id": "QBxb6DqO3UDw1ydL",
+        "name": "Luke Gilbert <media@twodegreesnorth.online>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "439d28b9-26b2-45de-9c84-ab62e3703788"
+      }
+    }
+  ]
+}
