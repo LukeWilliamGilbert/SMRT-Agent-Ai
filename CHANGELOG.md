@@ -43,3 +43,9 @@ Created the following durable artifacts:
 | `docs/handoffs/HANDOFF_005_LLM_INJECTION_OBSERVABILITY.md` | Developer-ready ticket for adding non-sensitive prompt assembly telemetry before any large prompt rewrite. |
 
 Recommended sequencing: treat LLM injection as **Sprint 1B or Sprint 2A**, after workflow control-plane discipline is confirmed. The first implementation should add **prompt assembly observability**, not rewrite prompt content. No production workflow, schema, credential, prompt, or runtime changes were made.
+
+## 2026-04-29 — Final Core Focus Document
+
+Created `docs/system/SMRT_FINAL_CORE_FOCUS_DOCUMENT.md` as the single meeting-ready consolidation of the SMRT audits. The document highlights the core repair focuses, surrounding issues, recommended sequence, and developer handoff stance across workflow control plane, appointment ledger hardening, inbound replay/backfill, GoHighLevel identity contract, error/mirror-failure logging, LLM injection observability, and conversation forward state.
+
+The final recommended sequence is: **Sprint 0 workflow control plane; Sprint 1 appointment ledger hardening; Sprint 1B LLM injection observability; Sprint 2 inbound replay/backfill; Sprint 3 GoHighLevel identity contract; Sprint 4 error and mirror-failure ledger; Sprint 5 conversation mirror and forward state**. No production workflow, schema, credential, prompt, or runtime changes were made.
