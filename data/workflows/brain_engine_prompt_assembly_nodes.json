@@ -1,0 +1,343 @@
+[
+  {
+    "parameters": {
+      "jsCode": "[REDACTED]"
+    },
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+      3248,
+      2064
+    ],
+    "id": "faa9ffb0-6a03-4e05-9663-1cc750ab4f85",
+    "name": "Assemble System Prompt",
+    "executeOnce": false
+  },
+  {
+    "parameters": {
+      "duplicateItem": true,
+      "assignments": {
+        "assignments": [
+          {
+            "id": "g1",
+            "name": "agentName",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.agent_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.agent_name; } catch(e2) { return 'the agent'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g2",
+            "name": "coordinatorName",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.coordinator_name; } catch(e2) { return 'Jon'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g3",
+            "name": "marketName",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.market_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.market_name; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g4",
+            "name": "timezone",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.timezone; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.timezone; } catch(e2) { return 'America/Denver'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g5",
+            "name": "direction",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.direction; } catch(e) { try { return $('LeadDetails').first().json.direction || 'inbound'; } catch(e2) { return 'inbound'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g6",
+            "name": "channel",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.channel; } catch(e) { try { return $('LeadDetails').first().json.channel; } catch(e2) { return 'sms'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g7",
+            "name": "firstName",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.first_name; } catch(e) { try { return $('LeadDetails').first().json.first_name; } catch(e2) { return 'Contact'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g8",
+            "name": "contactId",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.contact_id; } catch(e) { try { return $('LeadDetails').first().json.contact_id; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g9",
+            "name": "locationId",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.location_id; } catch(e) { try { return $('LeadDetails').first().json.location_id; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g10",
+            "name": "pipelineStage",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.pipeline_stage; } catch(e) { try { return $('Get Lead Memory').first().json.pipeline_stage; } catch(e2) { return 'MONTHLY'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g11",
+            "name": "intentLevel",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.intent_level; } catch(e) { try { return $('Get Lead Memory').first().json.intent_level; } catch(e2) { return 'none'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g12",
+            "name": "tier",
+            "value": "={{ (() => { try { return $('Prepare Tier Response').first().json.tier; } catch(e) { return 'standard'; } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g13",
+            "name": "userMessage",
+            "value": "={{ (() => { try { const b = $('Check Batch Leader').first().json.batchedMessageBody; if (b) return b; } catch(e) {} try { return $('Set Outbound Context').first().json.message; } catch(e) { try { return $('LeadDetails').first().json.message_body || $('LeadDetails').first().json.message; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g14",
+            "name": "conversationSummary",
+            "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary; } catch(e) { try { return $('Get Conversation Summary').first().json.conversation_summary; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g15",
+            "name": "relationshipType",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.relationship_type; } catch(e) { try { return $('Get Lead Memory').first().json.relationship_type; } catch(e2) { return 'unknown'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g16",
+            "name": "marketRole",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.market_role; } catch(e) { try { return $('Get Lead Memory').first().json.market_role; } catch(e2) { return 'unknown'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g17",
+            "name": "intentTopic",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.intent_topic; } catch(e) { try { return $('Get Lead Memory').first().json.intent_topic; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g18",
+            "name": "openLoop",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.open_loop; } catch(e) { try { return $('Get Lead Memory').first().json.open_loop; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g19",
+            "name": "contactPreference",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.contact_preference; } catch(e) { try { return $('Get Lead Memory').first().json.contact_preference; } catch(e2) { return 'unknown'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g20",
+            "name": "shortSummaryNote",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.short_summary_note; } catch(e) { try { return $('Get Lead Memory').first().json.short_summary_note; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g21",
+            "name": "newsletterPending",
+            "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.newsletter_offer_pending || false; } catch(e) { try { return $('Get Conversation Summary').first().json.newsletter_offer_pending || false; } catch(e2) { return false; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g22",
+            "name": "newsletterOptedIn",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.newsletter_opted_in || false; } catch(e) { try { return $('Get Lead Memory').first().json.newsletter_opted_in || false; } catch(e2) { return false; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g23",
+            "name": "newsletterDeclined",
+            "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.newsletter_offer_declined || false; } catch(e) { try { return $('Get Conversation Summary').first().json.newsletter_offer_declined || false; } catch(e2) { return false; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g24",
+            "name": "splinterContent",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_content || ''; } catch(e) { return ''; } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g25",
+            "name": "splinterTopic",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_topic || ''; } catch(e) { return ''; } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g26",
+            "name": "splinterDataPoint",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_data_point || ''; } catch(e) { return ''; } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g27",
+            "name": "leadTemp",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.pipeline_state; } catch(e) { try { return $('Get Lead Memory').first().json.pipeline_state; } catch(e2) { return 'warm'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g28",
+            "name": "leadIntent",
+            "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.lead_intent; } catch(e) { try { return $('Get Conversation Summary').first().json.lead_intent; } catch(e2) { return 'unknown'; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g29",
+            "name": "[REDACTED]",
+            "value": "[REDACTED]",
+            "type": "string"
+          },
+          {
+            "id": "g30",
+            "name": "calendarId",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.calendar_id; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.calendar_id; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g31",
+            "name": "ghlUserId",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.ghl_user_id; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.ghl_user_id; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g32",
+            "name": "messageHistory",
+            "value": "={{ (() => { try { const msgs = $('Get Message History').all(); return JSON.stringify(msgs.slice(0, 15).map(m => ({ role: m.json.direction === 'inbound' ? 'lead' : 'you', text: m.json.message_body, time: m.json.timestamp }))); } catch(e) { return '[]'; } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g33",
+            "name": "personalityPrompt",
+            "value": "={{ (() => { try { return $('Get Default Personality').first().json.value || ''; } catch(e) { return ''; } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g34",
+            "name": "agentNotes",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.agent_notes || ''; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.agent_notes || ''; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g35",
+            "name": "supabaseServiceKey",
+            "value": "[REDACTED]",
+            "type": "string"
+          },
+          {
+            "id": "g36",
+            "name": "supabaseUrl",
+            "value": "https://kfoijgcbkjeizxxyiwxv.supabase.co",
+            "type": "string"
+          },
+          {
+            "id": "g37",
+            "name": "agentId",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.id || ''; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.id || ''; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          },
+          {
+            "id": "g38",
+            "name": "leadId",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.id || ''; } catch(e) { try { return $('Get Lead Memory').first().json.id || ''; } catch(e2) { return ''; } } })() }}",
+            "type": "string"
+          }
+        ]
+      },
+      "includeOtherFields": true,
+      "options": {}
+    },
+    "id": "gather-prompt-data",
+    "name": "Gather Prompt Data",
+    "type": "n8n-nodes-base.set",
+    "typeVersion": 3.4,
+    "position": [
+      3056,
+      2064
+    ]
+  },
+  {
+    "parameters": {
+      "operation": "executeQuery",
+      "query": "SELECT \n  pb.block_id,\n  pb.category,\n  pb.prompt_content,\n  pb.priority,\n  pb.conditions\nFROM prompt_blocks pb\nWHERE pb.is_active = true\nORDER BY \n  CASE pb.category \n    WHEN 'mode' THEN 1\n    WHEN 'channel' THEN 2\n    WHEN 'relationship' THEN 3\n    WHEN 'history' THEN 4\n    WHEN 'situation' THEN 5\n  END,\n  pb.priority DESC",
+      "options": {}
+    },
+    "id": "33ef71fb-dc80-4d61-a7e9-2500048a218b",
+    "name": "Get Prompt Blocks (SMRT)",
+    "type": "n8n-nodes-base.postgres",
+    "typeVersion": 2.5,
+    "position": [
+      2448,
+      1856
+    ],
+    "executeOnce": true,
+    "credentials": "[REDACTED]"
+  },
+  {
+    "parameters": {
+      "operation": "getAll",
+      "tableId": "static_prompt_sections",
+      "returnAll": true,
+      "matchType": "allFilters",
+      "filters": {
+        "conditions": [
+          {
+            "keyName": "location_id",
+            "condition": "eq",
+            "keyValue": "={{ (() => { try { return $('Get Agent Config (RAG)').first().json.location_id } catch(e) { try { return $('Get Outbound Agent Config').first().json.location_id } catch(e2) { return 'kv1Af9i1qYK7KfIiT0U3' } } })() }}"
+          },
+          {
+            "keyName": "is_active",
+            "condition": "eq",
+            "keyValue": "true"
+          }
+        ]
+      }
+    },
+    "id": "b27e40e7-2ed9-4d12-bc3e-c871e977db8a",
+    "name": "Get Static Prompt Sections",
+    "type": "n8n-nodes-base.supabase",
+    "typeVersion": 1,
+    "position": [
+      3104,
+      1824
+    ],
+    "executeOnce": true,
+    "credentials": "[REDACTED]"
+  },
+  {
+    "parameters": {
+      "operation": "executeQuery",
+      "query": "SELECT value FROM system_defaults WHERE key = 'default_personality_prompt' LIMIT 1",
+      "options": {}
+    },
+    "id": "46d1fca8-4e84-4a2d-8ba1-8fe8c0600a5b",
+    "name": "Get Default Personality",
+    "type": "n8n-nodes-base.postgres",
+    "typeVersion": 2.5,
+    "position": [
+      2848,
+      1952
+    ],
+    "executeOnce": true,
+    "credentials": "[REDACTED]"
+  },
+  {
+    "parameters": {
+      "mode": "runOnceForEachItem",
+      "jsCode": "// Prepare tier-specific response instructions for the AI Agent\n// Pull tier/sentiment/sms_action from Parse Sentiment directly — input $json may be from Apply L1: Mark Lead (no tier)\nconst ps = (() => { try { return $('Parse Sentiment').first().json; } catch(e) { return {}; } })();\nconst tier = ps.tier || $json.tier || 'normal';\nconst sentiment = ps.sentiment || $json.sentiment || 'neutral';\nconst smsAction = ps.sms_action || $json.sms_action || 'none';\n\nconst tierInstructions = {\n  tier_1_conf…[TRUNCATED]"
+    },
+    "id": "af67488b-cca7-4808-8793-d280bab7a370",
+    "name": "Prepare Tier Response",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [
+      2096,
+      1856
+    ]
+  }
+]

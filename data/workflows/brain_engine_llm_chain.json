@@ -1,0 +1,3486 @@
+{
+  "workflow": "🧠 SMRT Brain Engine",
+  "file": "workflows/active/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+  "nodes": [
+    {
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "KB Tool",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "getContact",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "getNotes",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "getAppointments",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "deleteAppointment",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "Assemble System Prompt",
+          "channel": "main"
+        },
+        {
+          "node": "bookAppointment",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "addAppointmentNotes",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "checkQualificationStatus",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "saveQualifyingAnswer",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "getAvailableSlots",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "searchPastMessages",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "rescheduleAppointment",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "updateContactMemory",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "subscribeToNewsletter",
+          "channel": "ai_tool"
+        },
+        {
+          "node": "Anthropic Chat Model",
+          "channel": "ai_languageModel"
+        },
+        {
+          "node": "switchChannel",
+          "channel": "ai_tool"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Analyze Conversation",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "promptType",
+          "value": "define",
+          "length": 6
+        },
+        {
+          "path": "text",
+          "value": "={{ $json.userMessage }}",
+          "length": 24
+        },
+        {
+          "path": "options.systemMessage",
+          "value": "={{ $json.systemPrompt }}",
+          "length": 25
+        }
+      ],
+      "all_parameter_keys": [
+        "promptType",
+        "text",
+        "options.systemMessage",
+        "options.maxIterations"
+      ]
+    },
+    {
+      "name": "AI Sentiment Analysis",
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Prepare Sentiment Context",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Parse Sentiment",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "modelId.__rl",
+          "value": "True",
+          "length": 4
+        },
+        {
+          "path": "modelId.value",
+          "value": "claude-haiku-4-5-20251001",
+          "length": 25
+        },
+        {
+          "path": "modelId.mode",
+          "value": "id",
+          "length": 2
+        },
+        {
+          "path": "messages.values[0].content",
+          "value": "=CONVERSATION CONTEXT (read first — context frames the current message):\n\nConversation Summary: {{ $json.conversationSummary }}\n\nRecent Messages (newest last):\n{{ $json.historyText }}\n\nLead State:\n- First Name: {{ $json.firstName }}\n- Agent: {{ $json.agentName }}\n- Pipeline Stage: {{ $json.pipelineStage }}\n- Pipeline State: {{ $json.pipelineState }}\n\n=== CURRENT MESSAGE (classify using STEP 1 → 4 from system prompt) ===\n{{ $json.currentMessage }}\n\nReturn ONLY valid JSON. No markdown fences. No e…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "options.system",
+          "value": "You are a sentiment classifier for SMRT Bot. You analyze inbound messages and classify them into behavioral tiers to route the Brain Engine correctly.\n\nCRITICAL: Your reasoning field is used INTERNALLY by downstream nodes ONLY. It is NEVER shown to the lead. The Brain Engine AI Agent uses its own prompt to write the actual SMS/email reply. Be thorough in your reasoning - it helps downstream routing, it never leaks to the customer.\n\n=== CLASSIFICATION PRIORITY ORDER ===\n\nFollow these steps IN ORD…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "options.temperature",
+          "value": "0",
+          "length": 1
+        }
+      ],
+      "all_parameter_keys": [
+        "modelId.__rl",
+        "modelId.value",
+        "modelId.mode",
+        "messages.values[0].content",
+        "options.system",
+        "options.maxTokens",
+        "options.temperature"
+      ]
+    },
+    {
+      "name": "Analyze Conversation",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "AI Agent",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Summary Exists?",
+          "channel": "main"
+        },
+        {
+          "node": "Leak Detected?",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "modelId.__rl",
+          "value": "True",
+          "length": 4
+        },
+        {
+          "path": "modelId.mode",
+          "value": "list",
+          "length": 4
+        },
+        {
+          "path": "modelId.value",
+          "value": "gpt-4o-mini",
+          "length": 11
+        },
+        {
+          "path": "messages.values[0].content",
+          "value": "You analyze real estate AI conversation exchanges and extract structured signals.\n\nReturn ONLY a valid JSON object (no markdown, no explanation):\n{\n  \"summary\": \"250-350 word accumulative summary\",\n  \"lead_intent\": \"buy|sell|both|unknown\",\n  \"lead_timeline\": \"now|3_months|6_months|1_year|unknown\",\n  \"appointment_discussed\": true or false,\n  \"appointment_outcome\": \"offered|accepted|rejected|rescheduled|null\",\n  \"newsletter_discussed\": true or false,\n  \"newsletter_declined\": true or false,\n  \"news…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "messages.values[0].role",
+          "value": "system",
+          "length": 6
+        },
+        {
+          "path": "messages.values[1].content",
+          "value": "=Previous Summary: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary } catch(e) { try { return $('Get Conversation Summary').first().json.conversation_summary } catch(e2) { return 'None' } } })() }}\nPrevious Intent: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.lead_intent } catch(e) { try { return $('Get Conversation Summary').first().json.lead_intent } catch(e2) { return 'unknown' } } })() }}\nPrevious Timeline: {{ (…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "options.temperature",
+          "value": "0.3",
+          "length": 3
+        }
+      ],
+      "all_parameter_keys": [
+        "modelId.__rl",
+        "modelId.mode",
+        "modelId.value",
+        "messages.values[0].content",
+        "messages.values[0].role",
+        "messages.values[1].content",
+        "options.maxTokens",
+        "options.temperature"
+      ]
+    },
+    {
+      "name": "Anthropic Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_languageModel"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "model.__rl",
+          "value": "True",
+          "length": 4
+        },
+        {
+          "path": "model.value",
+          "value": "claude-sonnet-4-6",
+          "length": 17
+        },
+        {
+          "path": "model.mode",
+          "value": "list",
+          "length": 4
+        },
+        {
+          "path": "model.cachedResultName",
+          "value": "Claude Sonnet 4.6",
+          "length": 17
+        },
+        {
+          "path": "options.temperature",
+          "value": "0",
+          "length": 1
+        }
+      ],
+      "all_parameter_keys": [
+        "model.__rl",
+        "model.value",
+        "model.mode",
+        "model.cachedResultName",
+        "options.temperature"
+      ]
+    },
+    {
+      "name": "Apply Time Decay",
+      "type": "n8n-nodes-base.postgres",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Business Hours Check",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Fetch Outbound Candidates",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "query",
+          "value": "UPDATE leads\nSET\n  pipeline_state = CASE\n    WHEN pipeline_state = 'hot'  AND last_customer_message_at < NOW() - INTERVAL '14 days' THEN 'warm'\n    WHEN pipeline_state = 'warm' AND last_customer_message_at < NOW() - INTERVAL '42 days' THEN 'cold'\n    ELSE pipeline_state\n  END\nWHERE status = 'active_conversation'\n  AND pipeline_state IN ('hot', 'warm')\n  AND last_customer_message_at IS NOT NULL\n  AND location_id = '{{ $json.location_id }}'\n  AND (\n    (pipeline_state = 'hot'  AND last_customer_me…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "query"
+      ]
+    },
+    {
+      "name": "Assemble System Prompt",
+      "type": "n8n-nodes-base.code",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Gather Prompt Data",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [],
+      "all_parameter_keys": [
+        "jsCode"
+      ]
+    },
+    {
+      "name": "Cap Lock Check",
+      "type": "n8n-nodes-base.postgres",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Route by Channel1",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Quota OK?",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "query",
+          "value": "=SELECT can_send, current_level, daily_cap, sent_today, remaining, reset_at, block_reason FROM check_sending_quota('{{ $('Assemble System Prompt').item.json.locationId }}'::text);",
+          "length": 179
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "query"
+      ]
+    },
+    {
+      "name": "Check Qualification Gate",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Route Intent",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Is Qualified?",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "conversation_context",
+          "length": 20
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $('LeadDetails').first().json.contact_id }}",
+          "length": 47
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "limit",
+        "matchType",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue"
+      ]
+    },
+    {
+      "name": "Clear Newsletter Flags",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Newsletter Guard",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "conversation_context",
+          "length": 20
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $('Assemble System Prompt').first().json.contactId }}",
+          "length": 57
+        },
+        {
+          "path": "fieldsUi.fieldValues[1].fieldValue",
+          "value": "={{ (() => { try { const leadMemory = $('Get Lead Memory (After)').first()?.json || $('Get Outbound Lead Memory').first()?.json || {}; if (leadMemory.newsletter_opted_in === true) return false; const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.newsletter_declined === true; } catch(e) { return false; } })() }}",
+          "length": 438
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "matchType",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue",
+        "fieldsUi.fieldValues[0].fieldId",
+        "fieldsUi.fieldValues[0].fieldValue",
+        "fieldsUi.fieldValues[1].fieldId",
+        "fieldsUi.fieldValues[1].fieldValue"
+      ]
+    },
+    {
+      "name": "Determine Action",
+      "type": "n8n-nodes-base.code",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Update Conversation Context",
+          "channel": "main"
+        },
+        {
+          "node": "Insert Conversation Context",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Outbound Bypass?",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsCode",
+          "value": "const input = $input.first().json;\n\n// Read AI Agent output directly — upstream Supabase node drops it\nlet responseText = '';\ntry { responseText = $('AI Agent').first().json.output || ''; } catch(e) {}\nif (!responseText) responseText = input.output || input.text || input.response || '';\nif (!responseText && input.message) responseText = input.message;\n\nconst agentName = (() => { try { return $('Assemble System Prompt').first().json.agentName || 'Luke'; } catch(e) { return input.agentName || 'Luk…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "jsCode"
+      ]
+    },
+    {
+      "name": "Docs Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Embeddings",
+          "channel": "ai_embedding"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "KB Tool",
+          "channel": "ai_vectorStore"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableName.value",
+          "value": "documents",
+          "length": 9
+        },
+        {
+          "path": "tableName.cachedResultName",
+          "value": "documents",
+          "length": 9
+        },
+        {
+          "path": "options.queryName",
+          "value": "match_documents",
+          "length": 15
+        },
+        {
+          "path": "options.metadata.metadataValues[0].value",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.location_id } catch(e) { return $('LeadDetails').first().json.location_id } })() }}",
+          "length": 148
+        }
+      ],
+      "all_parameter_keys": [
+        "tableName.__rl",
+        "tableName.value",
+        "tableName.mode",
+        "tableName.cachedResultName",
+        "options.queryName",
+        "options.metadata.metadataValues[0].name",
+        "options.metadata.metadataValues[0].value"
+      ]
+    },
+    {
+      "name": "Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "Docs Store",
+          "channel": "ai_embedding"
+        }
+      ],
+      "relevant_fields": [],
+      "all_parameter_keys": []
+    },
+    {
+      "name": "Fetch Outbound Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [],
+      "relevant_fields": [
+        {
+          "path": "content",
+          "value": "## Fetch Outbound Candidates\n\n**What it pulls:**\n- contact_id, location_id, first_name, channel\n- pipeline_state (hot / warm / cold)\n- agent_name, market_name\n- Most recent active splinter per agent (splinter_id, splinter_content, splinter_topic, splinter_data_point)\n\n**Conditions:**\n- status = 'active_conversation'\n- pipeline_stage != 'DNC'\n- agent_dormant = false\n- sms_paused_until IS NULL or has expired\n- next_outbound_due_at IS NULL or has passed\n\n**Ordered by:** next_outbound_due_at ASC (ol…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "content",
+        "height",
+        "width",
+        "color"
+      ]
+    },
+    {
+      "name": "Form Section4",
+      "type": "n8n-nodes-base.stickyNote",
+      "disabled": true,
+      "incoming": [],
+      "outgoing": [],
+      "relevant_fields": [
+        {
+          "path": "content",
+          "value": "##  Booking Agent Routing\n#### Book Intent in conversation\n",
+          "length": 59
+        }
+      ],
+      "all_parameter_keys": [
+        "content",
+        "height",
+        "width",
+        "color"
+      ]
+    },
+    {
+      "name": "Gather Prompt Data",
+      "type": "n8n-nodes-base.set",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Get Static Prompt Sections",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Assemble System Prompt",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "assignments.assignments[0].name",
+          "value": "agentName",
+          "length": 9
+        },
+        {
+          "path": "assignments.assignments[0].value",
+          "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.agent_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.agent_name; } catch(e2) { return 'the agent'; } } })() }}",
+          "length": 206
+        },
+        {
+          "path": "assignments.assignments[1].value",
+          "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.coordinator_name; } catch(e2) { return 'Jon'; } } })() }}",
+          "length": 212
+        },
+        {
+          "path": "assignments.assignments[2].value",
+          "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.market_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.market_name; } catch(e2) { return ''; } } })() }}",
+          "length": 199
+        },
+        {
+          "path": "assignments.assignments[3].value",
+          "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.timezone; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.timezone; } catch(e2) { return 'America/Denver'; } } })() }}",
+          "length": 207
+        },
+        {
+          "path": "assignments.assignments[4].value",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.direction; } catch(e) { try { return $('LeadDetails').first().json.direction || 'inbound'; } catch(e2) { return 'inbound'; } } })() }}",
+          "length": 199
+        },
+        {
+          "path": "assignments.assignments[5].value",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.channel; } catch(e) { try { return $('LeadDetails').first().json.channel; } catch(e2) { return 'sms'; } } })() }}",
+          "length": 178
+        },
+        {
+          "path": "assignments.assignments[6].value",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.first_name; } catch(e) { try { return $('LeadDetails').first().json.first_name; } catch(e2) { return 'Contact'; } } })() }}",
+          "length": 188
+        },
+        {
+          "path": "assignments.assignments[7].value",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.contact_id; } catch(e) { try { return $('LeadDetails').first().json.contact_id; } catch(e2) { return ''; } } })() }}",
+          "length": 181
+        },
+        {
+          "path": "assignments.assignments[8].value",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.location_id; } catch(e) { try { return $('LeadDetails').first().json.location_id; } catch(e2) { return ''; } } })() }}",
+          "length": 183
+        },
+        {
+          "path": "assignments.assignments[9].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.pipeline_stage; } catch(e) { try { return $('Get Lead Memory').first().json.pipeline_stage; } catch(e2) { return 'MONTHLY'; } } })() }}",
+          "length": 204
+        },
+        {
+          "path": "assignments.assignments[10].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.intent_level; } catch(e) { try { return $('Get Lead Memory').first().json.intent_level; } catch(e2) { return 'none'; } } })() }}",
+          "length": 197
+        },
+        {
+          "path": "assignments.assignments[11].name",
+          "value": "tier",
+          "length": 4
+        },
+        {
+          "path": "assignments.assignments[11].value",
+          "value": "={{ (() => { try { return $('Prepare Tier Response').first().json.tier; } catch(e) { return 'standard'; } })() }}",
+          "length": 113
+        },
+        {
+          "path": "assignments.assignments[12].name",
+          "value": "userMessage",
+          "length": 11
+        },
+        {
+          "path": "assignments.assignments[12].value",
+          "value": "={{ (() => { try { const b = $('Check Batch Leader').first().json.batchedMessageBody; if (b) return b; } catch(e) {} try { return $('Set Outbound Context').first().json.message; } catch(e) { try { return $('LeadDetails').first().json.message_body || $('LeadDetails').first().json.message; } catch(e2) { return ''; } } })() }}",
+          "length": 325
+        },
+        {
+          "path": "assignments.assignments[13].name",
+          "value": "conversationSummary",
+          "length": 19
+        },
+        {
+          "path": "assignments.assignments[13].value",
+          "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary; } catch(e) { try { return $('Get Conversation Summary').first().json.conversation_summary; } catch(e2) { return ''; } } })() }}",
+          "length": 227
+        },
+        {
+          "path": "assignments.assignments[14].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.relationship_type; } catch(e) { try { return $('Get Lead Memory').first().json.relationship_type; } catch(e2) { return 'unknown'; } } })() }}",
+          "length": 210
+        },
+        {
+          "path": "assignments.assignments[15].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.market_role; } catch(e) { try { return $('Get Lead Memory').first().json.market_role; } catch(e2) { return 'unknown'; } } })() }}",
+          "length": 198
+        },
+        {
+          "path": "assignments.assignments[16].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.intent_topic; } catch(e) { try { return $('Get Lead Memory').first().json.intent_topic; } catch(e2) { return ''; } } })() }}",
+          "length": 193
+        },
+        {
+          "path": "assignments.assignments[17].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.open_loop; } catch(e) { try { return $('Get Lead Memory').first().json.open_loop; } catch(e2) { return ''; } } })() }}",
+          "length": 187
+        },
+        {
+          "path": "assignments.assignments[18].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.contact_preference; } catch(e) { try { return $('Get Lead Memory').first().json.contact_preference; } catch(e2) { return 'unknown'; } } })() }}",
+          "length": 212
+        },
+        {
+          "path": "assignments.assignments[19].name",
+          "value": "shortSummaryNote",
+          "length": 16
+        },
+        {
+          "path": "assignments.assignments[19].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.short_summary_note; } catch(e) { try { return $('Get Lead Memory').first().json.short_summary_note; } catch(e2) { return ''; } } })() }}",
+          "length": 205
+        },
+        {
+          "path": "assignments.assignments[20].value",
+          "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.newsletter_offer_pending || false; } catch(e) { try { return $('Get Conversation Summary').first().json.newsletter_offer_pending || false; } catch(e2) { return false; } } })() }}",
+          "length": 256
+        },
+        {
+          "path": "assignments.assignments[21].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.newsletter_opted_in || false; } catch(e) { try { return $('Get Lead Memory').first().json.newsletter_opted_in || false; } catch(e2) { return false; } } })() }}",
+          "length": 228
+        },
+        {
+          "path": "assignments.assignments[22].value",
+          "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.newsletter_offer_declined || false; } catch(e) { try { return $('Get Conversation Summary').first().json.newsletter_offer_declined || false; } catch(e2) { return false; } } })() }}",
+          "length": 258
+        },
+        {
+          "path": "assignments.assignments[23].value",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_content || ''; } catch(e) { return ''; } })() }}",
+          "length": 122
+        },
+        {
+          "path": "assignments.assignments[24].value",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_topic || ''; } catch(e) { return ''; } })() }}",
+          "length": 120
+        },
+        {
+          "path": "assignments.assignments[25].value",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_data_point || ''; } catch(e) { return ''; } })() }}",
+          "length": 125
+        },
+        {
+          "path": "assignments.assignments[26].name",
+          "value": "leadTemp",
+          "length": 8
+        },
+        {
+          "path": "assignments.assignments[26].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.pipeline_state; } catch(e) { try { return $('Get Lead Memory').first().json.pipeline_state; } catch(e2) { return 'warm'; } } })() }}",
+          "length": 201
+        },
+        {
+          "path": "assignments.assignments[27].name",
+          "value": "leadIntent",
+          "length": 10
+        },
+        {
+          "path": "assignments.assignments[27].value",
+          "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.lead_intent; } catch(e) { try { return $('Get Conversation Summary').first().json.lead_intent; } catch(e2) { return 'unknown'; } } })() }}",
+          "length": 216
+        },
+        {
+          "path": "assignments.assignments[29].value",
+          "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.calendar_id; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.calendar_id; } catch(e2) { return ''; } } })() }}",
+          "length": 199
+        },
+        {
+          "path": "assignments.assignments[30].value",
+          "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.ghl_user_id; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.ghl_user_id; } catch(e2) { return ''; } } })() }}",
+          "length": 199
+        },
+        {
+          "path": "assignments.assignments[31].name",
+          "value": "messageHistory",
+          "length": 14
+        },
+        {
+          "path": "assignments.assignments[31].value",
+          "value": "={{ (() => { try { const msgs = $('Get Message History').all(); return JSON.stringify(msgs.slice(0, 15).map(m => ({ role: m.json.direction === 'inbound' ? 'lead' : 'you', text: m.json.message_body, time: m.json.timestamp }))); } catch(e) { return '[]'; } })() }}",
+          "length": 262
+        },
+        {
+          "path": "assignments.assignments[32].name",
+          "value": "personalityPrompt",
+          "length": 17
+        },
+        {
+          "path": "assignments.assignments[32].value",
+          "value": "={{ (() => { try { return $('Get Default Personality').first().json.value || ''; } catch(e) { return ''; } })() }}",
+          "length": 114
+        },
+        {
+          "path": "assignments.assignments[33].name",
+          "value": "agentNotes",
+          "length": 10
+        },
+        {
+          "path": "assignments.assignments[33].value",
+          "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.agent_notes || ''; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.agent_notes || ''; } catch(e2) { return ''; } } })() }}",
+          "length": 211
+        },
+        {
+          "path": "assignments.assignments[36].name",
+          "value": "agentId",
+          "length": 7
+        },
+        {
+          "path": "assignments.assignments[36].value",
+          "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.id || ''; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.id || ''; } catch(e2) { return ''; } } })() }}",
+          "length": 193
+        },
+        {
+          "path": "assignments.assignments[37].name",
+          "value": "leadId",
+          "length": 6
+        },
+        {
+          "path": "assignments.assignments[37].value",
+          "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.id || ''; } catch(e) { try { return $('Get Lead Memory').first().json.id || ''; } catch(e2) { return ''; } } })() }}",
+          "length": 185
+        }
+      ],
+      "all_parameter_keys": [
+        "duplicateItem",
+        "assignments.assignments[0].id",
+        "assignments.assignments[0].name",
+        "assignments.assignments[0].value",
+        "assignments.assignments[0].type",
+        "assignments.assignments[1].id",
+        "assignments.assignments[1].name",
+        "assignments.assignments[1].value",
+        "assignments.assignments[1].type",
+        "assignments.assignments[2].id",
+        "assignments.assignments[2].name",
+        "assignments.assignments[2].value",
+        "assignments.assignments[2].type",
+        "assignments.assignments[3].id",
+        "assignments.assignments[3].name",
+        "assignments.assignments[3].value",
+        "assignments.assignments[3].type",
+        "assignments.assignments[4].id",
+        "assignments.assignments[4].name",
+        "assignments.assignments[4].value",
+        "assignments.assignments[4].type",
+        "assignments.assignments[5].id",
+        "assignments.assignments[5].name",
+        "assignments.assignments[5].value",
+        "assignments.assignments[5].type",
+        "assignments.assignments[6].id",
+        "assignments.assignments[6].name",
+        "assignments.assignments[6].value",
+        "assignments.assignments[6].type",
+        "assignments.assignments[7].id",
+        "assignments.assignments[7].name",
+        "assignments.assignments[7].value",
+        "assignments.assignments[7].type",
+        "assignments.assignments[8].id",
+        "assignments.assignments[8].name",
+        "assignments.assignments[8].value",
+        "assignments.assignments[8].type",
+        "assignments.assignments[9].id",
+        "assignments.assignments[9].name",
+        "assignments.assignments[9].value",
+        "assignments.assignments[9].type",
+        "assignments.assignments[10].id",
+        "assignments.assignments[10].name",
+        "assignments.assignments[10].value",
+        "assignments.assignments[10].type",
+        "assignments.assignments[11].id",
+        "assignments.assignments[11].name",
+        "assignments.assignments[11].value",
+        "assignments.assignments[11].type",
+        "assignments.assignments[12].id",
+        "assignments.assignments[12].name",
+        "assignments.assignments[12].value",
+        "assignments.assignments[12].type",
+        "assignments.assignments[13].id",
+        "assignments.assignments[13].name",
+        "assignments.assignments[13].value",
+        "assignments.assignments[13].type",
+        "assignments.assignments[14].id",
+        "assignments.assignments[14].name",
+        "assignments.assignments[14].value",
+        "assignments.assignments[14].type",
+        "assignments.assignments[15].id",
+        "assignments.assignments[15].name",
+        "assignments.assignments[15].value",
+        "assignments.assignments[15].type",
+        "assignments.assignments[16].id",
+        "assignments.assignments[16].name",
+        "assignments.assignments[16].value",
+        "assignments.assignments[16].type",
+        "assignments.assignments[17].id",
+        "assignments.assignments[17].name",
+        "assignments.assignments[17].value",
+        "assignments.assignments[17].type",
+        "assignments.assignments[18].id",
+        "assignments.assignments[18].name",
+        "assignments.assignments[18].value",
+        "assignments.assignments[18].type",
+        "assignments.assignments[19].id",
+        "assignments.assignments[19].name",
+        "assignments.assignments[19].value",
+        "assignments.assignments[19].type",
+        "assignments.assignments[20].id",
+        "assignments.assignments[20].name",
+        "assignments.assignments[20].value",
+        "assignments.assignments[20].type",
+        "assignments.assignments[21].id",
+        "assignments.assignments[21].name",
+        "assignments.assignments[21].value",
+        "assignments.assignments[21].type",
+        "assignments.assignments[22].id",
+        "assignments.assignments[22].name",
+        "assignments.assignments[22].value",
+        "assignments.assignments[22].type",
+        "assignments.assignments[23].id",
+        "assignments.assignments[23].name",
+        "assignments.assignments[23].value",
+        "assignments.assignments[23].type",
+        "assignments.assignments[24].id",
+        "assignments.assignments[24].name",
+        "assignments.assignments[24].value",
+        "assignments.assignments[24].type",
+        "assignments.assignments[25].id",
+        "assignments.assignments[25].name",
+        "assignments.assignments[25].value",
+        "assignments.assignments[25].type",
+        "assignments.assignments[26].id",
+        "assignments.assignments[26].name",
+        "assignments.assignments[26].value",
+        "assignments.assignments[26].type",
+        "assignments.assignments[27].id",
+        "assignments.assignments[27].name",
+        "assignments.assignments[27].value",
+        "assignments.assignments[27].type",
+        "assignments.assignments[28].id",
+        "assignments.assignments[28].name",
+        "assignments.assignments[28].value",
+        "assignments.assignments[28].type",
+        "assignments.assignments[29].id",
+        "assignments.assignments[29].name",
+        "assignments.assignments[29].value",
+        "assignments.assignments[29].type",
+        "assignments.assignments[30].id",
+        "assignments.assignments[30].name",
+        "assignments.assignments[30].value",
+        "assignments.assignments[30].type",
+        "assignments.assignments[31].id",
+        "assignments.assignments[31].name",
+        "assignments.assignments[31].value",
+        "assignments.assignments[31].type",
+        "assignments.assignments[32].id",
+        "assignments.assignments[32].name",
+        "assignments.assignments[32].value",
+        "assignments.assignments[32].type",
+        "assignments.assignments[33].id",
+        "assignments.assignments[33].name",
+        "assignments.assignments[33].value",
+        "assignments.assignments[33].type",
+        "assignments.assignments[34].id",
+        "assignments.assignments[34].name",
+        "assignments.assignments[34].value",
+        "assignments.assignments[34].type",
+        "assignments.assignments[35].id",
+        "assignments.assignments[35].name",
+        "assignments.assignments[35].value",
+        "assignments.assignments[35].type",
+        "assignments.assignments[36].id",
+        "assignments.assignments[36].name",
+        "assignments.assignments[36].value",
+        "assignments.assignments[36].type",
+        "assignments.assignments[37].id",
+        "assignments.assignments[37].name",
+        "assignments.assignments[37].value",
+        "assignments.assignments[37].type",
+        "includeOtherFields"
+      ]
+    },
+    {
+      "name": "Gather Sentiment Data1",
+      "type": "n8n-nodes-base.set",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Check Keyword Search",
+          "channel": "main"
+        },
+        {
+          "node": "Merge & Deduplicate Messages",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Prepare Sentiment Context",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "assignments.assignments[0].name",
+          "value": "currentMessage",
+          "length": 14
+        },
+        {
+          "path": "assignments.assignments[0].value",
+          "value": "={{ (() => { try { const b = $('Check Batch Leader').first().json.batchedMessageBody; if (b) return b; } catch(e) {} try { return $('LeadDetails').first().json.message; } catch(e) { try { return $('Set Outbound Context').first().json.message; } catch(e2) { return ''; } } })() }}",
+          "length": 279
+        },
+        {
+          "path": "assignments.assignments[1].value",
+          "value": "={{ (() => { try { return $('LeadDetails').first().json.contact_id; } catch(e) { try { return $('Set Outbound Context').first().json.contact_id; } catch(e2) { return ''; } } })() }}",
+          "length": 181
+        },
+        {
+          "path": "assignments.assignments[2].value",
+          "value": "={{ (() => { try { return $('LeadDetails').first().json.location_id; } catch(e) { try { return $('Set Outbound Context').first().json.location_id; } catch(e2) { return ''; } } })() }}",
+          "length": 183
+        },
+        {
+          "path": "assignments.assignments[3].value",
+          "value": "={{ (() => { try { return $('LeadDetails').first().json.first_name; } catch(e) { try { return $('Set Outbound Context').first().json.first_name; } catch(e2) { return 'Contact'; } } })() }}",
+          "length": 188
+        },
+        {
+          "path": "assignments.assignments[4].name",
+          "value": "conversationSummary",
+          "length": 19
+        },
+        {
+          "path": "assignments.assignments[4].value",
+          "value": "={{ (() => { try { return $('Get Conversation Summary').first().json.conversation_summary || ''; } catch(e) { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary || ''; } catch(e2) { return ''; } } })() }}",
+          "length": 239
+        },
+        {
+          "path": "assignments.assignments[5].name",
+          "value": "agentName",
+          "length": 9
+        },
+        {
+          "path": "assignments.assignments[5].value",
+          "value": "={{ (() => { try { return $('Get Agent Config (RAG)').first().json.agent_name; } catch(e) { try { return $('Get Outbound Agent Config').first().json.agent_name; } catch(e2) { return 'Luke Gilbert'; } } })() }}",
+          "length": 209
+        },
+        {
+          "path": "assignments.assignments[6].name",
+          "value": "messageHistory",
+          "length": 14
+        },
+        {
+          "path": "assignments.assignments[6].value",
+          "value": "={{ (() => { try { const msgs = $('Get Message History').all(); return msgs.slice(0, 15).map(m => (m.json.direction === 'inbound' ? '[lead] ' : '[bot] ') + m.json.message_body).join('\\n'); } catch(e) { return 'No previous messages'; } })() }}",
+          "length": 242
+        },
+        {
+          "path": "assignments.assignments[7].value",
+          "value": "={{ (() => { try { return $('Get Lead Memory').first().json.pipeline_stage || 'MONTHLY'; } catch(e) { try { return $('Get Outbound Lead Memory').first().json.pipeline_stage || 'MONTHLY'; } catch(e2) { return 'MONTHLY'; } } })() }}",
+          "length": 230
+        },
+        {
+          "path": "assignments.assignments[8].value",
+          "value": "={{ (() => { try { return $('Get Lead Memory').first().json.pipeline_state || 'warm'; } catch(e) { try { return $('Get Outbound Lead Memory').first().json.pipeline_state || 'warm'; } catch(e2) { return 'warm'; } } })() }}",
+          "length": 221
+        }
+      ],
+      "all_parameter_keys": [
+        "assignments.assignments[0].id",
+        "assignments.assignments[0].name",
+        "assignments.assignments[0].value",
+        "assignments.assignments[0].type",
+        "assignments.assignments[1].id",
+        "assignments.assignments[1].name",
+        "assignments.assignments[1].value",
+        "assignments.assignments[1].type",
+        "assignments.assignments[2].id",
+        "assignments.assignments[2].name",
+        "assignments.assignments[2].value",
+        "assignments.assignments[2].type",
+        "assignments.assignments[3].id",
+        "assignments.assignments[3].name",
+        "assignments.assignments[3].value",
+        "assignments.assignments[3].type",
+        "assignments.assignments[4].id",
+        "assignments.assignments[4].name",
+        "assignments.assignments[4].value",
+        "assignments.assignments[4].type",
+        "assignments.assignments[5].id",
+        "assignments.assignments[5].name",
+        "assignments.assignments[5].value",
+        "assignments.assignments[5].type",
+        "assignments.assignments[6].id",
+        "assignments.assignments[6].name",
+        "assignments.assignments[6].value",
+        "assignments.assignments[6].type",
+        "assignments.assignments[7].id",
+        "assignments.assignments[7].name",
+        "assignments.assignments[7].value",
+        "assignments.assignments[7].type",
+        "assignments.assignments[8].id",
+        "assignments.assignments[8].name",
+        "assignments.assignments[8].value",
+        "assignments.assignments[8].type"
+      ]
+    },
+    {
+      "name": "Get Agent Config",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "LeadDetails",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "inboundTrue?",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "agents",
+          "length": 6
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $json.location_id }}",
+          "length": 24
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "limit",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue"
+      ]
+    },
+    {
+      "name": "Get Agent Config (RAG)",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Set Direction: Inbound2",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Merge Context",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "agents",
+          "length": 6
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $('LeadDetails').first().json.location_id }}",
+          "length": 48
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].keyValue"
+      ]
+    },
+    {
+      "name": "Get Conversation Summary",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Set Direction: Inbound2",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Merge Context",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "conversation_context",
+          "length": 20
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $('LeadDetails').first().json.contact_id }}",
+          "length": 47
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].keyValue"
+      ]
+    },
+    {
+      "name": "Get Default Personality",
+      "type": "n8n-nodes-base.postgres",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Has Custom Personality?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Get Static Prompt Sections",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "query",
+          "value": "SELECT value FROM system_defaults WHERE key = 'default_personality_prompt' LIMIT 1",
+          "length": 82
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "query"
+      ]
+    },
+    {
+      "name": "Get Lead Memory (After)",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Log Outbound Message",
+          "channel": "main"
+        },
+        {
+          "node": "Should Respond?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Compare Memory",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "leads",
+          "length": 5
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $('Assemble System Prompt').first().json.contactId }}",
+          "length": 57
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].keyValue"
+      ]
+    },
+    {
+      "name": "Get Message History",
+      "type": "n8n-nodes-base.postgres",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Set Direction: Inbound2",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Merge Context",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "query",
+          "value": "=SELECT \n  ml.*,\n  (SELECT COUNT(*) FROM message_log WHERE contact_id = '{{ $('LeadDetails').first().json.contact_id }}') as interaction_count\nFROM message_log ml \nWHERE ml.contact_id = '{{ $('LeadDetails').first().json.contact_id }}' \nORDER BY ml.timestamp DESC \nLIMIT 15",
+          "length": 272
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "query"
+      ]
+    },
+    {
+      "name": "Get Outbound Agent Config",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Set Outbound Context",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Merge Outbound Context",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "agents",
+          "length": 6
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $json.location_id }}",
+          "length": 24
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].keyValue"
+      ]
+    },
+    {
+      "name": "Get Outbound Conversation Summary",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Set Outbound Context",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Merge Outbound Context",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "conversation_context",
+          "length": 20
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $json.contact_id }}",
+          "length": 23
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].keyValue"
+      ]
+    },
+    {
+      "name": "Get Outbound Message History",
+      "type": "n8n-nodes-base.postgres",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Set Outbound Context",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Merge Outbound Context",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "query",
+          "value": "SELECT ml.*, (SELECT COUNT(*) FROM message_log WHERE contact_id = '{{ $json.contact_id }}') as interaction_count FROM message_log ml WHERE ml.contact_id = '{{ $json.contact_id }}' ORDER BY ml.timestamp DESC LIMIT 15",
+          "length": 215
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "query"
+      ]
+    },
+    {
+      "name": "Get Prompt Blocks (SMRT)",
+      "type": "n8n-nodes-base.postgres",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Prepare Tier Response",
+          "channel": "main"
+        },
+        {
+          "node": "Merge Outbound Context",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Has Custom Personality?",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "query",
+          "value": "SELECT \n  pb.block_id,\n  pb.category,\n  pb.prompt_content,\n  pb.priority,\n  pb.conditions\nFROM prompt_blocks pb\nWHERE pb.is_active = true\nORDER BY \n  CASE pb.category \n    WHEN 'mode' THEN 1\n    WHEN 'channel' THEN 2\n    WHEN 'relationship' THEN 3\n    WHEN 'history' THEN 4\n    WHEN 'situation' THEN 5\n  END,\n  pb.priority DESC",
+          "length": 327
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "query"
+      ]
+    },
+    {
+      "name": "Get Static Prompt Sections",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Get Default Personality",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Gather Prompt Data",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "static_prompt_sections",
+          "length": 22
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ (() => { try { return $('Get Agent Config (RAG)').first().json.location_id } catch(e) { try { return $('Get Outbound Agent Config').first().json.location_id } catch(e2) { return 'kv1Af9i1qYK7KfIiT0U3' } } })() }}",
+          "length": 216
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "returnAll",
+        "matchType",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue",
+        "filters.conditions[1].keyName",
+        "filters.conditions[1].condition",
+        "filters.conditions[1].keyValue"
+      ]
+    },
+    {
+      "name": "Insert Conversation Context",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Summary Exists?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Determine Action",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "conversation_context",
+          "length": 20
+        },
+        {
+          "path": "fieldsUi.fieldValues[0].fieldValue",
+          "value": "={{ $('Assemble System Prompt').first().json.contactId }}",
+          "length": 57
+        },
+        {
+          "path": "fieldsUi.fieldValues[1].fieldValue",
+          "value": "={{ $('Assemble System Prompt').first().json.locationId }}",
+          "length": 58
+        },
+        {
+          "path": "fieldsUi.fieldValues[2].fieldId",
+          "value": "conversation_summary",
+          "length": 20
+        },
+        {
+          "path": "fieldsUi.fieldValues[2].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.summary || content; } catch(e) { return $('Analyze Conversation').first().json.message?.content || ''; } })() }}",
+          "length": 309
+        },
+        {
+          "path": "fieldsUi.fieldValues[3].fieldValue",
+          "value": "={{ (() => { try { return $('Parse Sentiment').first().json.sentiment_analysis ? $('Parse Sentiment').first().json.sentiment_analysis.action : 'continue'; } catch(e) { return 'continue'; } })() }}",
+          "length": 196
+        },
+        {
+          "path": "fieldsUi.fieldValues[4].fieldId",
+          "value": "lead_intent",
+          "length": 11
+        },
+        {
+          "path": "fieldsUi.fieldValues[4].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.lead_intent || 'unknown'; } catch(e) { return 'unknown'; } })() }}",
+          "length": 216
+        },
+        {
+          "path": "fieldsUi.fieldValues[5].fieldId",
+          "value": "lead_timeline",
+          "length": 13
+        },
+        {
+          "path": "fieldsUi.fieldValues[5].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.lead_timeline || 'unknown'; } catch(e) { return 'unknown'; } })() }}",
+          "length": 218
+        },
+        {
+          "path": "fieldsUi.fieldValues[8].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && (parsed.appointment_outcome === 'offered' || parsed.appointment_outcome === 'accepted'); } catch(e) { return false; } })() }}",
+          "length": 300
+        },
+        {
+          "path": "fieldsUi.fieldValues[9].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && parsed.appointment_outcome === 'accepted'; } catch(e) { return false; } })() }}",
+          "length": 254
+        }
+      ],
+      "all_parameter_keys": [
+        "tableId",
+        "fieldsUi.fieldValues[0].fieldId",
+        "fieldsUi.fieldValues[0].fieldValue",
+        "fieldsUi.fieldValues[1].fieldId",
+        "fieldsUi.fieldValues[1].fieldValue",
+        "fieldsUi.fieldValues[2].fieldId",
+        "fieldsUi.fieldValues[2].fieldValue",
+        "fieldsUi.fieldValues[3].fieldId",
+        "fieldsUi.fieldValues[3].fieldValue",
+        "fieldsUi.fieldValues[4].fieldId",
+        "fieldsUi.fieldValues[4].fieldValue",
+        "fieldsUi.fieldValues[5].fieldId",
+        "fieldsUi.fieldValues[5].fieldValue",
+        "fieldsUi.fieldValues[6].fieldId",
+        "fieldsUi.fieldValues[6].fieldValue",
+        "fieldsUi.fieldValues[7].fieldId",
+        "fieldsUi.fieldValues[7].fieldValue",
+        "fieldsUi.fieldValues[8].fieldId",
+        "fieldsUi.fieldValues[8].fieldValue",
+        "fieldsUi.fieldValues[9].fieldId",
+        "fieldsUi.fieldValues[9].fieldValue"
+      ]
+    },
+    {
+      "name": "KB Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Docs Store",
+          "channel": "ai_vectorStore"
+        },
+        {
+          "node": "RAG LLM",
+          "channel": "ai_languageModel"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "description",
+          "value": "=Search the approved company knowledge base for client location {{ (() => { try { return $('Set Outbound Context').first().json.location_id } catch(e) { return $('LeadDetails').first().json.location_id } })() }}.\n\nWHEN TO USE:\n- When the lead asks about commission rates, fees, or pricing\n- When the lead asks about services offered, property types, or areas served\n- When the lead asks how the team operates or any company-specific question\n- ANY question about the business, team, or real estate se…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "description"
+      ]
+    },
+    {
+      "name": "LeadDetails",
+      "type": "n8n-nodes-base.set",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Set Direction: Inbound",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Get Agent Config",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "assignments.assignments[0].value",
+          "value": "={{ $json.body.location.id }}",
+          "length": 29
+        },
+        {
+          "path": "assignments.assignments[1].value",
+          "value": "={{ $json.body.contact_id }}",
+          "length": 28
+        },
+        {
+          "path": "assignments.assignments[2].name",
+          "value": "timestamp_message",
+          "length": 17
+        },
+        {
+          "path": "assignments.assignments[3].name",
+          "value": "message",
+          "length": 7
+        },
+        {
+          "path": "assignments.assignments[3].value",
+          "value": "={{ $json.body.message.body }}",
+          "length": 30
+        },
+        {
+          "path": "assignments.assignments[4].value",
+          "value": "={{ $json.body.first_name }}",
+          "length": 28
+        },
+        {
+          "path": "assignments.assignments[5].value",
+          "value": "={{ $json.body.last_name }}",
+          "length": 27
+        },
+        {
+          "path": "assignments.assignments[6].value",
+          "value": "={{ $json.body.email }}",
+          "length": 23
+        },
+        {
+          "path": "assignments.assignments[7].value",
+          "value": "={{ $json.body.phone }}",
+          "length": 23
+        },
+        {
+          "path": "assignments.assignments[8].value",
+          "value": "={{ $json.body.city }}",
+          "length": 22
+        },
+        {
+          "path": "assignments.assignments[9].value",
+          "value": "={{ $json.body.state }}",
+          "length": 23
+        },
+        {
+          "path": "assignments.assignments[11].name",
+          "value": "message_type",
+          "length": 12
+        },
+        {
+          "path": "assignments.assignments[11].value",
+          "value": "={{ $json.body.message.type }}",
+          "length": 30
+        },
+        {
+          "path": "assignments.assignments[12].value",
+          "value": "={{ $json.body.workflow.name }}",
+          "length": 31
+        }
+      ],
+      "all_parameter_keys": [
+        "assignments.assignments[0].id",
+        "assignments.assignments[0].name",
+        "assignments.assignments[0].value",
+        "assignments.assignments[0].type",
+        "assignments.assignments[1].id",
+        "assignments.assignments[1].name",
+        "assignments.assignments[1].value",
+        "assignments.assignments[1].type",
+        "assignments.assignments[2].id",
+        "assignments.assignments[2].name",
+        "assignments.assignments[2].value",
+        "assignments.assignments[2].type",
+        "assignments.assignments[3].id",
+        "assignments.assignments[3].name",
+        "assignments.assignments[3].value",
+        "assignments.assignments[3].type",
+        "assignments.assignments[4].id",
+        "assignments.assignments[4].name",
+        "assignments.assignments[4].value",
+        "assignments.assignments[4].type",
+        "assignments.assignments[5].id",
+        "assignments.assignments[5].name",
+        "assignments.assignments[5].value",
+        "assignments.assignments[5].type",
+        "assignments.assignments[6].id",
+        "assignments.assignments[6].name",
+        "assignments.assignments[6].value",
+        "assignments.assignments[6].type",
+        "assignments.assignments[7].id",
+        "assignments.assignments[7].name",
+        "assignments.assignments[7].value",
+        "assignments.assignments[7].type",
+        "assignments.assignments[8].id",
+        "assignments.assignments[8].name",
+        "assignments.assignments[8].value",
+        "assignments.assignments[8].type",
+        "assignments.assignments[9].id",
+        "assignments.assignments[9].name",
+        "assignments.assignments[9].value",
+        "assignments.assignments[9].type",
+        "assignments.assignments[10].id",
+        "assignments.assignments[10].name",
+        "assignments.assignments[10].value",
+        "assignments.assignments[10].type",
+        "assignments.assignments[11].id",
+        "assignments.assignments[11].name",
+        "assignments.assignments[11].value",
+        "assignments.assignments[11].type",
+        "assignments.assignments[12].id",
+        "assignments.assignments[12].name",
+        "assignments.assignments[12].value",
+        "assignments.assignments[12].type"
+      ]
+    },
+    {
+      "name": "Leak Detected?",
+      "type": "n8n-nodes-base.if",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Analyze Conversation",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Log AI Leak",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "conditions.conditions[0].leftValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.internal_reasoning_leak_detected === true; } catch(e) { return false; } })() }}",
+          "length": 276
+        }
+      ],
+      "all_parameter_keys": [
+        "conditions.options.version",
+        "conditions.options.leftValue",
+        "conditions.options.caseSensitive",
+        "conditions.options.typeValidation",
+        "conditions.conditions[0].id",
+        "conditions.conditions[0].leftValue",
+        "conditions.conditions[0].rightValue",
+        "conditions.conditions[0].operator.type",
+        "conditions.conditions[0].operator.operation",
+        "conditions.conditions[0].operator.singleValue",
+        "conditions.combinator"
+      ]
+    },
+    {
+      "name": "Log AI Leak",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Leak Detected?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "ai_output_errors",
+          "length": 16
+        },
+        {
+          "path": "fieldsUi.fieldValues[0].fieldValue",
+          "value": "={{ $('Assemble System Prompt').first().json.contactId }}",
+          "length": 57
+        },
+        {
+          "path": "fieldsUi.fieldValues[1].fieldValue",
+          "value": "={{ (() => { try { return $('Get Agent Config').first().json.location_id } catch(e) { try { return $('Get Outbound Agent Config').first().json.location_id } catch(e2) { return '' } } })() }}",
+          "length": 190
+        },
+        {
+          "path": "fieldsUi.fieldValues[3].fieldValue",
+          "value": "={{ $('Assemble System Prompt').first().json.channelType || '' }}",
+          "length": 65
+        },
+        {
+          "path": "fieldsUi.fieldValues[5].fieldId",
+          "value": "raw_output",
+          "length": 10
+        },
+        {
+          "path": "fieldsUi.fieldValues[5].fieldValue",
+          "value": "={{ $('AI Agent').first().json.output }}",
+          "length": 40
+        },
+        {
+          "path": "fieldsUi.fieldValues[6].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.leak_phrase || ''; } catch(e) { return 'parse_error'; } })() }}",
+          "length": 260
+        }
+      ],
+      "all_parameter_keys": [
+        "tableId",
+        "fieldsUi.fieldValues[0].fieldId",
+        "fieldsUi.fieldValues[0].fieldValue",
+        "fieldsUi.fieldValues[1].fieldId",
+        "fieldsUi.fieldValues[1].fieldValue",
+        "fieldsUi.fieldValues[2].fieldId",
+        "fieldsUi.fieldValues[2].fieldValue",
+        "fieldsUi.fieldValues[3].fieldId",
+        "fieldsUi.fieldValues[3].fieldValue",
+        "fieldsUi.fieldValues[4].fieldId",
+        "fieldsUi.fieldValues[4].fieldValue",
+        "fieldsUi.fieldValues[5].fieldId",
+        "fieldsUi.fieldValues[5].fieldValue",
+        "fieldsUi.fieldValues[6].fieldId",
+        "fieldsUi.fieldValues[6].fieldValue"
+      ]
+    },
+    {
+      "name": "Log Cap Suppression",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Quota OK?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Cap Locked Silent",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "message_send_errors",
+          "length": 19
+        },
+        {
+          "path": "fieldsUi.fieldValues[0].fieldValue",
+          "value": "={{ $('Assemble System Prompt').item.json.contactId }}",
+          "length": 54
+        },
+        {
+          "path": "fieldsUi.fieldValues[1].fieldValue",
+          "value": "={{ $('Assemble System Prompt').item.json.locationId }}",
+          "length": 55
+        },
+        {
+          "path": "fieldsUi.fieldValues[4].fieldId",
+          "value": "raw_message",
+          "length": 11
+        },
+        {
+          "path": "fieldsUi.fieldValues[4].fieldValue",
+          "value": "=Send suppressed by Brain Engine Cap Lock Check. block_reason: {{ $('Cap Lock Check').item.json.block_reason }}, reset_at: {{ $('Cap Lock Check').item.json.reset_at }}",
+          "length": 167
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "fieldsUi.fieldValues[0].fieldId",
+        "fieldsUi.fieldValues[0].fieldValue",
+        "fieldsUi.fieldValues[1].fieldId",
+        "fieldsUi.fieldValues[1].fieldValue",
+        "fieldsUi.fieldValues[2].fieldId",
+        "fieldsUi.fieldValues[2].fieldValue",
+        "fieldsUi.fieldValues[3].fieldId",
+        "fieldsUi.fieldValues[3].fieldValue",
+        "fieldsUi.fieldValues[4].fieldId",
+        "fieldsUi.fieldValues[4].fieldValue",
+        "fieldsUi.fieldValues[5].fieldId",
+        "fieldsUi.fieldValues[5].fieldValue"
+      ]
+    },
+    {
+      "name": "Log Outbound Message",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Send Email",
+          "channel": "main"
+        },
+        {
+          "node": "Send SMS",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Update Last Agent Message",
+          "channel": "main"
+        },
+        {
+          "node": "Get Lead Memory (After)",
+          "channel": "main"
+        },
+        {
+          "node": "Has Splinter Data?",
+          "channel": "main"
+        },
+        {
+          "node": "Prep Status Check Input",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "message_log",
+          "length": 11
+        },
+        {
+          "path": "fieldsUi.fieldValues[0].fieldValue",
+          "value": "={{ $('Assemble System Prompt').item.json.contactId }}",
+          "length": 54
+        },
+        {
+          "path": "fieldsUi.fieldValues[1].fieldValue",
+          "value": "={{ $('Assemble System Prompt').item.json.locationId }}",
+          "length": 55
+        },
+        {
+          "path": "fieldsUi.fieldValues[3].fieldId",
+          "value": "message_body",
+          "length": 12
+        },
+        {
+          "path": "fieldsUi.fieldValues[3].fieldValue",
+          "value": "={{ $('Silence Gate').first().json.responseText || $('AI Agent').item.json.output }}",
+          "length": 84
+        },
+        {
+          "path": "fieldsUi.fieldValues[4].fieldValue",
+          "value": "={{ $('Assemble System Prompt').item.json.channelType }}",
+          "length": 56
+        },
+        {
+          "path": "fieldsUi.fieldValues[7].fieldId",
+          "value": "ghl_message_id",
+          "length": 14
+        },
+        {
+          "path": "fieldsUi.fieldValues[7].fieldValue",
+          "value": "={{ $json.messageId }}",
+          "length": 22
+        },
+        {
+          "path": "fieldsUi.fieldValues[8].fieldId",
+          "value": "ghl_conversation_id",
+          "length": 19
+        },
+        {
+          "path": "fieldsUi.fieldValues[8].fieldValue",
+          "value": "={{ $json.conversationId }}",
+          "length": 27
+        }
+      ],
+      "all_parameter_keys": [
+        "tableId",
+        "fieldsUi.fieldValues[0].fieldId",
+        "fieldsUi.fieldValues[0].fieldValue",
+        "fieldsUi.fieldValues[1].fieldId",
+        "fieldsUi.fieldValues[1].fieldValue",
+        "fieldsUi.fieldValues[2].fieldId",
+        "fieldsUi.fieldValues[2].fieldValue",
+        "fieldsUi.fieldValues[3].fieldId",
+        "fieldsUi.fieldValues[3].fieldValue",
+        "fieldsUi.fieldValues[4].fieldId",
+        "fieldsUi.fieldValues[4].fieldValue",
+        "fieldsUi.fieldValues[5].fieldId",
+        "fieldsUi.fieldValues[5].fieldValue",
+        "fieldsUi.fieldValues[6].fieldId",
+        "fieldsUi.fieldValues[6].fieldValue",
+        "fieldsUi.fieldValues[7].fieldId",
+        "fieldsUi.fieldValues[7].fieldValue",
+        "fieldsUi.fieldValues[8].fieldId",
+        "fieldsUi.fieldValues[8].fieldValue",
+        "fieldsUi.fieldValues[9].fieldId",
+        "fieldsUi.fieldValues[9].fieldValue",
+        "fieldsUi.fieldValues[10].fieldId",
+        "fieldsUi.fieldValues[10].fieldValue"
+      ]
+    },
+    {
+      "name": "Newsletter Guard",
+      "type": "n8n-nodes-base.code",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Newsletter Offer Needed?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Clear Newsletter Flags",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsCode",
+          "value": "// Always guarantee 1 item with a stable contact_id so Clear Newsletter Flags never receives 0 items\nconst ctx = $('Assemble System Prompt').first().json;\nreturn [{ json: { contactId: ctx.contactId } }];",
+          "length": 203
+        }
+      ],
+      "all_parameter_keys": [
+        "jsCode"
+      ]
+    },
+    {
+      "name": "Newsletter Offer Needed?",
+      "type": "n8n-nodes-base.if",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Update Last Agent Message",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Set Newsletter Pending",
+          "channel": "main"
+        },
+        {
+          "node": "Newsletter Guard",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "conditions.conditions[0].leftValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed === true && parsed.appointment_outcome === 'rejected'; } catch(e) { return false; } })() }}",
+          "length": 263
+        },
+        {
+          "path": "conditions.conditions[1].leftValue",
+          "value": "={{ (() => { try { return $('Get Lead Memory').first().json.newsletter_opted_in } catch(e) { try { return $('Get Outbound Lead Memory').first().json.newsletter_opted_in } catch(e2) { return false } } })() }}",
+          "length": 207
+        },
+        {
+          "path": "conditions.conditions[2].leftValue",
+          "value": "={{ (() => { try { return $('Get Conversation Summary').first().json.newsletter_offer_declined } catch(e) { try { return $('Get Outbound Conversation Summary').first().json.newsletter_offer_declined } catch(e2) { return false } } })() }}",
+          "length": 237
+        },
+        {
+          "path": "conditions.conditions[3].leftValue",
+          "value": "={{ (() => { try { return $('Assemble System Prompt').first().json.direction } catch(e) { return 'inbound' } })() }}",
+          "length": 116
+        }
+      ],
+      "all_parameter_keys": [
+        "conditions.options.version",
+        "conditions.options.leftValue",
+        "conditions.options.caseSensitive",
+        "conditions.options.typeValidation",
+        "conditions.conditions[0].id",
+        "conditions.conditions[0].leftValue",
+        "conditions.conditions[0].rightValue",
+        "conditions.conditions[0].operator.type",
+        "conditions.conditions[0].operator.operation",
+        "conditions.conditions[0].operator.singleValue",
+        "conditions.conditions[1].id",
+        "conditions.conditions[1].leftValue",
+        "conditions.conditions[1].rightValue",
+        "conditions.conditions[1].operator.type",
+        "conditions.conditions[1].operator.operation",
+        "conditions.conditions[1].operator.singleValue",
+        "conditions.conditions[2].id",
+        "conditions.conditions[2].leftValue",
+        "conditions.conditions[2].rightValue",
+        "conditions.conditions[2].operator.type",
+        "conditions.conditions[2].operator.operation",
+        "conditions.conditions[2].operator.singleValue",
+        "conditions.conditions[3].id",
+        "conditions.conditions[3].leftValue",
+        "conditions.conditions[3].rightValue",
+        "conditions.conditions[3].operator.type",
+        "conditions.conditions[3].operator.operation",
+        "conditions.combinator"
+      ]
+    },
+    {
+      "name": "Outbound Bypass?",
+      "type": "n8n-nodes-base.if",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Determine Action",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Route by Channel1",
+          "channel": "main"
+        },
+        {
+          "node": "Silence Gate",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "conditions.conditions[0].leftValue",
+          "value": "={{ $('Assemble System Prompt').first().json.direction }}",
+          "length": 57
+        }
+      ],
+      "all_parameter_keys": [
+        "conditions.options.version",
+        "conditions.options.leftValue",
+        "conditions.options.caseSensitive",
+        "conditions.options.typeValidation",
+        "conditions.conditions[0].id",
+        "conditions.conditions[0].leftValue",
+        "conditions.conditions[0].rightValue",
+        "conditions.conditions[0].operator.type",
+        "conditions.conditions[0].operator.operation",
+        "conditions.combinator"
+      ]
+    },
+    {
+      "name": "Parse Sentiment",
+      "type": "n8n-nodes-base.code",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "AI Sentiment Analysis",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Turnaround Gate",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsCode",
+          "value": "const input = $json;\n\nlet parsed;\ntry {\n  let text = '';\n  if (input.content && Array.isArray(input.content)) {\n    text = input.content.map(c => c.text || '').join('');\n  } else if (input.message && input.message.content) {\n    text = input.message.content;\n  } else if (input.text) {\n    text = input.text;\n  } else if (typeof input === 'string') {\n    text = input;\n  } else {\n    text = JSON.stringify(input);\n  }\n  \n  const fenceMatch = text.match(/\\`\\`\\`(?:json)?\\n?([\\s\\S]*?)\\`\\`\\`/);\n  if (fe…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "jsCode"
+      ]
+    },
+    {
+      "name": "Prep Status Check Input",
+      "type": "n8n-nodes-base.set",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Log Outbound Message",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Trigger Status Check",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "assignments.assignments[0].name",
+          "value": "messageId",
+          "length": 9
+        },
+        {
+          "path": "assignments.assignments[0].value",
+          "value": "={{ $json.ghl_message_id }}",
+          "length": 27
+        },
+        {
+          "path": "assignments.assignments[2].value",
+          "value": "={{ $('Assemble System Prompt').item.json.contactId }}",
+          "length": 54
+        },
+        {
+          "path": "assignments.assignments[3].value",
+          "value": "={{ $('Assemble System Prompt').item.json.locationId }}",
+          "length": 55
+        }
+      ],
+      "all_parameter_keys": [
+        "assignments.assignments[0].id",
+        "assignments.assignments[0].name",
+        "assignments.assignments[0].value",
+        "assignments.assignments[0].type",
+        "assignments.assignments[1].id",
+        "assignments.assignments[1].name",
+        "assignments.assignments[1].value",
+        "assignments.assignments[1].type",
+        "assignments.assignments[2].id",
+        "assignments.assignments[2].name",
+        "assignments.assignments[2].value",
+        "assignments.assignments[2].type",
+        "assignments.assignments[3].id",
+        "assignments.assignments[3].name",
+        "assignments.assignments[3].value",
+        "assignments.assignments[3].type",
+        "options.includeOtherFields"
+      ]
+    },
+    {
+      "name": "Prepare Sentiment Context",
+      "type": "n8n-nodes-base.code",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Gather Sentiment Data1",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "AI Sentiment Analysis",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsCode",
+          "value": "const d = $input.first().json;\n\nreturn [{\n  json: {\n    ...d,\n    currentMessage: d.currentMessage || '',\n    historyText: d.messageHistory || 'No previous messages',\n    conversationSummary: d.conversationSummary || 'No summary',\n    lastIntent: 'none',\n    agentName: d.agentName || 'Luke Gilbert',\n    contactId: d.contactId || '',\n    locationId: d.locationId || '',\n    firstName: d.firstName || 'Contact',\n    pipelineStage: d.pipelineStage || 'MONTHLY',\n    pipelineState: d.pipelineState || '…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "jsCode"
+      ]
+    },
+    {
+      "name": "Prepare Tier Response",
+      "type": "n8n-nodes-base.code",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Tag Tier 2 in GHL",
+          "channel": "main"
+        },
+        {
+          "node": "Tier Sub-Router1",
+          "channel": "main"
+        },
+        {
+          "node": "Route Intent",
+          "channel": "main"
+        },
+        {
+          "node": "Log Already Escalated",
+          "channel": "main"
+        },
+        {
+          "node": "Is Qualified?",
+          "channel": "main"
+        },
+        {
+          "node": "Move GHL Pipeline Stage",
+          "channel": "main"
+        },
+        {
+          "node": "Fetch Slots",
+          "channel": "main"
+        },
+        {
+          "node": "Turnaround: Post Note",
+          "channel": "main"
+        },
+        {
+          "node": "Send Farewell?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Get Prompt Blocks (SMRT)",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsCode",
+          "value": "// Prepare tier-specific response instructions for the AI Agent\n// Pull tier/sentiment/sms_action from Parse Sentiment directly — input $json may be from Apply L1: Mark Lead (no tier)\nconst ps = (() => { try { return $('Parse Sentiment').first().json; } catch(e) { return {}; } })();\nconst tier = ps.tier || $json.tier || 'normal';\nconst sentiment = ps.sentiment || $json.sentiment || 'neutral';\nconst smsAction = ps.sms_action || $json.sms_action || 'none';\n\nconst tierInstructions = {\n  tier_1_conf…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "mode",
+        "jsCode"
+      ]
+    },
+    {
+      "name": "RAG LLM",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "KB Tool",
+          "channel": "ai_languageModel"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "model.__rl",
+          "value": "True",
+          "length": 4
+        },
+        {
+          "path": "model.mode",
+          "value": "list",
+          "length": 4
+        },
+        {
+          "path": "model.value",
+          "value": "gpt-4o-mini",
+          "length": 11
+        }
+      ],
+      "all_parameter_keys": [
+        "model.__rl",
+        "model.mode",
+        "model.value"
+      ]
+    },
+    {
+      "name": "Route by Channel1",
+      "type": "n8n-nodes-base.switch",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Should Respond?",
+          "channel": "main"
+        },
+        {
+          "node": "Outbound Bypass?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Cap Lock Check",
+          "channel": "main"
+        },
+        {
+          "node": "Send Email",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "rules.values[0].conditions.conditions[0].leftValue",
+          "value": "=={{ (() => { const ctx = $('Assemble System Prompt').first().json; if (ctx.direction === 'inbound') return ctx.channel || 'sms'; try { const pref = $('Get Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} try { const pref = $('Get Outbound Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} return ctx.channel || 'sms'; })() }}",
+          "length": 439
+        },
+        {
+          "path": "rules.values[0].renameOutput",
+          "value": "True",
+          "length": 4
+        },
+        {
+          "path": "rules.values[0].outputKey",
+          "value": "SMS",
+          "length": 3
+        },
+        {
+          "path": "rules.values[1].conditions.conditions[0].leftValue",
+          "value": "=={{ (() => { const ctx = $('Assemble System Prompt').first().json; if (ctx.direction === 'inbound') return ctx.channel || 'sms'; try { const pref = $('Get Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} try { const pref = $('Get Outbound Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} return ctx.channel || 'sms'; })() }}",
+          "length": 439
+        },
+        {
+          "path": "rules.values[1].renameOutput",
+          "value": "True",
+          "length": 4
+        },
+        {
+          "path": "rules.values[1].outputKey",
+          "value": "Email",
+          "length": 5
+        },
+        {
+          "path": "rules.values[2].conditions.conditions[0].leftValue",
+          "value": "=={{ (() => { const ctx = $('Assemble System Prompt').first().json; if (ctx.direction === 'inbound') return ctx.channel || 'sms'; try { const pref = $('Get Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} try { const pref = $('Get Outbound Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} return ctx.channel || 'sms'; })() }}",
+          "length": 439
+        },
+        {
+          "path": "rules.values[2].renameOutput",
+          "value": "True",
+          "length": 4
+        },
+        {
+          "path": "rules.values[2].outputKey",
+          "value": "Facebook",
+          "length": 8
+        }
+      ],
+      "all_parameter_keys": [
+        "rules.values[0].conditions.options.caseSensitive",
+        "rules.values[0].conditions.options.leftValue",
+        "rules.values[0].conditions.options.typeValidation",
+        "rules.values[0].conditions.options.version",
+        "rules.values[0].conditions.conditions[0].id",
+        "rules.values[0].conditions.conditions[0].leftValue",
+        "rules.values[0].conditions.conditions[0].rightValue",
+        "rules.values[0].conditions.conditions[0].operator.type",
+        "rules.values[0].conditions.conditions[0].operator.operation",
+        "rules.values[0].conditions.combinator",
+        "rules.values[0].renameOutput",
+        "rules.values[0].outputKey",
+        "rules.values[1].conditions.options.caseSensitive",
+        "rules.values[1].conditions.options.leftValue",
+        "rules.values[1].conditions.options.typeValidation",
+        "rules.values[1].conditions.options.version",
+        "rules.values[1].conditions.conditions[0].id",
+        "rules.values[1].conditions.conditions[0].leftValue",
+        "rules.values[1].conditions.conditions[0].rightValue",
+        "rules.values[1].conditions.conditions[0].operator.type",
+        "rules.values[1].conditions.conditions[0].operator.operation",
+        "rules.values[1].conditions.combinator",
+        "rules.values[1].renameOutput",
+        "rules.values[1].outputKey",
+        "rules.values[2].conditions.options.caseSensitive",
+        "rules.values[2].conditions.options.leftValue",
+        "rules.values[2].conditions.options.typeValidation",
+        "rules.values[2].conditions.options.version",
+        "rules.values[2].conditions.conditions[0].id",
+        "rules.values[2].conditions.conditions[0].leftValue",
+        "rules.values[2].conditions.conditions[0].rightValue",
+        "rules.values[2].conditions.conditions[0].operator.type",
+        "rules.values[2].conditions.conditions[0].operator.operation",
+        "rules.values[2].conditions.combinator",
+        "rules.values[2].renameOutput",
+        "rules.values[2].outputKey",
+        "options.ignoreCase"
+      ]
+    },
+    {
+      "name": "Search Relevant Messages",
+      "type": "n8n-nodes-base.postgres",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Check Keyword Search",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Merge Messages",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "query",
+          "value": "=SELECT \n  id,\n  message_body,\n  direction,\n  timestamp,\n  message_type,\n  'keyword_match' as source\nFROM message_log\nWHERE contact_id = '{{ $json.contact_id }}'\n  AND id NOT IN (\n    SELECT id \n    FROM message_log \n    WHERE contact_id = '{{ $json.contact_id }}'\n    ORDER BY timestamp DESC \n    LIMIT 10\n  )\n  AND (\n    {{ $json.keywords.map(k => \"message_body ILIKE '%\" + k + \"%'\").join(' OR ') }}\n  )\nORDER BY timestamp DESC\nLIMIT 5",
+          "length": 437
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "query"
+      ]
+    },
+    {
+      "name": "Send Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Route by Channel1",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Log Outbound Message",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "url",
+          "value": "https://services.leadconnectorhq.com/conversations/messages",
+          "length": 59
+        },
+        {
+          "path": "specifyBody",
+          "value": "json",
+          "length": 4
+        },
+        {
+          "path": "jsonBody",
+          "value": "={{ (() => { const raw = $json.responseText || $('AI Agent').first().json.output; const contactId = $('Assemble System Prompt').first().json.contactId; const coordinatorEmail = (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_email } catch(e) { return $('Get Agent Config').first().json.coordinator_email } })(); const coordinatorName = (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_name } catch(e) { try { return $('Get Agent Config').fir…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "method",
+        "url",
+        "sendHeaders",
+        "headerParameters.parameters[0].name",
+        "headerParameters.parameters[0].value",
+        "headerParameters.parameters[1].name",
+        "headerParameters.parameters[1].value",
+        "sendBody",
+        "specifyBody",
+        "jsonBody"
+      ]
+    },
+    {
+      "name": "Send SMS",
+      "type": "n8n-nodes-base.httpRequest",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Quota OK?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Log Outbound Message",
+          "channel": "main"
+        },
+        {
+          "node": "Post-Farewell DND Gate",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "url",
+          "value": "https://services.leadconnectorhq.com/conversations/messages",
+          "length": 59
+        },
+        {
+          "path": "specifyBody",
+          "value": "json",
+          "length": 4
+        },
+        {
+          "path": "jsonBody",
+          "value": "={{ JSON.stringify({ type: 'SMS', contactId: $('Assemble System Prompt').first().json.contactId, message: $json.responseText || $('AI Agent').first().json.output }) }}",
+          "length": 167
+        }
+      ],
+      "all_parameter_keys": [
+        "method",
+        "url",
+        "sendHeaders",
+        "headerParameters.parameters[0].name",
+        "headerParameters.parameters[0].value",
+        "headerParameters.parameters[1].name",
+        "headerParameters.parameters[1].value",
+        "sendBody",
+        "specifyBody",
+        "jsonBody"
+      ]
+    },
+    {
+      "name": "Set Newsletter Pending",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Newsletter Offer Needed?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "conversation_context",
+          "length": 20
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $('Assemble System Prompt').first().json.contactId }}",
+          "length": 57
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "matchType",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue",
+        "fieldsUi.fieldValues[0].fieldId",
+        "fieldsUi.fieldValues[0].fieldValue"
+      ]
+    },
+    {
+      "name": "Silence Gate",
+      "type": "n8n-nodes-base.code",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Outbound Bypass?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Should Respond?",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsCode",
+          "value": "const input = $input.first().json;\nconst direction = input.direction || 'inbound';\n\n// Style normalizer — strip punctuation the prompt bans but LLMs still emit.\n// Rules: no em dashes, no en dashes, no exclamation marks, no hyphen-as-separator.\n// Preserves compound words (first-time) and phone numbers (208-555-1234).\nfunction normalizeStyle(text) {\n  if (!text || typeof text !== 'string') return text;\n  let s = text;\n  s = s.replace(/\\s*\\u2014\\s*/g, ', ');\n  s = s.replace(/\\s*\\u2013\\s*/g, ', ')…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "jsCode"
+      ]
+    },
+    {
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [],
+      "relevant_fields": [
+        {
+          "path": "content",
+          "value": "## Pull Memory\n\n1. Message Logs\n2. Conversation_summary/context\n\n",
+          "length": 65
+        }
+      ],
+      "all_parameter_keys": [
+        "content",
+        "height",
+        "width"
+      ]
+    },
+    {
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [],
+      "relevant_fields": [
+        {
+          "path": "content",
+          "value": "## Pull Memory\n\n1. Message Logs\n2. Conversation_summary/context\n\n",
+          "length": 65
+        }
+      ],
+      "all_parameter_keys": [
+        "content",
+        "height",
+        "width"
+      ]
+    },
+    {
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [],
+      "relevant_fields": [
+        {
+          "path": "content",
+          "value": "## Prompt Selection & Assemebly  \n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+          "length": 115
+        }
+      ],
+      "all_parameter_keys": [
+        "content",
+        "height",
+        "width"
+      ]
+    },
+    {
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [],
+      "relevant_fields": [
+        {
+          "path": "content",
+          "value": "## AI Model (RAG System)\n\nDynamic context gathering → Prompt assembly → AI response → GHL send",
+          "length": 94
+        }
+      ],
+      "all_parameter_keys": [
+        "content",
+        "height",
+        "width",
+        "color"
+      ]
+    },
+    {
+      "name": "Summary Exists?",
+      "type": "n8n-nodes-base.if",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Analyze Conversation",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Update Conversation Context",
+          "channel": "main"
+        },
+        {
+          "node": "Insert Conversation Context",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "conditions.conditions[0].id",
+          "value": "summary-check-001",
+          "length": 17
+        },
+        {
+          "path": "conditions.conditions[0].leftValue",
+          "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.id } catch(e) { try { return $('Get Conversation Summary').first().json.id } catch(e2) { return undefined } } })() }}",
+          "length": 195
+        }
+      ],
+      "all_parameter_keys": [
+        "conditions.options.version",
+        "conditions.options.leftValue",
+        "conditions.options.caseSensitive",
+        "conditions.options.typeValidation",
+        "conditions.conditions[0].id",
+        "conditions.conditions[0].leftValue",
+        "conditions.conditions[0].rightValue",
+        "conditions.conditions[0].operator.type",
+        "conditions.conditions[0].operator.operation",
+        "conditions.conditions[0].operator.singleValue",
+        "conditions.combinator"
+      ]
+    },
+    {
+      "name": "Turnaround Gate",
+      "type": "n8n-nodes-base.if",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Parse Sentiment",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Turnaround: Clear State",
+          "channel": "main"
+        },
+        {
+          "node": "L1 Drop Gate",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "conditions.conditions[0].leftValue",
+          "value": "={{ (() => { try { return $('searchLeads').first().json.opt_out_level } catch(e) { return null } })() }}",
+          "length": 104
+        },
+        {
+          "path": "conditions.conditions[1].leftValue",
+          "value": "={{ $json.action }}",
+          "length": 19
+        }
+      ],
+      "all_parameter_keys": [
+        "conditions.options.version",
+        "conditions.options.leftValue",
+        "conditions.options.caseSensitive",
+        "conditions.options.typeValidation",
+        "conditions.combinator",
+        "conditions.conditions[0].id",
+        "conditions.conditions[0].leftValue",
+        "conditions.conditions[0].rightValue",
+        "conditions.conditions[0].operator.type",
+        "conditions.conditions[0].operator.operation",
+        "conditions.conditions[1].id",
+        "conditions.conditions[1].leftValue",
+        "conditions.conditions[1].rightValue",
+        "conditions.conditions[1].operator.type",
+        "conditions.conditions[1].operator.operation"
+      ]
+    },
+    {
+      "name": "Turnaround: Clear State",
+      "type": "n8n-nodes-base.postgres",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Turnaround Gate",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Turnaround: Disable DND",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "query",
+          "value": "=UPDATE leads SET opt_out_level=NULL, opted_out_at=NULL, opt_out_reason=NULL, sms_paused_until=NULL, status='active_conversation' WHERE contact_id='{{ $('LeadDetails').first().json.contact_id }}'",
+          "length": 195
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "query"
+      ]
+    },
+    {
+      "name": "Update Conversation Context",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Summary Exists?",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Determine Action",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "conversation_context",
+          "length": 20
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $('Assemble System Prompt').first().json.contactId }}",
+          "length": 57
+        },
+        {
+          "path": "fieldsUi.fieldValues[0].fieldId",
+          "value": "conversation_summary",
+          "length": 20
+        },
+        {
+          "path": "fieldsUi.fieldValues[0].fieldValue",
+          "value": "={{ (() => {  const turnCounter = (() => {   try { return parseInt($('searchLeads').first().json.turn_counter) || 0 }   catch(e) {    try { return parseInt($('Get Lead Memory').first().json.turn_counter) || 0 }    catch(e2) {     try { return parseInt($('Get Outbound Lead Memory').first().json.turn_counter) || 0 }     catch(e3) { return 0 }    }   }  })();  const shouldRegen = (turnCounter <= 2 || turnCounter % 10 === 0);  if (shouldRegen) {   try {    const content = $('Analyze Conversation').f…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "fieldsUi.fieldValues[1].fieldValue",
+          "value": "={{ (() => { try { return $('Parse Sentiment').first().json.sentiment_analysis ? $('Parse Sentiment').first().json.sentiment_analysis.action : 'continue'; } catch(e) { return 'continue'; } })() }}",
+          "length": 196
+        },
+        {
+          "path": "fieldsUi.fieldValues[3].fieldId",
+          "value": "lead_intent",
+          "length": 11
+        },
+        {
+          "path": "fieldsUi.fieldValues[3].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.lead_intent || 'unknown'; } catch(e) { return 'unknown'; } })() }}",
+          "length": 263
+        },
+        {
+          "path": "fieldsUi.fieldValues[4].fieldId",
+          "value": "lead_timeline",
+          "length": 13
+        },
+        {
+          "path": "fieldsUi.fieldValues[4].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.lead_timeline || 'unknown'; } catch(e) { return 'unknown'; } })() }}",
+          "length": 265
+        },
+        {
+          "path": "fieldsUi.fieldValues[5].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && (parsed.appointment_outcome === 'offered' || parsed.appointment_outcome === 'accepted'); } catch(e) { return false; } })() }}",
+          "length": 347
+        },
+        {
+          "path": "fieldsUi.fieldValues[6].fieldValue",
+          "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && parsed.appointment_outcome === 'accepted'; } catch(e) { return false; } })() }}",
+          "length": 301
+        },
+        {
+          "path": "fieldsUi.fieldValues[7].fieldValue",
+          "value": "={{ (() => {  const turnCounter = (() => {   try { return parseInt($('searchLeads').first().json.turn_counter) || 0 }   catch(e) {    try { return parseInt($('Get Lead Memory').first().json.turn_counter) || 0 }    catch(e2) { return 0 }   }  })();  const shouldRegen = (turnCounter <= 2 || turnCounter % 10 === 0);  if (shouldRegen) {   return new Date().toISOString();  } else {   try { return $('Get Outbound Conversation Summary').first().json.last_summarized_at || null }   catch(e) { try { retur…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue",
+        "fieldsUi.fieldValues[0].fieldId",
+        "fieldsUi.fieldValues[0].fieldValue",
+        "fieldsUi.fieldValues[1].fieldId",
+        "fieldsUi.fieldValues[1].fieldValue",
+        "fieldsUi.fieldValues[2].fieldId",
+        "fieldsUi.fieldValues[2].fieldValue",
+        "fieldsUi.fieldValues[3].fieldId",
+        "fieldsUi.fieldValues[3].fieldValue",
+        "fieldsUi.fieldValues[4].fieldId",
+        "fieldsUi.fieldValues[4].fieldValue",
+        "fieldsUi.fieldValues[5].fieldId",
+        "fieldsUi.fieldValues[5].fieldValue",
+        "fieldsUi.fieldValues[6].fieldId",
+        "fieldsUi.fieldValues[6].fieldValue",
+        "fieldsUi.fieldValues[7].fieldId",
+        "fieldsUi.fieldValues[7].fieldValue"
+      ]
+    },
+    {
+      "name": "Update Last Agent Message",
+      "type": "n8n-nodes-base.supabase",
+      "disabled": false,
+      "incoming": [
+        {
+          "node": "Log Outbound Message",
+          "channel": "main"
+        }
+      ],
+      "outgoing": [
+        {
+          "node": "Escalation Check?",
+          "channel": "main"
+        },
+        {
+          "node": "Newsletter Offer Needed?",
+          "channel": "main"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "tableId",
+          "value": "leads",
+          "length": 5
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $json.contact_id }}",
+          "length": 23
+        },
+        {
+          "path": "fieldsUi.fieldValues[0].fieldId",
+          "value": "last_agent_message_at",
+          "length": 21
+        },
+        {
+          "path": "fieldsUi.fieldValues[1].fieldValue",
+          "value": "={{ (() => { const stage = $('Assemble System Prompt').first().json.pipelineStage || 'MONTHLY'; const days = stage === 'MONTHLY' ? 28 : stage === 'BIWEEKLY' ? 14 : 7; return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString(); })() }}",
+          "length": 246
+        }
+      ],
+      "all_parameter_keys": [
+        "operation",
+        "tableId",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue",
+        "fieldsUi.fieldValues[0].fieldId",
+        "fieldsUi.fieldValues[0].fieldValue",
+        "fieldsUi.fieldValues[1].fieldId",
+        "fieldsUi.fieldValues[1].fieldValue"
+      ]
+    },
+    {
+      "name": "addAppointmentNotes",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsonSchemaExample",
+          "value": "{\"appointment_time\":\"2026-04-10T09:00\",\"qualifying_summary\":\"Buyer, 500k, pre-approved\",\"conversation_summary\":\"Lead relocating\"}",
+          "length": 129
+        }
+      ],
+      "all_parameter_keys": [
+        "name",
+        "description",
+        "jsCode",
+        "specifyInputSchema",
+        "jsonSchemaExample"
+      ]
+    },
+    {
+      "name": "bookAppointment",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsonSchemaExample",
+          "value": "{\"selected_slot\":\"2026-04-10T09:00:00-06:00\"}",
+          "length": 45
+        }
+      ],
+      "all_parameter_keys": [
+        "name",
+        "description",
+        "jsCode",
+        "specifyInputSchema",
+        "jsonSchemaExample"
+      ]
+    },
+    {
+      "name": "checkQualificationStatus",
+      "type": "n8n-nodes-base.supabaseTool",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "toolDescription",
+          "value": "Check how many of the 3 qualifying questions this lead has answered so far.\n\nWHEN TO USE:\n- BEFORE calling saveQualifyingAnswer, to get the current qualifying_answers object\n- When the lead says they want to book an appointment, to verify they are qualified\n- When you are unsure which qualifying questions have already been answered\n\nINPUT: No input needed. Automatically looks up this lead's conversation_context record.\n\nOUTPUT: Returns the qualifying_answers JSONB object with keys q1, q2, q3.\n- …[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "tableId",
+          "value": "conversation_context",
+          "length": 20
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.contact_id } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}",
+          "length": 146
+        }
+      ],
+      "all_parameter_keys": [
+        "descriptionType",
+        "toolDescription",
+        "operation",
+        "tableId",
+        "limit",
+        "matchType",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue"
+      ]
+    },
+    {
+      "name": "deleteAppointment",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsonSchemaExample",
+          "value": "{\"event_id\":\"abc123\"}",
+          "length": 21
+        }
+      ],
+      "all_parameter_keys": [
+        "name",
+        "description",
+        "jsCode",
+        "specifyInputSchema",
+        "jsonSchemaExample"
+      ]
+    },
+    {
+      "name": "getAppointments",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "toolDescription",
+          "value": "Fetch all appointments (past and upcoming) for the current lead from GoHighLevel.\n\nWHEN TO USE:\n- When the lead asks about existing appointments (\"when is my appointment?\", \"do I have anything scheduled?\")\n- When the lead wants to cancel or reschedule (you need the event_id from here)\n- When you need to check if the lead already has a booking before offering to schedule\n\nINPUT: No input needed. Automatically looks up the current lead.\n\nOUTPUT: List of appointment objects with event IDs, dates, t…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "url",
+          "value": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/appointments",
+          "length": 206
+        }
+      ],
+      "all_parameter_keys": [
+        "toolDescription",
+        "url",
+        "sendHeaders",
+        "parametersHeaders.values[0].name",
+        "parametersHeaders.values[0].valueProvider",
+        "parametersHeaders.values[0].value",
+        "parametersHeaders.values[1].name",
+        "parametersHeaders.values[1].valueProvider",
+        "parametersHeaders.values[1].value"
+      ]
+    },
+    {
+      "name": "getAvailableSlots",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsonSchemaExample",
+          "value": "{\"timezone\":\"America/Denver\",\"target_date\":\"2026-04-15\"}",
+          "length": 56
+        }
+      ],
+      "all_parameter_keys": [
+        "name",
+        "description",
+        "jsCode",
+        "specifyInputSchema",
+        "jsonSchemaExample"
+      ]
+    },
+    {
+      "name": "getContact",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "toolDescription",
+          "value": "Fetch the full contact profile for the current lead from GoHighLevel, including custom fields, tags, lead source, and all contact details.\n\nWHEN TO USE:\n- When you need lead details NOT available in the conversation (email, address, tags, lead source)\n- When the lead asks you to confirm their contact information\n- When you need CRM context about the lead's history or status\n\nINPUT: No input needed. Automatically looks up the current lead.\n\nOUTPUT: Full contact record with name, email, phone, tag…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "url",
+          "value": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}",
+          "length": 193
+        }
+      ],
+      "all_parameter_keys": [
+        "toolDescription",
+        "url",
+        "sendHeaders",
+        "parametersHeaders.values[0].name",
+        "parametersHeaders.values[0].valueProvider",
+        "parametersHeaders.values[0].value",
+        "parametersHeaders.values[1].name",
+        "parametersHeaders.values[1].valueProvider",
+        "parametersHeaders.values[1].value"
+      ]
+    },
+    {
+      "name": "getNotes",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "toolDescription",
+          "value": "Fetch all notes recorded on this lead's GoHighLevel contact by agents or the AI system.\n\nWHEN TO USE:\n- When the lead references a previous conversation or commitment (\"someone told me...\", \"I was promised...\")\n- When you need historical context about what has been discussed or agreed with this lead\n- Before escalating, to check if there are existing agent notes\n\nINPUT: No input needed. Automatically looks up the current lead.\n\nOUTPUT: List of notes with timestamps and content.\n\nRULES:\n- Use to …[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "url",
+          "value": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/notes",
+          "length": 199
+        }
+      ],
+      "all_parameter_keys": [
+        "toolDescription",
+        "url",
+        "sendHeaders",
+        "parametersHeaders.values[0].name",
+        "parametersHeaders.values[0].valueProvider",
+        "parametersHeaders.values[0].value",
+        "parametersHeaders.values[1].name",
+        "parametersHeaders.values[1].valueProvider",
+        "parametersHeaders.values[1].value"
+      ]
+    },
+    {
+      "name": "rescheduleAppointment",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "jsonSchemaExample",
+          "value": "{\"event_id\":\"abc\",\"start_time\":\"2026-04-10T10:00:00-06:00\"}",
+          "length": 59
+        }
+      ],
+      "all_parameter_keys": [
+        "description",
+        "jsCode",
+        "specifyInputSchema",
+        "jsonSchemaExample"
+      ]
+    },
+    {
+      "name": "saveQualifyingAnswer",
+      "type": "n8n-nodes-base.supabaseTool",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "toolDescription",
+          "value": "MANDATORY TOOL - Save a qualifying answer to the database after the lead answers one of the 3 qualifying questions.\n\nWHEN TO USE: You MUST call this tool IMMEDIATELY every time the lead provides information that answers Q1, Q2, or Q3. Do NOT wait until all questions are answered. Save each answer the moment you receive it.\n\nThe tool updates the qualifying_answers JSONB column in conversation_context for this lead.\n\nINPUT: You must provide a JSON object with the field 'qualifying_answers' contain…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "tableId",
+          "value": "conversation_context",
+          "length": 20
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ (() => { try { return $('Set Outbound Context').first().json.contact_id } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}",
+          "length": 146
+        },
+        {
+          "path": "fieldsUi.fieldValues[0].fieldValue",
+          "value": "={{ $fromAI('qualifying_answers', 'The complete qualifying_answers JSON object with keys q1, q2, q3. Each key is either a string summary of the lead answer or null if not yet answered. Example: {\"q1\": \"Buying, 3 month timeline\", \"q2\": \"Budget around 500k\", \"q3\": null}. IMPORTANT: Include ALL existing answers plus the new one.', 'json') }}",
+          "length": 340
+        }
+      ],
+      "all_parameter_keys": [
+        "descriptionType",
+        "toolDescription",
+        "operation",
+        "tableId",
+        "matchType",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue",
+        "fieldsUi.fieldValues[0].fieldId",
+        "fieldsUi.fieldValues[0].fieldValue"
+      ]
+    },
+    {
+      "name": "searchPastMessages",
+      "type": "n8n-nodes-base.supabaseTool",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "toolDescription",
+          "value": "Search this lead's past message log beyond the 15 most recent messages already in your context.\n\nWHEN TO USE:\n- Lead references something old (\"I told you\", \"I mentioned before\", \"remember when\", \"weeks ago\")\n- You need to verify a claim about a past conversation\n- You need to recall a commitment, date, or topic from earlier in the relationship\n\nWHEN NOT TO USE:\n- For general knowledge or company info (use KB Tool)\n- For information already visible in RECENT MESSAGES (your 15-turn window)\n\nINPUT…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "tableId",
+          "value": "message_log",
+          "length": 11
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "value": "={{ $('Assemble System Prompt').first().json.contactId }}",
+          "length": 57
+        }
+      ],
+      "all_parameter_keys": [
+        "descriptionType",
+        "toolDescription",
+        "operation",
+        "tableId",
+        "limit",
+        "matchType",
+        "filters.conditions[0].keyName",
+        "filters.conditions[0].condition",
+        "filters.conditions[0].keyValue"
+      ]
+    },
+    {
+      "name": "subscribeToNewsletter",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "description",
+          "value": "Subscribe the current lead to the weekly market newsletter. Updates leads.newsletter_opted_in = true, tags the contact in GHL, and clears pending flags.\n\nINPUT (required JSON):\n- contact_id: string - the CONTACT_ID from the context header (always required)\n\nCALL THIS TOOL when the lead signals they want market updates, want to stay in the loop, accept the newsletter offer, or agree to receive periodic info. Call it BEFORE you write your response acknowledging the subscription — never acknowledge…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "jsonSchemaExample",
+          "value": "{\"contact_id\": \"abc123\"}",
+          "length": 24
+        }
+      ],
+      "all_parameter_keys": [
+        "name",
+        "description",
+        "jsCode",
+        "specifyInputSchema",
+        "jsonSchemaExample"
+      ]
+    },
+    {
+      "name": "switchChannel",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "description",
+          "value": "Switch the lead's communication channel and send a hardcoded bridge message on the new channel. Call this ONLY when the lead explicitly asks to move to a different channel (e.g. \"just email me\", \"text me instead\").\n\nSUPPORTED DESTINATIONS: sms, email. You CANNOT switch TO Instagram DM — only FROM it. If a lead asks to be contacted on Instagram, politely decline and offer SMS or email instead.\n\nINPUT (required JSON):\n- contact_id: string — CONTACT_ID from context\n- new_channel: string — must be \"…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "jsonSchemaExample",
+          "value": "{\"contact_id\":\"abc123\",\"new_channel\":\"email\"}",
+          "length": 45
+        }
+      ],
+      "all_parameter_keys": [
+        "name",
+        "description",
+        "jsCode",
+        "specifyInputSchema",
+        "jsonSchemaExample"
+      ]
+    },
+    {
+      "name": "updateContactMemory",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "disabled": false,
+      "incoming": [],
+      "outgoing": [
+        {
+          "node": "AI Agent",
+          "channel": "ai_tool"
+        }
+      ],
+      "relevant_fields": [
+        {
+          "path": "name",
+          "value": "updateContactMemory",
+          "length": 19
+        },
+        {
+          "path": "description",
+          "value": "Update the contact's memory and enrichment fields. Call this when you detect ANY of the signals below. Include ALL detected fields in a single call — never make multiple calls.\n\nINPUT (required JSON):\n- contact_id: string - CONTACT_ID from context (always required)\n- Plus any fields below that you detected:\n\nFIELD TRIGGERS — scan every message for these:\n\nIDENTITY / CONTACT INFO\n- Lead says their name → first_name, last_name\n- Lead gives their email address → email\n- Lead gives their phone numbe…[TRUNCATED]",
+          "length": 512
+        },
+        {
+          "path": "jsonSchemaExample",
+          "value": "{\"contact_id\":\"abc123\",\"first_name\":\"Mike\",\"last_name\":\"Johnson\",\"email\":\"mike@test.com\",\"phone\":\"208-555-1234\",\"address\":\"123 Oak St\",\"city\":\"Eagle\",\"state\":\"Idaho\",\"postal_code\":\"83616\",\"market_role\":\"buyer\",\"intent_topic\":\"buying\",\"intent_level\":\"active\",\"contact_preference\":\"sms\",\"relationship_type\":\"sphere\",\"open_loop\":\"needs to sell CA house before buying, target June\",\"handoff_reason\":\"wants legal advice on lease\",\"needs_human_review\":true,\"review_reason\":\"recent bereavement, pause outrea…[TRUNCATED]",
+          "length": 512
+        }
+      ],
+      "all_parameter_keys": [
+        "name",
+        "description",
+        "jsCode",
+        "specifyInputSchema",
+        "jsonSchemaExample"
+      ]
+    }
+  ]
+}

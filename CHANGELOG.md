@@ -25,3 +25,21 @@ Created a single meeting-ready working document at `docs/system/SMRT_CONSOLIDATE
 Added a read-only communication-log audit evidence set using exact Supabase schema columns. The audit generated `data/supabase/communication_log_audit_query_input.json`, `data/supabase/communication_log_audit_raw.json`, `data/supabase/communication_log_audit_clean.json`, and `docs/system/communication_log_audit_findings.md`. Key findings were that communication observability is partially mature, outbound delivery/send-error tracking is stronger than inbound provenance, 31 inbound captures remain unprocessed, and global `system_errors` logging is likely underpopulated.
 
 Added `docs/system/smrt_sprint_priority_matrix.md` to rank repair candidates by impact, risk reduction, dependency readiness, and testability. The resulting sequence is: workflow control plane, appointment ledger hardening, inbound replay/backfill, GHL identity contract, error/mirror-failure ledger, conversation mirror/forward state, and later prompt/agent-state simplification. No production workflow, schema, credential, prompt, or runtime changes were made.
+
+## 2026-04-29 — LLM Injection Audit and Prompt Observability Handoff
+
+Completed a focused read-only audit of the SMRT Brain Engine LLM injection path. The audit confirmed that the main AI Agent appears to receive the assembled `systemPrompt`, but identified high-priority risk around partial upstream injection, inactive static prompt sections, missing prompt-manifest telemetry, inconsistent conversation context, possible message-history parsing loss, and ambiguous ownership between static sections, prompt blocks, system defaults, agent notes, and agent personality fields.
+
+Created the following durable artifacts:
+
+| Artifact | Purpose |
+|---|---|
+| `docs/system/SMRT_LLM_INJECTION_AUDIT.md` | Meeting-ready audit report explaining the injection path, likely failure surfaces, and recommended next step. |
+| `docs/system/llm_injection_defect_map.md` | Ranked defect map with validation tests for prompt assembly and injection reliability. |
+| `docs/system/llm_injection_audit_findings.md` | Parsed read-only Supabase findings for prompt-feeding records and active/inactive prompt surfaces. |
+| `docs/system/brain_engine_llm_chain.md` | Focused workflow evidence for LLM, prompt, model, memory, and tool connections. |
+| `docs/system/brain_engine_prompt_assembly_full.md` | Prompt retrieval and assembly evidence from the Brain Engine workflow. |
+| `docs/system/assemble_system_prompt_code.md` | Extracted `Assemble System Prompt` logic with secret redaction. |
+| `docs/handoffs/HANDOFF_005_LLM_INJECTION_OBSERVABILITY.md` | Developer-ready ticket for adding non-sensitive prompt assembly telemetry before any large prompt rewrite. |
+
+Recommended sequencing: treat LLM injection as **Sprint 1B or Sprint 2A**, after workflow control-plane discipline is confirmed. The first implementation should add **prompt assembly observability**, not rewrite prompt content. No production workflow, schema, credential, prompt, or runtime changes were made.

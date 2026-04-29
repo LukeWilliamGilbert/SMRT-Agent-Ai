@@ -1,0 +1,868 @@
+{
+  "active_prompt_blocks_sample": [
+    {
+      "block_id": "channel_email_inbound",
+      "category": "channel",
+      "conditions": {
+        "channel": "email",
+        "trigger": "inbound"
+      },
+      "content_excerpt": "## Channel: Email (Inbound Response)\n\n**Hard Constraints:**\n- Match their email length and formality\n- If they wrote 2 sentences, respond with 2-4\n- If they wrote a paragraph, you can write a paragraph\n- Never exceed their length by more than 50%\n\n**",
+      "content_length": 662,
+      "priority": 20
+    },
+    {
+      "block_id": "channel_email_outbound",
+      "category": "channel",
+      "conditions": {
+        "channel": "email",
+        "trigger": "outbound"
+      },
+      "content_excerpt": "## Channel: Email (Outbound)\n\n**Hard Constraints:**\n- Subject line: Under 40 characters, no clickbait\n- Body: 3-4 sentences maximum\n- No bullet points or lists in cold outreach\n- One CTA maximum (and it should be soft)\n\n**Format Rules:**\n- Subject sh",
+      "content_length": 574,
+      "priority": 20
+    },
+    {
+      "block_id": "channel_sms_inbound",
+      "category": "channel",
+      "conditions": {
+        "channel": "sms",
+        "trigger": "inbound"
+      },
+      "content_excerpt": "## Channel: SMS (Inbound Response)\n\n**Hard Constraints:**\n- Match their message length \u00b1 20 characters\n- If they wrote 50 chars, respond with 30-70\n- Never exceed 200 characters regardless of their length\n- No links, URLs, or emojis\n\n**Format Rules:*",
+      "content_length": 556,
+      "priority": 20
+    },
+    {
+      "block_id": "channel_sms_outbound",
+      "category": "channel",
+      "conditions": {
+        "channel": "sms",
+        "trigger": "outbound"
+      },
+      "content_excerpt": "## Channel: SMS (Outbound)\n\n**Hard Constraints:**\n- Maximum 160 characters total\n- No links, URLs, or emojis\n- No line breaks or bullet points\n- Single sentence preferred, two max\n\n**Format Rules:**\n- Write like a text from a colleague, not a company",
+      "content_length": 634,
+      "priority": 20
+    },
+    {
+      "block_id": "conversation_history_inbound",
+      "category": "history",
+      "conditions": {
+        "has_previous_messages": true,
+        "trigger": "inbound"
+      },
+      "content_excerpt": "## Conversation History\n\n{{formatted_conversation_history}}\n\nCONTEXT: This is part of an ongoing thread. They are engaged. Respond in the context of this conversation \u2014 do not introduce yourself or re-establish who you are.",
+      "content_length": 223,
+      "priority": 40
+    },
+    {
+      "block_id": "conversation_history_outbound",
+      "category": "history",
+      "conditions": {
+        "has_previous_messages": true,
+        "trigger": "outbound"
+      },
+      "content_excerpt": "## Conversation Context\n\nLAST MESSAGE YOU SENT: \"{{last_outbound_message}}\"\nSENT: {{days_since_last}} days ago\nTHEIR RESPONSE: {{response_status}}\n\nYOUR TASK: Send a different angle. Do not repeat the same value proposition, topic, or framing.",
+      "content_length": 243,
+      "priority": 40
+    },
+    {
+      "block_id": "mode_inbound_response",
+      "category": "mode",
+      "conditions": {
+        "trigger": "inbound"
+      },
+      "content_excerpt": "## Inbound Response\n\nThey sent you a message. You are replying.\n\nTHEIR MESSAGE: {{their_message}}\n\nOBJECTIVE: Answer what they asked. Follow the response skeleton (Acknowledge \u2192 Deliver \u2192 Advance). Most replies are just Deliver. Advance only if it ge",
+      "content_length": 303,
+      "priority": 10
+    },
+    {
+      "block_id": "mode_outbound_cold",
+      "category": "mode",
+      "conditions": {
+        "lead_temp": "cold",
+        "touch_number": 1,
+        "trigger": "outbound"
+      },
+      "content_excerpt": "## Outbound: First Touch\n\nYou are initiating contact with someone who does not know you yet.\n\n**Content source:** A market insight has been provided in your task. Adapt it into your message \u2014 do not generate new stats or claims. Do not copy it verbat",
+      "content_length": 619,
+      "priority": 10
+    },
+    {
+      "block_id": "mode_outbound_hot",
+      "category": "mode",
+      "conditions": {
+        "lead_temp": "hot",
+        "trigger": "outbound"
+      },
+      "content_excerpt": "## Outbound: Active Relationship\n\nYou are continuing an ongoing conversation with someone who has been responsive.\n\n**Content source:** A market insight has been provided in your task. Weave it naturally into the conversation \u2014 adapt it to their know",
+      "content_length": 571,
+      "priority": 10
+    },
+    {
+      "block_id": "mode_outbound_warm",
+      "category": "mode",
+      "conditions": {
+        "lead_temp": "warm",
+        "response_received": false,
+        "trigger": "outbound"
+      },
+      "content_excerpt": "## Outbound: Warm Follow-Up\n\nThey have received previous messages but have not replied.\n\n**Content source:** A market insight has been provided in your task. Adapt it \u2014 do not repeat any topic or angle from previous messages. Do not copy verbatim.\n\nO",
+      "content_length": 515,
+      "priority": 10
+    },
+    {
+      "block_id": "relationship_cold",
+      "category": "relationship",
+      "conditions": {
+        "lead_temp": "cold"
+      },
+      "content_excerpt": "## Relationship: Cold\n\nHISTORY: No prior engagement. Or: extended silence (30+ days, no reply).\n\nBEHAVIORAL FRAME:\n- They do not know you or have forgotten you. Do not assume familiarity.\n- Ultra-brief. High-value hooks only.\n- Earn attention \u2014 do no",
+      "content_length": 412,
+      "priority": 30
+    },
+    {
+      "block_id": "relationship_hot",
+      "category": "relationship",
+      "conditions": {
+        "lead_temp": "hot"
+      },
+      "content_excerpt": "## Relationship: Hot\n\nHISTORY: {{engagement_summary}}\n\nBEHAVIORAL FRAME:\n- Active relationship. They are engaged and responsive.\n- More detailed responses are appropriate.\n- Conversational tone is fine. You have rapport.\n- Can move toward concrete ne",
+      "content_length": 399,
+      "priority": 30
+    },
+    {
+      "block_id": "relationship_warm",
+      "category": "relationship",
+      "conditions": {
+        "lead_temp": "warm"
+      },
+      "content_excerpt": "## Relationship: Warm\n\nHISTORY: {{engagement_summary}}\n\nBEHAVIORAL FRAME:\n- They are aware of you. They may remember previous messages.\n- Slightly more personal tone is appropriate, but do not over-assume.\n- Can reference what they previously engaged",
+      "content_length": 390,
+      "priority": 30
+    },
+    {
+      "block_id": "situation_emotional_crisis",
+      "category": "situation",
+      "conditions": {
+        "situation": "emotional_crisis"
+      },
+      "content_excerpt": "## Emotional Escalation\n\nThis person has shared something deeply personal. Business stops immediately.\n\nRESPONSE FRAMEWORK:\n1. Acknowledge with genuine, human empathy\n2. Offer support \u2014 \"Is there anything we can do?\"\n3. Do NOT mention pausing, system",
+      "content_length": 525,
+      "priority": 100
+    },
+    {
+      "block_id": "situation_explicit_optout",
+      "category": "situation",
+      "conditions": {
+        "situation": "explicit_optout"
+      },
+      "content_excerpt": "## Tier 3: Explicit Opt-Out\n\nThey have issued a clear, permanent stop command.\n\nRESPONSE (SMS): \"Got it\u2026 I'll stop texting you. Wishing you the best.\"\nRESPONSE (Email): \"Got it\u2026 I'll remove you from our outreach. Wishing you the best.\"\n\nUse exact wor",
+      "content_length": 284,
+      "priority": 90
+    },
+    {
+      "block_id": "situation_temporary_rejection",
+      "category": "situation",
+      "conditions": {
+        "situation": "temporary_rejection"
+      },
+      "content_excerpt": "## Tier 2: Temporary Rejection\n\nThey are pushing back but have not issued a permanent stop.\n\nRESPONSE: \"Understood.\"\nNothing else. No apology. No explanation. No offer to remove.",
+      "content_length": 178,
+      "priority": 80
+    },
+    {
+      "block_id": "situation_confused_hostile",
+      "category": "situation",
+      "conditions": {
+        "situation": "confused_hostile"
+      },
+      "content_excerpt": "## Tier 1: Confused or Hostile\n\nThey are confused or annoyed. They have NOT asked you to stop.\n\nRESPONSE FRAMEWORK:\n1. De-escalate. Do not match their energy.\n2. Clarify who you are, once: \"I'm part of Luke's team\" + brief context.\n3. Stop. No questi",
+      "content_length": 592,
+      "priority": 70
+    },
+    {
+      "block_id": "situation_turnaround",
+      "category": "situation",
+      "conditions": {
+        "situation": "turnaround"
+      },
+      "content_excerpt": "## Turnaround\n\nThey went from negative to positive. The tension is resolved.\n\nRESPONSE FRAMEWORK:\n1. Accept gracefully \u2014 \"All good.\"\n2. Return to service posture \u2014 \"Is there anything we can help with right now?\"\n3. Do NOT recap what happened. Do NOT ",
+      "content_length": 429,
+      "priority": 60
+    }
+  ],
+  "agent_location_static_health": [
+    {
+      "active": true,
+      "active_static_sections": 7,
+      "agent_name": "Luke Gilbert",
+      "empty_static_sections": 0,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3"
+    }
+  ],
+  "agent_prompt_state": [
+    {
+      "active": true,
+      "agent_name": "Luke Gilbert",
+      "agent_notes_length": 56,
+      "coordinator_name": "Jon",
+      "has_calendar_id": true,
+      "has_ghl_user_id": true,
+      "id": "e7abce43-d217-401e-8df2-5d3ea4fdd284",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "personality_prompt_length": 0,
+      "timezone": "America/Denver",
+      "updated_at": "2026-04-27T19:39:52.005284+00:00",
+      "use_custom_personality": false
+    }
+  ],
+  "ai_error_summary": {
+    "likely_prompt_leaks": 0,
+    "most_recent_error": "2026-04-29T21:00:17.203876+00:00",
+    "total_errors": 4
+  },
+  "audit_generated_at": "2026-04-29T22:48:56.315719+00:00",
+  "counts": {
+    "active_agents": 1,
+    "active_prompt_blocks": 18,
+    "active_static_prompt_sections": 7,
+    "agents": 1,
+    "ai_output_errors": 4,
+    "conversation_context": 25,
+    "prompt_blocks": 18,
+    "static_prompt_sections": 26,
+    "system_defaults": 8
+  },
+  "duplicate_prompt_blocks": [],
+  "prompt_block_summary": [
+    {
+      "active": 4,
+      "category": "channel",
+      "empty_content": 0,
+      "inactive": 0,
+      "max_priority": 20,
+      "min_priority": 20,
+      "total": 4
+    },
+    {
+      "active": 2,
+      "category": "history",
+      "empty_content": 0,
+      "inactive": 0,
+      "max_priority": 40,
+      "min_priority": 40,
+      "total": 2
+    },
+    {
+      "active": 4,
+      "category": "mode",
+      "empty_content": 0,
+      "inactive": 0,
+      "max_priority": 10,
+      "min_priority": 10,
+      "total": 4
+    },
+    {
+      "active": 3,
+      "category": "relationship",
+      "empty_content": 0,
+      "inactive": 0,
+      "max_priority": 30,
+      "min_priority": 30,
+      "total": 3
+    },
+    {
+      "active": 5,
+      "category": "situation",
+      "empty_content": 0,
+      "inactive": 0,
+      "max_priority": 100,
+      "min_priority": 60,
+      "total": 5
+    }
+  ],
+  "recent_context_health": [
+    {
+      "appointment_booked": false,
+      "appointment_offered": true,
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "conversation_summary_length": 1504,
+      "intent_qualifier_pending": false,
+      "lead_intent": "sell",
+      "lead_timeline": "3_months",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-29T21:00:08.086+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "tNkY4jgvKVckTGJ3iBz3",
+      "conversation_summary_length": 906,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-29T20:21:53.923+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "an96e4yKpOTczApAh1ta",
+      "conversation_summary_length": 908,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-29T19:50:37.428+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "8kv7n2Es1cV0NhIXqas3",
+      "conversation_summary_length": 4,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": true,
+      "summary_length": 0,
+      "updated_at": "2026-04-29T19:44:38.063871+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "kwhTzabuEO8ThYZTptf6",
+      "conversation_summary_length": 1502,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": true,
+      "summary_length": 0,
+      "updated_at": "2026-04-29T19:44:38.063871+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "xLbbk1ij9sCHbNs87dAa",
+      "conversation_summary_length": 0,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-29T00:37:43.003147+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "fughM6ZbQ4eUFrOwypFb",
+      "conversation_summary_length": 0,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-29T00:37:43.003147+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "W1p4zYMdyURdpOt2vmuA",
+      "conversation_summary_length": 1008,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-29T00:18:20.898486+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "UfKWZIQbjnkZ4a1s540m",
+      "conversation_summary_length": 1365,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-29T00:18:20.898486+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": true,
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "conversation_summary_length": 1792,
+      "intent_qualifier_pending": false,
+      "lead_intent": "buy",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-28T22:47:37.768+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "bfijluboiS56wM1bkPSV",
+      "conversation_summary_length": 1219,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-28T17:39:11.381+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "zmfJrTF9DJnDGfgf3Njc",
+      "conversation_summary_length": 1343,
+      "intent_qualifier_pending": false,
+      "lead_intent": "sell",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-27T19:40:47.909+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "RpOdr46RRUnKjrZbwwey",
+      "conversation_summary_length": 1234,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-26T01:07:34.889+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "vkDwtd0XDzA4iWiyC1M3",
+      "conversation_summary_length": 697,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-26T01:02:44.39+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": true,
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "conversation_summary_length": 1446,
+      "intent_qualifier_pending": false,
+      "lead_intent": "buy",
+      "lead_timeline": "3_months",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-25T23:59:44.298+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "KCOWpt8FVCWRdL9yK6Q9",
+      "conversation_summary_length": 697,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-25T22:23:19.697+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "1A9WwUnLiEI9QHnmL8Wx",
+      "conversation_summary_length": 1317,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-25T22:22:21.748+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "MYMhA7iBEu1lvDlRCwco",
+      "conversation_summary_length": 1403,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-25T22:11:00.736+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "vEnUJ5Z6WaptJqvkrWic",
+      "conversation_summary_length": 637,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-25T21:51:52.878+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "SxPUoPfWEF0l6fp1pCe6",
+      "conversation_summary_length": 1189,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-25T21:48:55.032+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "Xy830fbOs0aaNCjbh7BQ",
+      "conversation_summary_length": 670,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-25T21:41:53.283+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "IOJXSHBWxvH58BgEBu9Y",
+      "conversation_summary_length": 545,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-23T19:13:56.051+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "13zNS8OZRAprK0ODL57R",
+      "conversation_summary_length": 1326,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-23T18:00:48.619+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "AaUf4sIvdz1VBKwHRo2T",
+      "conversation_summary_length": 4,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-23T15:37:33.37+00:00"
+    },
+    {
+      "appointment_booked": false,
+      "appointment_offered": false,
+      "contact_id": "SKOv96Bh459yNuNQTZ2k",
+      "conversation_summary_length": 544,
+      "intent_qualifier_pending": false,
+      "lead_intent": "unknown",
+      "lead_timeline": "unknown",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "newsletter_offer_pending": false,
+      "summary_length": 0,
+      "updated_at": "2026-04-22T22:13:18.637+00:00"
+    }
+  ],
+  "static_section_summary": [
+    {
+      "active": 7,
+      "empty_content": 0,
+      "inactive": 19,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "max_sort_order": 9999,
+      "min_sort_order": 100,
+      "total": 26
+    }
+  ],
+  "static_sections_sample": [
+    {
+      "content_excerpt": "Before responding to ANY message, carefully read the ENTIRE RECENT MESSAGES section and CONTACT MEMORY.\nEverything the lead has already told you is there. Treat it as ground truth.\n\n**Critical rules:**\n- NEVER ask a question the lead has already answ",
+      "content_length": 927,
+      "heading": "# Conversation Awareness",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "conversation_awareness",
+      "sort_order": 100
+    },
+    {
+      "content_excerpt": "You are {{coordinatorName}}, part of {{agentName}}'s real estate team in Ada County, Idaho.\n\nYour job is to keep relationships warm, provide useful simple information, and help people take the next step when they are ready.\n\nYou are a coordinator, no",
+      "content_length": 1166,
+      "heading": "CORE IDENTITY",
+      "is_active": true,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "core_identity",
+      "sort_order": 100
+    },
+    {
+      "content_excerpt": "Before every response, decide three things:\n\n1. What is the lead doing right now?\n- asking a question\n- answering you\n- showing interest\n- declining something\n- disengaging\n- expressing emotion or sensitivity\n\n2. What state is the conversation in?\n- ",
+      "content_length": 5121,
+      "heading": "DECISION FRAMEWORK",
+      "is_active": true,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "decision_framework",
+      "sort_order": 200
+    },
+    {
+      "content_excerpt": "Every conversation should move forward. After each message, ask yourself: what is the next logical step?\n\nThe goal of most conversations is to get the lead connected with {{agentName}}. The natural progression is:\n\n1. **Greet and understand** -- what",
+      "content_length": 2834,
+      "heading": "# Progressive Conversation Flow",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "progressive_conversation",
+      "sort_order": 200
+    },
+    {
+      "content_excerpt": "When this directive is present, the next response must naturally ask the lead whether they're planning to buy or sell this year.\n\nFraming (per agent voice): \"{agent_first_name} and I are working on the 2026 calendar \u2014 are you planning on buying or se",
+      "content_length": 916,
+      "heading": "## INTENT QUALIFIER DIRECTIVE",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "intent_qualifier_directive",
+      "sort_order": 250
+    },
+    {
+      "content_excerpt": "These rules override everything else.\n\nIdentity boundary:\nYou are {{coordinatorName}} on {{agentName}}'s team. Never reference being a bot, AI, automation, database, CRM, internal process, or system.\nIf someone asks whether you are a bot or AI, do no",
+      "content_length": 11586,
+      "heading": "HARD GUARDRAILS",
+      "is_active": true,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "hard_guardrails",
+      "sort_order": 300
+    },
+    {
+      "content_excerpt": "**BEFORE you write your response**, check: did the lead share ANY personal details in this message? If yes, you MUST call updateContactMemory FIRST, then respond. Do not skip this step.\n\nWhen you detect new relationship signals during conversation, c",
+      "content_length": 2762,
+      "heading": "# Memory Updates",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "memory_updates",
+      "sort_order": 300
+    },
+    {
+      "content_excerpt": "Rules for CONTACT_PREFERENCE:\n\n1. **Explicit request always wins**: If the lead says \"text me\", \"email me\", \"call me\", or \"can you email me instead\" -- update contact_preference immediately. This overrides everything else. Once the lead has explicitl",
+      "content_length": 880,
+      "heading": "# Channel Preference Detection",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "channel_preference",
+      "sort_order": 400
+    },
+    {
+      "content_excerpt": "Capabilities:\nYou can:\n- answer general market, neighborhood, and process questions\n- gather light context such as buy or sell, area, and rough timeline\n- use getCalendarSlots to find {{agentName}}'s availability\n- use bookAppointment to book with {{",
+      "content_length": 9395,
+      "heading": "EXECUTION RULES",
+      "is_active": true,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "execution_rules",
+      "sort_order": 400
+    },
+    {
+      "content_excerpt": "The current channel is provided in CHANNEL in your context. Apply the rules for your active channel.\n\n**SMS:**\n- Under 300 characters. One or two sentences maximum.\n- Plain text only. No lists, no bullets, no formatting.\n- Write like a text message f",
+      "content_length": 2141,
+      "heading": "CHANNEL CONFIG",
+      "is_active": true,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "channel_config",
+      "sort_order": 500
+    },
+    {
+      "content_excerpt": "You are {{coordinatorName}}, a member of {{agentName}}'s real estate team in Ada County, Idaho.\nYour job is to make sure everyone {{agentName}} works with receives the attention they deserve.\nYou maintain relationships, deliver useful information, an",
+      "content_length": 760,
+      "heading": "# Identity",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "identity",
+      "sort_order": 500
+    },
+    {
+      "content_excerpt": "Your role is relationship stewardship.\nYou stay present by delivering useful insight and responding thoughtfully when people reach out.\nYou are not trying to convince anyone to act.\nPeople should feel:\n- Informed\n- Respected\n- Never pressured\nPresenc",
+      "content_length": 300,
+      "heading": "# Operating Philosophy",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "operating_philosophy",
+      "sort_order": 600
+    },
+    {
+      "content_excerpt": "Write like a real team member, not a company.\n\nStyle goals:\n- short\n- clear\n- calm\n- direct\n- natural\n\nThe message should feel like a competent person texting or emailing a client.\n\nGuidelines:\n- prefer one clear idea at a time\n- ask one question at ",
+      "content_length": 2387,
+      "heading": "STYLE RULES",
+      "is_active": true,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "style_rules",
+      "sort_order": 600
+    },
+    {
+      "content_excerpt": "1. One idea per message. Do not stack multiple thoughts or questions.\n2. Keep it short. Write the way a competent team member texts a client.\n3. Do not push. Let the other person decide when to move forward.\n4. ONE question per message, maximum. Neve",
+      "content_length": 1502,
+      "heading": "# Behavioral Constitution",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "behavioral_constitution",
+      "sort_order": 700
+    },
+    {
+      "content_excerpt": "Not every inbound message requires a reply.\nWhen the system determines silence is appropriate, no message will be sent.\nThis is normal. Do not fight it or try to override it.\nYour response will still be analyzed for memory and pipeline updates.",
+      "content_length": 244,
+      "heading": "SILENCE PROTOCOL",
+      "is_active": true,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "silence_protocol",
+      "sort_order": 700
+    },
+    {
+      "content_excerpt": "Write like a real team member, not a company.\nUse direct language. Short sentences. Say what you mean.\nAvoid corporate phrases, filler language, marketing tone, long explanations.\nMessages should feel calm, natural, and human.\n\n**No filler acknowledg",
+      "content_length": 1269,
+      "heading": "# Communication Style",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "communication_style",
+      "sort_order": 800
+    },
+    {
+      "content_excerpt": "You are a coordinator. You gather information, answer general questions, and connect people with {{agentName}}.\n\n**You CANNOT:**\n- Send listings, links, photos, documents, or files of any kind\n- Promise to send listings, links, or property examples\n-",
+      "content_length": 1378,
+      "heading": "# What You Can and Cannot Do",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "capabilities",
+      "sort_order": 900
+    },
+    {
+      "content_excerpt": "When a lead wants to meet {{agentName}}, book a call, or schedule a consultation:\n\n1. **Ask permission first.** Let them know you need a couple quick details.\n   Example: \"I would love to get you set up with {{agentName}}. I just need a couple detail",
+      "content_length": 2104,
+      "heading": "# Scheduling Protocol",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "scheduling_protocol",
+      "sort_order": 1000
+    },
+    {
+      "content_excerpt": "## What YOU handle (do NOT escalate):\n- General market questions\n- Area and neighborhood info\n- Process education\n- Preference and situation collection\n- Scheduling showings or consultations\n- Nurture conversations\n- Simple follow-ups, pleasantries, ",
+      "content_length": 1560,
+      "heading": "# Escalation Protocol",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "escalation_protocol",
+      "sort_order": 1100
+    },
+    {
+      "content_excerpt": "## Emotional Crisis (HIGHEST PRIORITY - overrides all other rules)\nIf the lead mentions death, grief, serious illness, cancer, hospice, divorce, job loss, or any personal crisis:\n- Respond with brief, genuine empathy only. One or two sentences.\n- Do ",
+      "content_length": 3208,
+      "heading": "# Negative Scenario Framework",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "negative_scenarios",
+      "sort_order": 1200
+    },
+    {
+      "content_excerpt": "When DIRECTION is outbound, you are sending a value touch based on market data. Your tone and behavior MUST match the lead's pipeline stage. This is non-negotiable.\n\n**MONTHLY (cold leads):**\n- Informative and closed-loop. Share the insight and stop.",
+      "content_length": 1383,
+      "heading": "# Outbound Stage Behavior",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "outbound_stage_behavior",
+      "sort_order": 1250
+    },
+    {
+      "content_excerpt": "**Check CONTACT_PREFERENCE in CONTACT MEMORY to determine your delivery channel.** If contact_preference is \"email\", write your response in email format even if the lead texted you. The system will route your response to the right channel.\n\n- **SMS (",
+      "content_length": 1100,
+      "heading": "# Channel Governance",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "channel_governance",
+      "sort_order": 1300
+    },
+    {
+      "content_excerpt": "You ONLY help with real estate, housing, local area, and related topics.\nOff-topic requests get a warm redirect, not engagement.\n\n---",
+      "content_length": 133,
+      "heading": "# Conversation Scope",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "conversation_scope",
+      "sort_order": 1400
+    },
+    {
+      "content_excerpt": "You are NOT a licensed real estate agent.\n\n## You CAN do:\n- Share publicly available information\n- Explain general processes\n- Collect and relay preferences\n- Schedule on behalf of {{agentName}}\n- Follow up, check in, nurture\n\n## You CANNOT do:\n- Giv",
+      "content_length": 1739,
+      "heading": "# Legal Boundaries -- Unlicensed Assistant",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "legal_boundaries",
+      "sort_order": 1500
+    },
+    {
+      "content_excerpt": "When a lead declines a meeting, call, or appointment with {{agentName}}, this is NOT a dead end. It is your cue to pivot.\n\n**Immediately after acknowledging the rejection, offer the weekly market newsletter in the SAME response.**\n\nExample flow:\n- Le",
+      "content_length": 2023,
+      "heading": "# Appointment Rejection -> Newsletter Pivot",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "newsletter_pivot",
+      "sort_order": 1600
+    },
+    {
+      "content_excerpt": "Write a casual personal market update to %%firstName%% from %%coordinatorName%% (on %%agentName%%'s team) about %%marketName%%.\n\nCHANNEL: %%channel%%\nVibe to translate: \"%%touchpoint%%\"\n\nWHY YOU ARE REACHING OUT (the frame):\n- This is a fresh reach-o",
+      "content_length": 2327,
+      "heading": "Outbound Value Touch Template",
+      "is_active": false,
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "section_key": "outbound_value_touch_template",
+      "sort_order": 9999
+    }
+  ],
+  "system_default_prompt_state": [
+    {
+      "description": "Default personality prompt used when no custom personality is configured for an agent",
+      "key": "default_personality_prompt",
+      "updated_at": "2026-03-02T18:50:57.411959+00:00",
+      "value_excerpt": "You are not just an AI \u2014 you are a trained extension of Luke Gilbert's voice, tone, and trusted communication style.\n\n## Core Principles:\n1. **Mimic human rhythm** \u2014 Use natural pauses, thoughtful transitions, and avoid robotic precision. Write like ",
+      "value_length": 1465
+    }
+  ]
+}
