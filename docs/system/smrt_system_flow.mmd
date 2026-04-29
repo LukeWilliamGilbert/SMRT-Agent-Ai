@@ -1,0 +1,86 @@
+flowchart TB
+  %% SMRT layered system model generated during read-only audit on 2026-04-29
+
+  subgraph EXTERNAL[External Systems]
+    GHL[GoHighLevel contacts, messages, calendars]
+    ALTOS[Altos market data]
+  end
+
+  subgraph WORKFLOWS[n8n Workflow Layer]
+    INTAKE[Contact Created -> Brain Engine]
+    BRAIN[SMRT Brain Engine]
+    DELIVERY[Delivery Status Handler]
+    REMINDERS[Appointment Reminders]
+    NEWS_CREATE[Data Source & Newsletter Creation]
+    NEWS_SEND[Newsletter Dispatch]
+    REPLAY[GHL Conversation Backfill / Inbound Replay]
+    EMBED[Bio Embedding Worker]
+  end
+
+  subgraph CORE[Supabase Core Identity & Conversation State]
+    AGENTS[(agents)]
+    LEADS[(leads)]
+    CONTEXT[(conversation_context)]
+    MESSAGES[(message_log)]
+    INBOUND[(inbound_capture)]
+  end
+
+  subgraph BOOKING[Booking & Reminder State]
+    APPOINTMENTS[(appointments)]
+  end
+
+  subgraph CONTENT[Content, Prompt & Delivery State]
+    PROMPTS[(static_prompt_sections / prompt_blocks / channel_prompts)]
+    RULES[(agent_rules / system_defaults)]
+    DOCS[(documents)]
+    NEWSLETTERS[(newsletters)]
+    SPLINTERS[(content_splinters / splinter_usage)]
+    DELIVERIES[(newsletter_deliveries)]
+    ERRORS[(message_send_errors / system_errors / views)]
+  end
+
+  GHL -->|new contact webhook| INTAKE
+  INTAKE -->|upsert/enrich contact| LEADS
+  INTAKE -->|load agent config| AGENTS
+  INTAKE --> BRAIN
+
+  GHL -->|inbound SMS/email| REPLAY
+  REPLAY -->|raw capture; 31 currently unprocessed| INBOUND
+  REPLAY -->|normalized payload| BRAIN
+
+  BRAIN -->|prompt assembly| AGENTS
+  BRAIN -->|prompt assembly| PROMPTS
+  BRAIN -->|guardrails/defaults| RULES
+  BRAIN -->|read/write memory, qualification, pending slots| CONTEXT
+  BRAIN -->|message transcript and send trail| MESSAGES
+  BRAIN -->|pipeline, status, counters| LEADS
+  BRAIN -->|book/reschedule/delete via API| GHL
+  BRAIN -.->|best-effort local appointment write after GHL success; table currently has 0 rows| APPOINTMENTS
+
+  APPOINTMENTS -->|only scheduled rows trigger reminders| REMINDERS
+  REMINDERS -->|send reminder SMS| GHL
+  REMINDERS -->|log reminder| MESSAGES
+  REMINDERS -->|mark 24h/5h/1h sent| APPOINTMENTS
+
+  GHL -->|delivery receipts| DELIVERY
+  DELIVERY -->|delivery state| MESSAGES
+  DELIVERY -->|send failures, caps, blocks| ERRORS
+  DELIVERY -->|opt-out / DNC / carrier state| LEADS
+
+  ALTOS --> NEWS_CREATE
+  AGENTS --> NEWS_CREATE
+  NEWS_CREATE --> NEWSLETTERS
+  NEWS_CREATE --> SPLINTERS
+  NEWS_SEND -->|eligible leads by cadence| LEADS
+  NEWS_SEND -->|send newsletter via GHL| GHL
+  NEWS_SEND --> DELIVERIES
+
+  AGENTS --> EMBED
+  EMBED --> DOCS
+
+  classDef gap fill:#ffe1d6,stroke:#bb6e4d,stroke-width:3px,color:#2c3039;
+  classDef db fill:#eef5ff,stroke:#4c78a8,color:#2c3039;
+  classDef wf fill:#f5f2ef,stroke:#757c89,color:#2c3039;
+  class APPOINTMENTS,INBOUND gap;
+  class AGENTS,LEADS,CONTEXT,MESSAGES,PROMPTS,RULES,DOCS,NEWSLETTERS,SPLINTERS,DELIVERIES,ERRORS db;
+  class INTAKE,BRAIN,DELIVERY,REMINDERS,NEWS_CREATE,NEWS_SEND,REPLAY,EMBED wf;

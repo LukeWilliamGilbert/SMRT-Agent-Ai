@@ -1,0 +1,4844 @@
+{
+  "source_workflow_dir": "/home/ubuntu/smrt_analysis/sanitized_workflows",
+  "workflow_count": 21,
+  "interaction_node_count": 199,
+  "tables_seen_in_workflows": [
+    "agent_rules",
+    "agent_sending_stats",
+    "agents",
+    "ai_output_errors",
+    "altos_weekly_stats",
+    "appointments",
+    "contact_intake_queue",
+    "content_splinters",
+    "conversation_context",
+    "documents",
+    "inbound_capture",
+    "leads",
+    "message_log",
+    "message_send_errors",
+    "newsletter_deliveries",
+    "newsletters",
+    "onboarding_requests",
+    "prompt_blocks",
+    "splinter_usage",
+    "static_prompt_sections",
+    "system_defaults",
+    "system_errors",
+    "timezones"
+  ],
+  "tables_not_seen_in_workflows": [
+    "audit_log",
+    "channel_prompts",
+    "dormancy_events",
+    "personality_options",
+    "pipeline_transitions",
+    "smrt_admin_emails",
+    "smrt_saas_submissions",
+    "v_agent_delivery_health",
+    "v_quota_status",
+    "v_send_errors_24h"
+  ],
+  "table_workflow_map": {
+    "agent_rules": [
+      "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup"
+    ],
+    "agent_sending_stats": [
+      "\ud83d\udcc8 Daily Pacing Roll-up"
+    ],
+    "agents": [
+      "\u23f1\ufe0f Contact Intake Queue Processor",
+      "\u2600\ufe0f Contact Created -> Brain Engine",
+      "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "\ud83c\udfaf Cap Hit Empirical Test",
+      "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "\ud83d\udcc4 Document Ingestion",
+      "\ud83d\udcc8 Daily Pacing Roll-up",
+      "\ud83d\udcec Newsletter Dispatch",
+      "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "\ud83d\udd0d GHL Conversation Backfill",
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "ai_output_errors": [
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "altos_weekly_stats": [
+      "\ud83d\udcf0 Data Source & Newsletter Creation"
+    ],
+    "appointments": [
+      "\u23f0 Appointment Reminders",
+      "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "contact_intake_queue": [
+      "\u23f1\ufe0f Contact Intake Queue Processor",
+      "\u2600\ufe0f Contact Created -> Brain Engine"
+    ],
+    "content_splinters": [
+      "\ud83d\udcf0 Data Source & Newsletter Creation"
+    ],
+    "conversation_context": [
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "documents": [
+      "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "\ud83d\udcc4 Document Ingestion",
+      "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "\ud83e\udde0 Bio Embedding Worker",
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "inbound_capture": [
+      "\ud83d\udd01 Inbound Replay",
+      "\ud83d\udd0d GHL Conversation Backfill",
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "leads": [
+      "\u23f0 Appointment Reminders",
+      "\u23f1\ufe0f Contact Intake Queue Processor",
+      "\u2600\ufe0f Contact Created -> Brain Engine",
+      "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "\ud83c\udfaf Cap Hit Empirical Test",
+      "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "\ud83d\udcec GHL Delivery Status Handler",
+      "\ud83d\udcec Newsletter Dispatch",
+      "\ud83d\udd0d GHL Send Status Checker",
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "message_log": [
+      "\u23f0 Appointment Reminders",
+      "\u23f1\ufe0f Contact Intake Queue Processor",
+      "\ud83c\udfaf Cap Hit Empirical Test",
+      "\ud83d\udcec GHL Delivery Status Handler",
+      "\ud83d\udd0d GHL Send Status Checker",
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "message_send_errors": [
+      "\ud83c\udfaf Cap Hit Empirical Test",
+      "\ud83d\udcec GHL Delivery Status Handler",
+      "\ud83d\udd0d GHL Send Status Checker",
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "newsletter_deliveries": [
+      "\ud83d\udcec Newsletter Dispatch"
+    ],
+    "newsletters": [
+      "\ud83d\udcf0 Data Source & Newsletter Creation"
+    ],
+    "onboarding_requests": [
+      "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup"
+    ],
+    "prompt_blocks": [
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "splinter_usage": [
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "static_prompt_sections": [
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "system_defaults": [
+      "\ud83e\udde0 SMRT Brain Engine"
+    ],
+    "system_errors": [
+      "\ud83d\udd25 Error Catch",
+      "\ud83e\udde0 Bio Embedding Worker"
+    ],
+    "timezones": [
+      "\u23f1\ufe0f Contact Intake Queue Processor"
+    ]
+  },
+  "table_operation_counts": {
+    "agent_rules": {
+      "create": 1
+    },
+    "agent_sending_stats": {
+      "update": 1
+    },
+    "agents": {
+      "read": 18,
+      "create": 3,
+      "reference": 2,
+      "update": 5
+    },
+    "ai_output_errors": {
+      "create": 1
+    },
+    "altos_weekly_stats": {
+      "read": 1,
+      "reference": 2
+    },
+    "appointments": {
+      "update": 1,
+      "reference": 1,
+      "create": 1,
+      "read": 1
+    },
+    "contact_intake_queue": {
+      "reference": 2,
+      "update": 6,
+      "read": 1
+    },
+    "content_splinters": {
+      "reference": 1,
+      "delete": 1,
+      "update": 1
+    },
+    "conversation_context": {
+      "read": 3,
+      "update": 5,
+      "create": 1,
+      "reference": 1
+    },
+    "documents": {
+      "read": 6,
+      "update": 3,
+      "delete": 3,
+      "create": 2
+    },
+    "inbound_capture": {
+      "create": 2,
+      "read": 2,
+      "update": 1
+    },
+    "leads": {
+      "reference": 7,
+      "update": 14,
+      "create": 4,
+      "read": 6
+    },
+    "message_log": {
+      "reference": 3,
+      "create": 12,
+      "update": 2,
+      "read": 6
+    },
+    "message_send_errors": {
+      "create": 4
+    },
+    "newsletter_deliveries": {
+      "create": 2,
+      "read": 1
+    },
+    "newsletters": {
+      "reference": 4,
+      "read": 1
+    },
+    "onboarding_requests": {
+      "reference": 2,
+      "create": 1,
+      "read": 2,
+      "update": 1
+    },
+    "prompt_blocks": {
+      "read": 1
+    },
+    "splinter_usage": {
+      "reference": 1
+    },
+    "static_prompt_sections": {
+      "read": 1
+    },
+    "system_defaults": {
+      "read": 2,
+      "create": 1
+    },
+    "system_errors": {
+      "create": 2
+    },
+    "timezones": {
+      "reference": 1
+    }
+  },
+  "workflow_summaries": [
+    {
+      "workflow_name": "\ud83e\uddea Altos Image Test",
+      "workflow_id": "nyASXOhcHfffb959",
+      "active": false,
+      "node_count": 12,
+      "db_interaction_nodes": 6,
+      "tables": {},
+      "operations": {
+        "read": 1,
+        "create": 5
+      }
+    },
+    {
+      "workflow_name": "\u23f0 Appointment Reminders",
+      "workflow_id": "CVHL7qHNCzQOhaqE",
+      "active": true,
+      "node_count": 9,
+      "db_interaction_nodes": 3,
+      "tables": {
+        "appointments": 2,
+        "leads": 1,
+        "message_log": 2
+      },
+      "operations": {
+        "update": 1,
+        "reference": 1,
+        "create": 1
+      }
+    },
+    {
+      "workflow_name": "\ud83e\udde0 Bio Embedding Worker",
+      "workflow_id": "VmHyMwqplMNBaecl",
+      "active": true,
+      "node_count": 9,
+      "db_interaction_nodes": 5,
+      "tables": {
+        "documents": 1,
+        "system_errors": 1
+      },
+      "operations": {
+        "read": 4,
+        "update": 1,
+        "create": 1
+      }
+    },
+    {
+      "workflow_name": "\ud83c\udfaf Cap Hit Empirical Test",
+      "workflow_id": "oWxfl8hqJR5BcHfL",
+      "active": false,
+      "node_count": 10,
+      "db_interaction_nodes": 5,
+      "tables": {
+        "agents": 1,
+        "message_log": 2,
+        "message_send_errors": 1,
+        "leads": 1
+      },
+      "operations": {
+        "update": 1,
+        "read": 1,
+        "create": 2,
+        "reference": 1
+      }
+    },
+    {
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "active": true,
+      "node_count": 26,
+      "db_interaction_nodes": 11,
+      "tables": {
+        "leads": 4,
+        "agents": 2,
+        "contact_intake_queue": 2
+      },
+      "operations": {
+        "reference": 3,
+        "update": 1,
+        "create": 4,
+        "read": 4
+      }
+    },
+    {
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "active": false,
+      "node_count": 28,
+      "db_interaction_nodes": 16,
+      "tables": {
+        "timezones": 1,
+        "contact_intake_queue": 6,
+        "leads": 2,
+        "agents": 1,
+        "message_log": 3
+      },
+      "operations": {
+        "reference": 2,
+        "update": 8,
+        "read": 5,
+        "create": 3
+      }
+    },
+    {
+      "workflow_name": "\ud83d\udcc8 Daily Pacing Roll-up",
+      "workflow_id": "5i9pAmUho0LwFwTI",
+      "active": false,
+      "node_count": 6,
+      "db_interaction_nodes": 3,
+      "tables": {
+        "agents": 2,
+        "agent_sending_stats": 1
+      },
+      "operations": {
+        "read": 1,
+        "reference": 1,
+        "update": 1
+      }
+    },
+    {
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "active": true,
+      "node_count": 37,
+      "db_interaction_nodes": 18,
+      "tables": {
+        "agents": 1,
+        "newsletters": 5,
+        "content_splinters": 2,
+        "altos_weekly_stats": 3,
+        "documents": 2
+      },
+      "operations": {
+        "read": 6,
+        "reference": 7,
+        "create": 2,
+        "update": 4,
+        "delete": 2
+      }
+    },
+    {
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "active": true,
+      "node_count": 27,
+      "db_interaction_nodes": 13,
+      "tables": {
+        "documents": 4,
+        "agents": 3
+      },
+      "operations": {
+        "read": 10,
+        "update": 5,
+        "create": 3,
+        "delete": 3
+      }
+    },
+    {
+      "workflow_name": "\ud83d\udd25 Error Catch",
+      "workflow_id": "IrqmItlifeBYhZkl",
+      "active": true,
+      "node_count": 3,
+      "db_interaction_nodes": 1,
+      "tables": {
+        "system_errors": 1
+      },
+      "operations": {
+        "create": 1
+      }
+    },
+    {
+      "workflow_name": "\ud83d\udd0d GHL Conversation Backfill",
+      "workflow_id": "LA83yImjwZBdhYqw",
+      "active": false,
+      "node_count": 8,
+      "db_interaction_nodes": 6,
+      "tables": {
+        "agents": 1,
+        "inbound_capture": 1
+      },
+      "operations": {
+        "update": 4,
+        "read": 4,
+        "create": 1
+      }
+    },
+    {
+      "workflow_name": "\ud83d\udcec GHL Delivery Status Handler",
+      "workflow_id": "PbnY3U8jOANRd1yB",
+      "active": true,
+      "node_count": 16,
+      "db_interaction_nodes": 5,
+      "tables": {
+        "message_log": 2,
+        "message_send_errors": 1,
+        "leads": 1
+      },
+      "operations": {
+        "create": 3,
+        "update": 2,
+        "read": 2
+      }
+    },
+    {
+      "workflow_name": "\ud83d\udd0d GHL Send Status Checker",
+      "workflow_id": "KsuBnpK9sEXUPgJC",
+      "active": true,
+      "node_count": 14,
+      "db_interaction_nodes": 4,
+      "tables": {
+        "message_log": 1,
+        "message_send_errors": 1,
+        "leads": 1
+      },
+      "operations": {
+        "create": 2,
+        "update": 2,
+        "read": 1
+      }
+    },
+    {
+      "workflow_name": "\ud83d\udd01 Inbound Replay",
+      "workflow_id": "JeHSBH713tRZKBQD",
+      "active": false,
+      "node_count": 7,
+      "db_interaction_nodes": 2,
+      "tables": {
+        "inbound_capture": 2
+      },
+      "operations": {
+        "read": 1,
+        "update": 1
+      }
+    },
+    {
+      "workflow_name": "My workflow 2",
+      "workflow_id": "g2vytwODh7c4a5f7",
+      "active": false,
+      "node_count": 2,
+      "db_interaction_nodes": 0,
+      "tables": {},
+      "operations": {}
+    },
+    {
+      "workflow_name": "My workflow 3",
+      "workflow_id": "RHXiFGHs9vFlwTfGuKt_q",
+      "active": false,
+      "node_count": 0,
+      "db_interaction_nodes": 0,
+      "tables": {},
+      "operations": {}
+    },
+    {
+      "workflow_name": "My workflow",
+      "workflow_id": "XTyRuyi47ZKYfpCO",
+      "active": false,
+      "node_count": 0,
+      "db_interaction_nodes": 0,
+      "tables": {},
+      "operations": {}
+    },
+    {
+      "workflow_name": "\ud83d\udcec Newsletter Dispatch",
+      "workflow_id": "XDcom3gft8yqwa5O",
+      "active": true,
+      "node_count": 15,
+      "db_interaction_nodes": 7,
+      "tables": {
+        "agents": 2,
+        "newsletter_deliveries": 3,
+        "leads": 1
+      },
+      "operations": {
+        "read": 3,
+        "create": 2,
+        "update": 2
+      }
+    },
+    {
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "active": false,
+      "node_count": 23,
+      "db_interaction_nodes": 12,
+      "tables": {
+        "onboarding_requests": 3,
+        "agents": 1,
+        "leads": 1,
+        "documents": 2
+      },
+      "operations": {
+        "reference": 2,
+        "create": 4,
+        "read": 3,
+        "update": 6,
+        "delete": 1
+      }
+    },
+    {
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "active": false,
+      "node_count": 23,
+      "db_interaction_nodes": 12,
+      "tables": {
+        "agents": 5,
+        "onboarding_requests": 3,
+        "agent_rules": 1,
+        "appointments": 1,
+        "leads": 1
+      },
+      "operations": {
+        "create": 3,
+        "update": 8,
+        "read": 3,
+        "reference": 1
+      }
+    },
+    {
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "active": true,
+      "node_count": 174,
+      "db_interaction_nodes": 70,
+      "tables": {
+        "leads": 16,
+        "message_log": 8,
+        "agents": 4,
+        "conversation_context": 9,
+        "documents": 1,
+        "prompt_blocks": 1,
+        "system_defaults": 2,
+        "appointments": 1,
+        "static_prompt_sections": 1,
+        "splinter_usage": 1,
+        "ai_output_errors": 1,
+        "inbound_capture": 1,
+        "message_send_errors": 1
+      },
+      "operations": {
+        "update": 30,
+        "reference": 6,
+        "read": 32,
+        "create": 10,
+        "delete": 1
+      }
+    }
+  ],
+  "records": [
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Altos_Image_Test__nyASXOhcHfffb959.json",
+      "workflow_name": "\ud83e\uddea Altos Image Test",
+      "workflow_id": "nyASXOhcHfffb959",
+      "workflow_active": false,
+      "node_name": "Fetch Hash",
+      "node_id": "a1b2c3d4-0002-0002-0002-000000000002",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "const PAI = '690acaf9'; const FIPS = '16001'; const resp = await globalThis.fetch(`https://altos.re/api/v2/reports?[REDACTED_QUERY] const data = await resp.json(); if (!data.id) { throw new Error('No hash returned from Altos: ' + JSON.stringify(data)); } return [{ json: { hash: data.id, pai: PAI } }];"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Altos_Image_Test__nyASXOhcHfffb959.json",
+      "workflow_name": "\ud83e\uddea Altos Image Test",
+      "workflow_id": "nyASXOhcHfffb959",
+      "workflow_active": false,
+      "node_name": "Upload Share",
+      "node_id": "a1b2c3d4-0004-0004-0004-000000000004",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "headerParameters.parameters[1].name",
+          "text": "x-upsert"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Altos_Image_Test__nyASXOhcHfffb959.json",
+      "workflow_name": "\ud83e\uddea Altos Image Test",
+      "workflow_id": "nyASXOhcHfffb959",
+      "workflow_active": false,
+      "node_name": "Upload Market Action",
+      "node_id": "a1b2c3d4-0006-0006-0006-000000000006",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "headerParameters.parameters[1].name",
+          "text": "x-upsert"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Altos_Image_Test__nyASXOhcHfffb959.json",
+      "workflow_name": "\ud83e\uddea Altos Image Test",
+      "workflow_id": "nyASXOhcHfffb959",
+      "workflow_active": false,
+      "node_name": "Upload Table",
+      "node_id": "a1b2c3d4-0008-0008-0008-000000000008",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "headerParameters.parameters[1].name",
+          "text": "x-upsert"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Altos_Image_Test__nyASXOhcHfffb959.json",
+      "workflow_name": "\ud83e\uddea Altos Image Test",
+      "workflow_id": "nyASXOhcHfffb959",
+      "workflow_active": false,
+      "node_name": "Upload Chart Price",
+      "node_id": "a1b2c3d4-0010-0010-0010-000000000010",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "headerParameters.parameters[1].name",
+          "text": "x-upsert"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Altos_Image_Test__nyASXOhcHfffb959.json",
+      "workflow_name": "\ud83e\uddea Altos Image Test",
+      "workflow_id": "nyASXOhcHfffb959",
+      "workflow_active": false,
+      "node_name": "Upload Chart Advanced",
+      "node_id": "a1b2c3d4-0012-0012-0012-000000000012",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "headerParameters.parameters[1].name",
+          "text": "x-upsert"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Appointment_Reminders__CVHL7qHNCzQOhaqE.json",
+      "workflow_name": "\u23f0 Appointment Reminders",
+      "workflow_id": "CVHL7qHNCzQOhaqE",
+      "workflow_active": true,
+      "node_name": "Mark Reminder Sent",
+      "node_id": "mark-sent",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "appointments"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "appointments"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Appointment_Reminders__CVHL7qHNCzQOhaqE.json",
+      "workflow_name": "\u23f0 Appointment Reminders",
+      "workflow_id": "CVHL7qHNCzQOhaqE",
+      "workflow_active": true,
+      "node_name": "Sticky Note",
+      "node_id": "sticky-info",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "appointments",
+        "leads",
+        "message_log"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Appointment Reminders Sends SMS reminders at 3 intervals before scheduled appointments: - **24 hours** before - **5 hours** before - **1 hour** before **Safety guards:** - No reminders to DNC/opted-out leads - No reminders for cancelled appointments - No reminders if lead has no phone - Messages logged to message_log so Brain Engine has context - Reminder flags prevent duplicate sends **Schedule:** Every 30 minutes"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Appointment_Reminders__CVHL7qHNCzQOhaqE.json",
+      "workflow_name": "\u23f0 Appointment Reminders",
+      "workflow_id": "CVHL7qHNCzQOhaqE",
+      "workflow_active": true,
+      "node_name": "Log to message_log",
+      "node_id": "log-message",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Bio_Embedding_Worker__VmHyMwqplMNBaecl.json",
+      "workflow_name": "\ud83e\udde0 Bio Embedding Worker",
+      "workflow_id": "VmHyMwqplMNBaecl",
+      "workflow_active": true,
+      "node_name": "Fetch + Claim Pending Rows",
+      "node_id": "fetch-claim-rows",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "documents"
+      ],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "WITH candidates AS ( SELECT id FROM documents WHERE document_type = 'agent_bio' AND metadata->>'needs_embedding' = 'true' AND COALESCE((metadata->>'embedding_attempts')::int, 0) < 5 AND length(content) BETWEEN 1 AND 50000 AND ( metadata->>'embedding_started_at' IS NULL OR (metadata->>'embedding_started_at')::timestamptz < (now() - interval '10 minutes') ) ORDER BY (metadata->>'updated_at')::timestamptz ASC NULLS LAST LIMIT 50 FOR UPDATE SKIP LOCKED ) U\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Bio_Embedding_Worker__VmHyMwqplMNBaecl.json",
+      "workflow_name": "\ud83e\udde0 Bio Embedding Worker",
+      "workflow_id": "VmHyMwqplMNBaecl",
+      "workflow_active": true,
+      "node_name": "Pair Embeddings",
+      "node_id": "pair-embeddings",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "const apiResponse = $input.first().json; const data = apiResponse.data || []; const previousNode = $('Build OpenAI Batch').first().json; const rowIds = previousNode.rowIds || []; if (data.length !== rowIds.length) { throw new Error(`Embedding count mismatch: got ${data.length}, expected ${rowIds.length}`); } const updates = data.map((d, i) => ({ id: rowIds[i], embedding: '[' + d.embedding.join(',') + ']' })); return [{ json: { updates } }];"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Bio_Embedding_Worker__VmHyMwqplMNBaecl.json",
+      "workflow_name": "\ud83e\udde0 Bio Embedding Worker",
+      "workflow_id": "VmHyMwqplMNBaecl",
+      "workflow_active": true,
+      "node_name": "Apply Embeddings",
+      "node_id": "apply-embeddings",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT public.embed_agent_bio_batch('{{ JSON.stringify($json.updates).replace(/'/g, \"''\") }}'::jsonb) AS rows_updated;"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Bio_Embedding_Worker__VmHyMwqplMNBaecl.json",
+      "workflow_name": "\ud83e\udde0 Bio Embedding Worker",
+      "workflow_id": "VmHyMwqplMNBaecl",
+      "workflow_active": true,
+      "node_name": "Bump Attempts",
+      "node_id": "bump-attempts",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT public.mark_bio_embedding_failed('{{ $json.id }}'::uuid, '{{ ($json.error || '').replace(/'/g, \"''\") }}'::text);"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Bio_Embedding_Worker__VmHyMwqplMNBaecl.json",
+      "workflow_name": "\ud83e\udde0 Bio Embedding Worker",
+      "workflow_id": "VmHyMwqplMNBaecl",
+      "workflow_active": true,
+      "node_name": "Log to system_errors",
+      "node_id": "log-system-error",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "system_errors"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=INSERT INTO system_errors (source, workflow_name, node_name, error_message, error_level, payload, created_at) VALUES ( 'bio-embedding-worker', 'Bio Embedding Worker', 'OpenAI Embeddings API', '{{ ($json.error || '').replace(/'/g, \"''\") }}', 'error', jsonb_build_object('document_id', '{{ $json.id }}'), now() );"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Cap_Hit_Empirical_Test__oWxfl8hqJR5BcHfL.json",
+      "workflow_name": "\ud83c\udfaf Cap Hit Empirical Test",
+      "workflow_id": "oWxfl8hqJR5BcHfL",
+      "workflow_active": false,
+      "node_name": "Test Config",
+      "node_id": "ct-002",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Cap_Hit_Empirical_Test__oWxfl8hqJR5BcHfL.json",
+      "workflow_name": "\ud83c\udfaf Cap Hit Empirical Test",
+      "workflow_id": "oWxfl8hqJR5BcHfL",
+      "workflow_active": false,
+      "node_name": "Get Agent API Key",
+      "node_id": "ct-003",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Cap_Hit_Empirical_Test__oWxfl8hqJR5BcHfL.json",
+      "workflow_name": "\ud83c\udfaf Cap Hit Empirical Test",
+      "workflow_id": "oWxfl8hqJR5BcHfL",
+      "workflow_active": false,
+      "node_name": "Log Success",
+      "node_id": "ct-008",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Cap_Hit_Empirical_Test__oWxfl8hqJR5BcHfL.json",
+      "workflow_name": "\ud83c\udfaf Cap Hit Empirical Test",
+      "workflow_id": "oWxfl8hqJR5BcHfL",
+      "workflow_active": false,
+      "node_name": "Log Failure (CRITICAL)",
+      "node_id": "ct-009",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_send_errors"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_send_errors"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Cap_Hit_Empirical_Test__oWxfl8hqJR5BcHfL.json",
+      "workflow_name": "\ud83c\udfaf Cap Hit Empirical Test",
+      "workflow_id": "oWxfl8hqJR5BcHfL",
+      "workflow_active": false,
+      "node_name": "Note",
+      "node_id": "ct-010",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "leads",
+        "message_log"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## \ud83c\udfaf Cap Hit Empirical Test **Purpose:** Send up to 260 test SMS to ONLY 2 hardcoded contacts (Daddy Sayeed + Sayeed Hobaid \u2014 Hobaid's own numbers) until GHL returns a non-200 (cap hit). **Safety:** - Other leads are unreachable \u2014 no query to leads table - onError: continueErrorOutput so loop continues + logs each failure - 1.5s throttle between sends **What it captures:** - Success \u2192 row in message_log with delivery_status=sent, ghl_message_id - Failure \u2192 FULL raw response in message_send_er\u2026[T\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Check Lead Exists",
+      "node_id": "ccf5f9f2-1a09-4631-b547-b5bbf49df551",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Enrich Existing Lead",
+      "node_id": "936de97c-de60-45ed-a4c6-27963c3fb4cc",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Insert New Lead",
+      "node_id": "13755891-42d4-4334-b541-71ec10285ea3",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Send Intro Email",
+      "node_id": "661758df-474d-447a-9be6-f7f216a658dc",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "jsonBody",
+          "text": "={ \"type\": \"Email\", \"contactId\": \"{{ $json.contact_id }}\", \"locationId\": \"{{ $json.location_id }}\", \"subject\": \"Quick intro from {{ $json.coordinator_name }} - {{ $json.agent_name }}'s team\", \"emailFrom\": \"{{ $json.coordinator_name }} <{{ $json.coordinator_email }}>\", \"html\": \"<p>Hi {{ $json.first_name }},</p><p>I'm {{ $json.coordinator_name }}, part of {{ $json.agent_name }}'s real estate team. {{ $json.agent_name }} and I want to make sure you have a direct line to someone on the team if anyth\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Note: Trigger",
+      "node_id": "c64788e9-4961-4a26-bc0e-857e0067f1c1",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Trigger Receives new contact webhooks from a GHL automation when a contact is created. Works for single contacts and bulk spreadsheet imports."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Note: Duplicate Check",
+      "node_id": "d8b5fb50-d004-4b9a-8d62-8ad3cb5f3dbb",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Duplicate Check Queries Supabase for an existing lead by contact_id. - Found: enriches the record (name, email, phone, city, state, source) and stops. No intro sent again. - Not found: continues to insert as a new lead."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Note: Channel Routing",
+      "node_id": "2eb8e823-678c-4ecd-ab14-35b7c9bc4a08",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Channel Routing and Send Routes the intro message for new leads only: - SMS (default) - sent if phone exists - Email (fallback) - sent if no phone - No Contact Method - tags lead in GHL and stops NOTE: SMS and Email nodes are placeholders. Add message content before activating."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Get Agent Config",
+      "node_id": "75cd7c46-fea3-4315-a4ab-ad36fda466c0",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Queue Intro Message",
+      "node_id": "bh-check-0003-0003-0003-000000000003",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "contact_intake_queue"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "contact_intake_queue"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Queue Follow-up SMS",
+      "node_id": "bh-check-0004-0004-0004-000000000004",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "contact_intake_queue"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "contact_intake_queue"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Created_-_Brain_Engine__57VOr1qmDwdO2mZj.json",
+      "workflow_name": "\u2600\ufe0f Contact Created -> Brain Engine",
+      "workflow_id": "57VOr1qmDwdO2mZj",
+      "workflow_active": true,
+      "node_name": "Fetch Agent Config (Pre-Insert)",
+      "node_id": "491d8de5-d881-41c9-840c-72c86d3db372",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "create",
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Business Hours Now?",
+      "node_id": "qp-0002-0002-0002-000000000002",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [
+        "timezones"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "// Check if current time is within business hours for any agent // We use a general check here - queue items have their own scheduled_for const now = $now; const utcHour = now.hour; // We process the queue if it's between 6am-11pm UTC (covers all US timezones 9am-8pm) const isProcessingWindow = utcHour >= 13 && utcHour <= 24 || utcHour >= 0 && utcHour <= 3; return [{ json: { should_process: true, checked_at: now.toISO() } }];"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Mark Processing",
+      "node_id": "qp-0008-0008-0008-000000000008",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "contact_intake_queue"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "contact_intake_queue"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Send Intro Email",
+      "node_id": "qp-0012-0012-0012-000000000012",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "jsonBody",
+          "text": "={ \"type\": \"Email\", \"contactId\": \"{{ $('Parse Payload').item.json.payload.contact_id }}\", \"locationId\": \"{{ $('Parse Payload').item.json.payload.location_id }}\", \"subject\": \"Quick intro from {{ $('Parse Payload').item.json.payload.coordinator_name }} - {{ $('Parse Payload').item.json.payload.agent_name }}'s team\", \"emailFrom\": \"{{ $('Parse Payload').item.json.payload.coordinator_name }} <{{ $('Parse Payload').item.json.payload.coordinator_email }}>\", \"html\": \"<p>Hi {{ $('Parse Payload').item.jso\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Mark Intro Complete",
+      "node_id": "qp-0014-0014-0014-000000000014",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "contact_intake_queue"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "contact_intake_queue"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Check Lead State",
+      "node_id": "qp-0015-0015-0015-000000000015",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Update Channel to SMS",
+      "node_id": "qp-0019-0019-0019-000000000019",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Mark Followup Complete",
+      "node_id": "qp-0020-0020-0020-000000000020",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "contact_intake_queue"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "contact_intake_queue"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Fetch Pending Items",
+      "node_id": "qp-fetch-pg-0001-0001-000000000001",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "contact_intake_queue"
+      ],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "-- Recover stuck items (processing for >15 min) UPDATE contact_intake_queue SET status = 'pending' WHERE status = 'processing' AND updated_at < NOW() - INTERVAL '15 minutes'; -- Mark items with 5+ attempts as failed UPDATE contact_intake_queue SET status = 'failed' WHERE status = 'pending' AND attempts >= 5; -- Fetch up to 50 PER AGENT (location_id), prevents one agent starving others WITH ranked AS ( SELECT *, ROW_NUMBER() OVER (PARTITION BY location_id ORDER BY scheduled_for ASC)\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Get Agent Config",
+      "node_id": "qp-agent-config",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Check Agent Hours",
+      "node_id": "e85ea190-3305-4549-a126-96f486fd69db",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "const agent = $('Get Agent Config').first().json; const tz = agent.timezone || 'America/Denver'; const now = $now.setZone(tz); const hour = now.hour; const weekday = now.weekday; const withinHours = weekday < 6 && hour >= 9 && hour < 20; let nextBusinessHourUtc = null; if (!withinHours) { let t = now; if (hour >= 20) t = t.plus({ days: 1 }); while (t.weekday >= 6) t = t.plus({ days: 1 }); t = t.set({ hour: 9, minute: 0, second: 0, millisecond: 0 }); nextBusinessHourUtc = t.toUTC().toI\u2026[TRUNCATED\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Re-queue for Later",
+      "node_id": "f8724b6f-d28b-4cf1-af1f-fc25f0fe1f7e",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "contact_intake_queue"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "contact_intake_queue"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Quota Gate",
+      "node_id": "ee70c64e-2409-4cba-b3f9-759054194a63",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT can_send, current_level, daily_cap, sent_today, remaining, reset_at, block_reason FROM check_sending_quota('{{ $('Get Agent Config').item.json.location_id }}'::text)"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Re-queue Cap Hit",
+      "node_id": "79e005a9-89b6-4bd2-a39b-c1caa2f68585",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "contact_intake_queue"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "contact_intake_queue"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Log Followup SMS Sent",
+      "node_id": "2a44e3a3-14c1-4dbd-9667-e1cb1157744d",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Log Intro SMS Sent",
+      "node_id": "d3af6304-763c-4e0a-a071-f2a047a7be97",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Contact_Intake_Queue_Processor__i3aF2rmEAZRJbKYp.json",
+      "workflow_name": "\u23f1\ufe0f Contact Intake Queue Processor",
+      "workflow_id": "i3aF2rmEAZRJbKYp",
+      "workflow_active": false,
+      "node_name": "Log Intro Email Sent",
+      "node_id": "0937d6d8-812f-42ba-b385-51f1d603933e",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Daily_Pacing_Roll-up__5i9pAmUho0LwFwTI.json",
+      "workflow_name": "\ud83d\udcc8 Daily Pacing Roll-up",
+      "workflow_id": "5i9pAmUho0LwFwTI",
+      "workflow_active": false,
+      "node_name": "Run Daily Roll-up",
+      "node_id": "ru-002",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "SELECT * FROM run_daily_pacing_rollup()"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Daily_Pacing_Roll-up__5i9pAmUho0LwFwTI.json",
+      "workflow_name": "\ud83d\udcc8 Daily Pacing Roll-up",
+      "workflow_id": "5i9pAmUho0LwFwTI",
+      "workflow_active": false,
+      "node_name": "Format Bump Alert",
+      "node_id": "ru-004",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "// Build a summary of agents that earned level bumps const bumps = $input.all().map(item => { const j = item.json; return { location_id: j.out_location_id, current_level: j.out_level, new_level: j.out_recommended_new_level, sent_yesterday: j.out_sent, delivery_rate: j.out_delivery_rate }; }); return [{ json: { summary: `${bumps.length} agent(s) earned a level bump`, details: bumps, next_action: 'Manually bump agents.sending_level via Supabase UI (audit tr\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Daily_Pacing_Roll-up__5i9pAmUho0LwFwTI.json",
+      "workflow_name": "\ud83d\udcc8 Daily Pacing Roll-up",
+      "workflow_id": "5i9pAmUho0LwFwTI",
+      "workflow_active": false,
+      "node_name": "Note",
+      "node_id": "ru-006",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "agent_sending_stats",
+        "agents"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## \ud83d\udcc8 Daily Pacing Roll-up **Schedule:** Cron `0 12 * * *` = 12:00 UTC daily = 6am MT (works with DST too \u2014 close enough). **What it does:** 1. Runs `run_daily_pacing_rollup()` SQL function 2. Per agent: counts yesterday's sent+delivered, inserts agent_sending_stats row 3. Flags agents that hit cap = recommend level bump **Manual step:** Level bump UPDATE blocked by audit trigger bug. Admin bumps `agents.sending_level` manually via Supabase UI when notified. **Activate after Phase 1.5 test da\u2026[TR\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Get Newsletter Agents",
+      "node_id": "eeb84616-ba38-442d-8db4-7530019c073b",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Generate Newsletter",
+      "node_id": "68d2db95-73e5-4e49-9ac7-7498898dbbbc",
+      "node_type": "@n8n/n8n-nodes-langchain.openAi",
+      "tables": [
+        "newsletters"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "messages.values[1].content",
+          "text": "=Generate a weekly market newsletter for **{{ $json.market_name }}**. ## Local Market Data (Altos Research) {{ JSON.stringify($json.altos_data, null, 2) }} ## National/Global Context & Local Impact {{ JSON.stringify($json.perplexity_data, null, 2) }} ## Previous Newsletters (last 2 weeks -- for continuity and week-over-week context) {{ $json.previous_newsletters && $json.previous_newsletters.length > 0 ? JSON.stringify($json.previous_newsletters, null, 2) : 'No previous newsletters available \u2026[T\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Extract Splinters",
+      "node_id": "ef940d5d-79e5-4b30-83dc-6170da5a4045",
+      "node_type": "@n8n/n8n-nodes-langchain.openAi",
+      "tables": [],
+      "operations": [
+        "create",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "messages.values[0].content",
+          "text": "SMRT NEWSLETTER SPLINTER LAYER - CANONICAL RECORD GENERATOR You are a post-newsletter processing layer inside the SMRT system. Your job is to take a completed weekly real estate market newsletter and convert it into a small set of structured market splinter records. PRIMARY OBJECTIVE: Convert one completed newsletter into 3 to 5 canonical market splinter records. Each splinter record should: 1. capture one distinct market shift, tension, or behavioral insight 2. be semantically rich enough fo\u2026[T\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Store Newsletter",
+      "node_id": "c0492768-c44f-42a7-bf7e-330c601ebf52",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "newsletters"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "newsletters"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Store Splinter",
+      "node_id": "02bb1b6c-ee39-4bfe-8995-536344d6415b",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "content_splinters"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "content_splinters"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Set File Content",
+      "node_id": "0952224b-360d-469f-b80c-03f3315e34ea",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "const data = $input.first().json; const binaryData = Buffer.from(data.docContent, 'utf8'); return { json: data, binary: { data: { data: binaryData.toString('base64'), mimeType: 'text/markdown', fileName: data.fileName + '.md' } } };"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Get Last Week Stats",
+      "node_id": "6065e6bf-2d81-4888-bb6a-61f8d9712355",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "altos_weekly_stats"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "altos_weekly_stats"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Prep Data for AI",
+      "node_id": "1917075f-dad4-4d00-98da-14c89e91f7de",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [
+        "newsletters"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "const condensedData = $('Condense Altos Data').first().json; const grokResponse = $('Grok National Context').first().json; let nationalContext = ''; if (grokResponse.choices && grokResponse.choices[0]?.message?.content) { nationalContext = grokResponse.choices[0].message.content; } else if (grokResponse.message?.content) { nationalContext = grokResponse.message.content; } else if (grokResponse.content) { nationalContext = grokResponse.content; } // Previous newsletters for week-over-week\u2026[TRUNCA\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Store Weekly Stats",
+      "node_id": "b216611b-839a-4c68-9854-75fb3881adf8",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "altos_weekly_stats"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "altos_weekly_stats"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Check Week Stats Exist",
+      "node_id": "d9a77914-626f-4267-93a9-a8ef64cd10c3",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "altos_weekly_stats"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "altos_weekly_stats"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Check Newsletter For Week",
+      "node_id": "f22cc849-4993-4208-a014-e18ff1788332",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "newsletters"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "newsletters"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Delete Old Splinters",
+      "node_id": "c7c50998-4b86-48ff-866f-91e2fb1842d4",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "content_splinters"
+      ],
+      "operations": [
+        "delete",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "content_splinters"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Remove Old Market Docs",
+      "node_id": "5c9ea5e9-d62f-4e71-9cde-04760c85c2ec",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "documents"
+      ],
+      "operations": [
+        "delete"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "delete"
+        },
+        {
+          "path": "tableId",
+          "text": "documents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Store Embedded Doc",
+      "node_id": "5350559e-48b3-4acb-8ed4-8d0f562cdcfe",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [
+        "documents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "url",
+          "text": "https://kfoijgcbkjeizxxyiwxv.supabase.co/rest/v1/documents"
+        },
+        {
+          "path": "jsonBody",
+          "text": "={{ (() => { const doc = $('Prepare Storage Data').item.json.market_doc; const emb = $json.data[0].embedding; return JSON.stringify({ content: doc.content, metadata: doc.metadata, embedding: '[' + emb.join(',') + ']', location_id: doc.location_id, document_type: 'market_weekly', week_start_date: doc.week_start_date }); })() }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Upload to Supabase Storage",
+      "node_id": "e6e8ebcb-23a1-4614-837c-f45b853c021a",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "headerParameters.parameters[1].name",
+          "text": "x-upsert"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Get Altos Hash",
+      "node_id": "get-altos-hash-001",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "const agentData = $('Prepare Agent Data').first().json; const countyFips = agentData.county_fips || '16001'; const pai = agentData.pai || '690acaf9'; const resp = await globalThis.fetch('https://altos.re/api/v2/reports?[REDACTED_QUERY]' + countyFips + '&pai=' + pai); const data = await resp.json(); if (!data.id) throw new Error('No hash from Altos: ' + JSON.stringify(data)); return [{ json: { hash: data.id } }];"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Get Previous Newsletters",
+      "node_id": "get-prev-newsletters-001",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "newsletters"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "newsletters"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+      "workflow_name": "\ud83d\udcf0 Data Source & Newsletter Creation",
+      "workflow_id": "gI097yamrw7gDU6C",
+      "workflow_active": true,
+      "node_name": "Pass Location ID",
+      "node_id": "pass-location-id-001",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Default Data Loader",
+      "node_id": "90039a57-0a97-4e9e-ac95-4fd385c2245a",
+      "node_type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "options.metadata.metadataValues[0].value",
+          "text": "={{ $('Set Location from Lookup').first().json.file_id }}"
+        },
+        {
+          "path": "options.metadata.metadataValues[1].value",
+          "text": "={{ $('Set Location from Lookup').first().json.location_id }}"
+        },
+        {
+          "path": "options.metadata.metadataValues[2].value",
+          "text": "={{ $('Set Location from Lookup').first().json.agent_name }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Download File",
+      "node_id": "0aa2b2d0-d4d9-4b5a-a337-9bdfcaeb3940",
+      "node_type": "n8n-nodes-base.googleDrive",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "fileId.value",
+          "text": "={{ $('Set Location from Lookup').first().json.file_id }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Set File ID",
+      "node_id": "519b08bf-a1f1-4276-80f5-c6275e76fbfd",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Insert into Supabase Vectorstore",
+      "node_id": "7be20624-8598-4f6a-bc9f-605ee2f00d54",
+      "node_type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "tables": [
+        "documents"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "mode",
+          "text": "insert"
+        },
+        {
+          "path": "tableName.value",
+          "text": "documents"
+        },
+        {
+          "path": "tableName.cachedResultName",
+          "text": "documents"
+        },
+        {
+          "path": "options.queryName",
+          "text": "match_documents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Sticky Note4",
+      "node_id": "5bb31bf1-5099-4330-8bf5-90008346e094",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "agents",
+        "documents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## \ud83d\udce5 Document Ingestion Flow (Polling) **Trigger:** Polls every 60 minutes for new files **How it works:** 1. Get all agent folder IDs from `agents` table 2. Search Google Drive for files created in last 65 mins in those folders 3. For each new file \u2192 Lookup agent by parent folder 4. Check for duplicates in `documents` table 5. If new \u2192 Download, extract text, generate embeddings 6. Store in Supabase with metadata **Folder Structure:** ``` SMRT/ \u251c\u2500\u2500 Agent Name (locID)/ \u2502 \u251c\u2500\u2500 FAQ.pdf \u2502\u2026[TRUNCATED\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Check for Duplicate",
+      "node_id": "85725f71-2e41-41dd-8660-62bf0360ee01",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "documents"
+      ],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT id FROM documents WHERE metadata->>'file_id' = '{{ $('Set File ID').first().json.file_id }}' LIMIT 1;"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Lookup Agent by Folder",
+      "node_id": "d0aeaf40-6830-4088-ad91-e20656785d8e",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT location_id, agent_name, knowledge_base_folder_name FROM agents WHERE TRIM(REPLACE(knowledge_base_folder_id, E'\\n', '')) = '{{ $json.parent_folder_id }}' LIMIT 1;"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Set Location from Lookup",
+      "node_id": "0fddc869-2129-4979-83be-5610efca5009",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "assignments.assignments[0].id",
+          "text": "file-id-set"
+        },
+        {
+          "path": "assignments.assignments[0].value",
+          "text": "={{ $('Set File ID').first().json.file_id }}"
+        },
+        {
+          "path": "assignments.assignments[1].id",
+          "text": "location-id-set"
+        },
+        {
+          "path": "assignments.assignments[2].id",
+          "text": "agent-name-set"
+        },
+        {
+          "path": "assignments.assignments[3].id",
+          "text": "mime-type-set"
+        },
+        {
+          "path": "assignments.assignments[3].value",
+          "text": "={{ $('Set File ID').first().json.mimeType }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Delete Documents",
+      "node_id": "d2e94318-06d9-4ccf-9e4c-5cfb9f2e076c",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "documents"
+      ],
+      "operations": [
+        "delete",
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=DELETE FROM documents WHERE (metadata->>'file_id' = '{{ $json.file_id }}' AND '{{ $json.file_id }}' != '') OR (metadata->>'location_id' = '{{ $json.location_id }}' AND '{{ $json.location_id }}' != '') OR (metadata->>'agent_name' = '{{ $json.agent_name }}' AND '{{ $json.agent_name }}' != '') RETURNING id;"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Sticky Note Cleanup",
+      "node_id": "5352821b-b179-4d5d-beba-a006e7557065",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [],
+      "operations": [
+        "create",
+        "delete"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## \ud83d\uddd1\ufe0f Document Cleanup (Offboarding) POST to /webhook/document-cleanup with: - file_id: Delete specific file - location_id: Delete all docs for a location - agent_name: Delete all docs for an agent"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Get Agent Folders",
+      "node_id": "2b0f41df-5861-4f66-9d10-4908647f29a8",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "SELECT knowledge_base_folder_id FROM agents WHERE knowledge_base_folder_id IS NOT NULL;"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Build Search Query",
+      "node_id": "c32ba2b2-abd5-4e04-b804-a0f98d971516",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "const folderIds = $input.all() .map(item => item.json.knowledge_base_folder_id) .filter(id => id) .map(id => String(id).trim().replace(/\\n/g, '')); if (folderIds.length === 0) { return [{ json: { skip: true, reason: 'No agent folders configured' } }]; } const parentsQuery = folderIds.map(id => `'${id}' in parents`).join(' or '); const sixtyFiveMinutesAgo = new Date(Date.now() - 65 * 60 * 1000).toISOString(); // Google Docs only const searchQuery = `(${parentsQuery}) and createdTime > \u2026[TRUNCATED\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Document_Ingestion__4hojpHNg50GyCOJB.json",
+      "workflow_name": "\ud83d\udcc4 Document Ingestion",
+      "workflow_id": "4hojpHNg50GyCOJB",
+      "workflow_active": true,
+      "node_name": "Sanitize Text",
+      "node_id": "928f662f-fad4-44cf-9027-50ef768cea24",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "create",
+        "delete",
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "// Enhanced sanitization for DOCX and other document types // Prevents vector database corruption from binary artifacts and formatting codes const items = $input.all(); const results = []; for (const item of items) { // Get text from either 'data' or 'text' field let text = item.json.data || item.json.text || ''; // Skip empty items if (!text || text.length === 0) { console.log('Skipping item: empty data'); continue; } // === PHASE 1: Remove binary and control charact\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Error_Catch__IrqmItlifeBYhZkl.json",
+      "workflow_name": "\ud83d\udd25 Error Catch",
+      "workflow_id": "IrqmItlifeBYhZkl",
+      "workflow_active": true,
+      "node_name": "Log to system_errors",
+      "node_id": "supabase-system-errors-001",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "system_errors"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "insert"
+        },
+        {
+          "path": "tableId",
+          "text": "system_errors"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Conversation_Backfill__LA83yImjwZBdhYqw.json",
+      "workflow_name": "\ud83d\udd0d GHL Conversation Backfill",
+      "workflow_id": "LA83yImjwZBdhYqw",
+      "workflow_active": false,
+      "node_name": "Set Backfill Window",
+      "node_id": "bf-002",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Conversation_Backfill__LA83yImjwZBdhYqw.json",
+      "workflow_name": "\ud83d\udd0d GHL Conversation Backfill",
+      "workflow_id": "LA83yImjwZBdhYqw",
+      "workflow_active": false,
+      "node_name": "Get Agent API Key",
+      "node_id": "bf-003",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Conversation_Backfill__LA83yImjwZBdhYqw.json",
+      "workflow_name": "\ud83d\udd0d GHL Conversation Backfill",
+      "workflow_id": "LA83yImjwZBdhYqw",
+      "workflow_active": false,
+      "node_name": "Search Conversations",
+      "node_id": "bf-004",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "queryParameters.parameters[0].value",
+          "text": "={{ $('Set Backfill Window').first().json.location_id }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Conversation_Backfill__LA83yImjwZBdhYqw.json",
+      "workflow_name": "\ud83d\udd0d GHL Conversation Backfill",
+      "workflow_id": "LA83yImjwZBdhYqw",
+      "workflow_active": false,
+      "node_name": "Extract Conversations",
+      "node_id": "bf-005",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "// GHL response shape: {conversations: [...], total, traceId} const convs = $input.first().json.conversations || []; const startMs = $('Set Backfill Window').first().json.start_ms; const endMs = $('Set Backfill Window').first().json.end_ms; // Filter conversations whose lastMessageDate falls in the window const inWindow = convs.filter(c => { const ts = c.lastMessageDate || c.dateUpdated; if (!ts) return false; const ms = typeof ts === 'number' ? ts : new Date(ts).getTime(); return ms >=\u2026[TRUNCAT\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Conversation_Backfill__LA83yImjwZBdhYqw.json",
+      "workflow_name": "\ud83d\udd0d GHL Conversation Backfill",
+      "workflow_id": "LA83yImjwZBdhYqw",
+      "workflow_active": false,
+      "node_name": "Filter Inbound In Window",
+      "node_id": "bf-007",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "// Find inbound messages within window from each conv response const startMs = $('Set Backfill Window').first().json.start_ms; const endMs = $('Set Backfill Window').first().json.end_ms; const locationId = $('Set Backfill Window').first().json.location_id; const output = []; for (const item of $input.all()) { const messages = item.json.messages?.messages || item.json.messages || []; for (const m of messages) { if (m.direction !== 'inbound') continue; const ts = m.dateAdded || m.date\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Conversation_Backfill__LA83yImjwZBdhYqw.json",
+      "workflow_name": "\ud83d\udd0d GHL Conversation Backfill",
+      "workflow_id": "LA83yImjwZBdhYqw",
+      "workflow_active": false,
+      "node_name": "Save To Inbound Capture",
+      "node_id": "bf-008",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "inbound_capture"
+      ],
+      "operations": [
+        "create",
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "inbound_capture"
+        },
+        {
+          "path": "fieldsUi.fieldValues[7].fieldValue",
+          "text": "Backfilled from GHL during recovery"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Delivery_Status_Handler__PbnY3U8jOANRd1yB.json",
+      "workflow_name": "\ud83d\udcec GHL Delivery Status Handler",
+      "workflow_id": "PbnY3U8jOANRd1yB",
+      "workflow_active": true,
+      "node_name": "Update Message Log",
+      "node_id": "wh-005",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Delivery_Status_Handler__PbnY3U8jOANRd1yB.json",
+      "workflow_name": "\ud83d\udcec GHL Delivery Status Handler",
+      "workflow_id": "PbnY3U8jOANRd1yB",
+      "workflow_active": true,
+      "node_name": "Log Send Error",
+      "node_id": "wh-007",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_send_errors"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_send_errors"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Delivery_Status_Handler__PbnY3U8jOANRd1yB.json",
+      "workflow_name": "\ud83d\udcec GHL Delivery Status Handler",
+      "workflow_id": "PbnY3U8jOANRd1yB",
+      "workflow_active": true,
+      "node_name": "Note",
+      "node_id": "wh-010",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create",
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## \ud83d\udcec GHL Delivery Status Handler Receives OutboundMessage events from GHL and updates message_log.delivery_status. **Subscribe in GHL:** App Marketplace \u2192 Webhooks \u2192 OutboundMessage \u2192 POST URL = this webhook's path. **Always returns 200 OK** \u2014 GHL only retries on 429. **Phase 1.5 capture:** payload shape TBD until empirical test. Parser is defensive."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Delivery_Status_Handler__PbnY3U8jOANRd1yB.json",
+      "workflow_name": "\ud83d\udcec GHL Delivery Status Handler",
+      "workflow_id": "PbnY3U8jOANRd1yB",
+      "workflow_active": true,
+      "node_name": "Record Cap Hit",
+      "node_id": "wh-012",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT public.record_cap_hit('{{ $json.location_id }}', '{{ $json.received_at }}'::timestamptz) AS result;"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Delivery_Status_Handler__PbnY3U8jOANRd1yB.json",
+      "workflow_name": "\ud83d\udcec GHL Delivery Status Handler",
+      "workflow_id": "PbnY3U8jOANRd1yB",
+      "workflow_active": true,
+      "node_name": "Auto Block Lead",
+      "node_id": "wh-015",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Send_Status_Checker__KsuBnpK9sEXUPgJC.json",
+      "workflow_name": "\ud83d\udd0d GHL Send Status Checker",
+      "workflow_id": "KsuBnpK9sEXUPgJC",
+      "workflow_active": true,
+      "node_name": "Update Message Log",
+      "node_id": "sc-005",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Send_Status_Checker__KsuBnpK9sEXUPgJC.json",
+      "workflow_name": "\ud83d\udd0d GHL Send Status Checker",
+      "workflow_id": "KsuBnpK9sEXUPgJC",
+      "workflow_active": true,
+      "node_name": "Log Send Error",
+      "node_id": "sc-007",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_send_errors"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_send_errors"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Send_Status_Checker__KsuBnpK9sEXUPgJC.json",
+      "workflow_name": "\ud83d\udd0d GHL Send Status Checker",
+      "workflow_id": "KsuBnpK9sEXUPgJC",
+      "workflow_active": true,
+      "node_name": "Record Cap Hit",
+      "node_id": "sc-009",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT public.record_cap_hit('{{ $('Parse Response').item.json.location_id }}', '{{ $('Parse Response').item.json.checked_at }}'::timestamptz, NULLIF('{{ $('Parse Response').item.json.parsed_reset_at }}', '')::timestamptz) AS result;"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/GHL_Send_Status_Checker__KsuBnpK9sEXUPgJC.json",
+      "workflow_name": "\ud83d\udd0d GHL Send Status Checker",
+      "workflow_id": "KsuBnpK9sEXUPgJC",
+      "workflow_active": true,
+      "node_name": "Auto Block Lead",
+      "node_id": "sc-011",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Inbound_Replay__JeHSBH713tRZKBQD.json",
+      "workflow_name": "\ud83d\udd01 Inbound Replay",
+      "workflow_id": "JeHSBH713tRZKBQD",
+      "workflow_active": false,
+      "node_name": "Get Unprocessed Messages",
+      "node_id": "rp-002",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "inbound_capture"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "SELECT id, payload, headers, ghl_message_id, captured_at, replay_count FROM inbound_capture WHERE processed = false ORDER BY captured_at ASC LIMIT 100"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Inbound_Replay__JeHSBH713tRZKBQD.json",
+      "workflow_name": "\ud83d\udd01 Inbound Replay",
+      "workflow_id": "JeHSBH713tRZKBQD",
+      "workflow_active": false,
+      "node_name": "Mark As Processed",
+      "node_id": "rp-004",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "inbound_capture"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "inbound_capture"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Newsletter_Dispatch__XDcom3gft8yqwa5O.json",
+      "workflow_name": "\ud83d\udcec Newsletter Dispatch",
+      "workflow_id": "XDcom3gft8yqwa5O",
+      "workflow_active": true,
+      "node_name": "Fetch Active Agents",
+      "node_id": "5c77437c-9d53-4e9b-84c5-dd95b175f173",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Newsletter_Dispatch__XDcom3gft8yqwa5O.json",
+      "workflow_name": "\ud83d\udcec Newsletter Dispatch",
+      "workflow_id": "XDcom3gft8yqwa5O",
+      "workflow_active": true,
+      "node_name": "Log Delivery",
+      "node_id": "0ed5702a-6325-4f41-9984-9020f8893e9b",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "newsletter_deliveries"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "newsletter_deliveries"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Newsletter_Dispatch__XDcom3gft8yqwa5O.json",
+      "workflow_name": "\ud83d\udcec Newsletter Dispatch",
+      "workflow_id": "XDcom3gft8yqwa5O",
+      "workflow_active": true,
+      "node_name": "Sticky Note - Trigger",
+      "node_id": "cd0d1258-b3da-43f6-98f8-d2bce1101792",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## 1. TRIGGER & AGENT FETCH **Weekly Schedule** fires every Monday at 10 AM (America/Denver). **Fetch Active Agents** pulls all agents where `newsletter_enabled = true`. Loop iterates one agent at a time."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Newsletter_Dispatch__XDcom3gft8yqwa5O.json",
+      "workflow_name": "\ud83d\udcec Newsletter Dispatch",
+      "workflow_id": "XDcom3gft8yqwa5O",
+      "workflow_active": true,
+      "node_name": "Sticky Note - Newsletter + Cadence",
+      "node_id": "d770ada7-cf93-4fcb-920d-cb72fd580ac7",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "leads",
+        "newsletter_deliveries"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## 2. NEWSLETTER + CADENCE FILTERING **Get Newest Newsletter** fetches latest by `week_start_date DESC` for this agent's location. **Fetch Eligible Leads** pulls opted-in leads, then filters by cadence: - WEEKLY/APPT_SET/APPT_OFFERED: every week - BIWEEKLY: every 2 weeks - MONTHLY/cold: every 4 weeks Checks `newsletter_deliveries` for last send date per lead."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Newsletter_Dispatch__XDcom3gft8yqwa5O.json",
+      "workflow_name": "\ud83d\udcec Newsletter Dispatch",
+      "workflow_id": "XDcom3gft8yqwa5O",
+      "workflow_active": true,
+      "node_name": "Sticky Note - Send & Log",
+      "node_id": "9c8131dc-8d37-468f-816e-1a3d9c030968",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "newsletter_deliveries"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## 3. BUILD, SEND & LOG **Build HTML Email** wraps `full_content` in HTML template with unsubscribe footer (Reply STOP). **Send Email via GHL** sends as Email type via conversations/messages API. **Log Delivery** inserts into `newsletter_deliveries` with status=sent + lead_id. After logging, loops back to next agent. **To test:** Hit Test Workflow in the editor. Your lead (Hobaid) is opted in with APPT_OFFERED stage = WEEKLY cadence."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Newsletter_Dispatch__XDcom3gft8yqwa5O.json",
+      "workflow_name": "\ud83d\udcec Newsletter Dispatch",
+      "workflow_id": "XDcom3gft8yqwa5O",
+      "workflow_active": true,
+      "node_name": "Update Send Counts",
+      "node_id": "59e73160-6b13-496e-8b56-fd3b6a6886e2",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Newsletter_Dispatch__XDcom3gft8yqwa5O.json",
+      "workflow_name": "\ud83d\udcec Newsletter Dispatch",
+      "workflow_id": "XDcom3gft8yqwa5O",
+      "workflow_active": true,
+      "node_name": "Stamp Supabase Key",
+      "node_id": "3de2aaa8-41a7-4a4b-a972-84a05f57bbf6",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Sticky Note: Main",
+      "node_id": "6e1bf571-bd09-47d4-a4cb-af7fa8af3ddf",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "onboarding_requests"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## \ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment Handles all safe, reversible onboarding work: 1. Validates all required fields (stops here if missing) 2. Fetches personality chunks and assembles personality prompt 3. Creates Google Drive KB folder 4. Creates FAQ Google Doc 5. Saves everything to the onboarding_requests staging table 6. Triggers Part 2 (GHL Setup) only if ALL fields are complete **Nothing irreversible happens in this workflow.**"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Sticky Note: DB Staging Section",
+      "node_id": "f5b8dcd2-7773-4989-ae49-eb51be24130f",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "onboarding_requests"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Database Staging Saves all enriched onboarding data to the onboarding_requests table. This is the handoff point \u2014 the staging record ID is passed to Part 2 (GHL Setup). If GHL setup fails, re-trigger Part 2 via POST /onboarding-ghl-setup with the onboarding_request_id."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Note: Onboarding Call Checklist",
+      "node_id": "def03a43-2b68-41eb-84eb-9d27bd08e55d",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Onboarding Call Checklist Collect all of the following before or during the onboarding call. ### Agent Info - Full name - Business name - Email address - Phone number - Timezone - City and state - Target ZIP codes (service area) ### GHL Sub-Account - Sub-account Location ID (Agency -> Locations -> click location -> Settings -> grab ID from URL) - Buyer calendar ID (GHL -> Calendars -> click calendar -> grab ID from URL) - Seller calendar ID - GHL user ID (GHL -> Settings -> My Profile\u2026[TRUNCA\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Extract Agent Data",
+      "node_id": "93994faa-74cc-4ced-87e7-0f17d51b28ba",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Set Default Personality",
+      "node_id": "14bb0b65-cd35-4a9b-9462-149344df3658",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "assignments.assignments[0].value",
+          "text": "# Agent Personality You are calm, steady, and structurally precise. You speak the way a competent professional thinks \u2014 clearly, without filler, without performance. Your presence is the point. You show up consistently, deliver something useful, and leave space. You are not trying to earn a response. You are not measuring whether your messages \"work.\" You are maintaining a rhythm of awareness that the other person can lean into whenever they're ready \u2014 or never. You are diagnostic, not reacti\u2026[T\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Set Folder ID",
+      "node_id": "46749f53-f662-40ff-a3a0-a427fa86bded",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Create FAQ Google Doc",
+      "node_id": "1de6454a-936f-4d14-9134-d535c8331792",
+      "node_type": "n8n-nodes-base.googleDrive",
+      "tables": [],
+      "operations": [
+        "create",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "folderId.value",
+          "text": "={{ $('Set Folder ID').first().json.knowledge_base_folder_id }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Add FAQ Questions",
+      "node_id": "2ff90c38-6ee9-4ea9-8eeb-aa13828030eb",
+      "node_type": "n8n-nodes-base.googleDocs",
+      "tables": [
+        "agents",
+        "leads"
+      ],
+      "operations": [
+        "create",
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "actionsUi.actionFields[0].text",
+          "text": "SMRT Knowledge Base - Agent FAQ Please fill out the answers below. This document will be used by your AI assistant (SMRT) to respond to leads on your behalf. --- 1. What areas do you serve? Answer: 2. What types of clients do you work with? Answer: 3. What is your typical process from first contact to closing? Answer: 4. How do you prefer to communicate with leads? Answer: 5. What sets you apart from other agents? Answer: 6. What questions do leads most commonly ask? Answer: 7. Ar\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Save to onboarding_requests",
+      "node_id": "save-to-staging",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "onboarding_requests"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Prepare GHL Handoff",
+      "node_id": "prepare-ghl-handoff",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Delete Old Agent Bio",
+      "node_id": "2fad5243-4b02-4ffb-a67b-845d3b826044",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "documents"
+      ],
+      "operations": [
+        "delete",
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=DELETE FROM documents WHERE location_id = '{{ $json.location_id }}' AND document_type = 'agent_bio';"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_1_DB_Enrichment__XJxoDt1SJ6SWUIim.json",
+      "workflow_name": "\ud83c\udf89 Onboarding \u2014 Part 1: DB Enrichment",
+      "workflow_id": "XJxoDt1SJ6SWUIim",
+      "workflow_active": false,
+      "node_name": "Insert Bio to Vectorstore",
+      "node_id": "6c4abb11-4a59-4a08-919e-434d70632dc2",
+      "node_type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "tables": [
+        "documents"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "mode",
+          "text": "insert"
+        },
+        {
+          "path": "tableName.value",
+          "text": "documents"
+        },
+        {
+          "path": "tableName.cachedResultName",
+          "text": "documents"
+        },
+        {
+          "path": "options.queryName",
+          "text": "match_documents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Sticky Note - GHL",
+      "node_id": "sticky-ghl",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [],
+      "operations": [
+        "create",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## GHL Sub-Account Creation Create new sub-account and apply SMRT snapshot. **SNAPSHOT_ID** must be set as an n8n variable (`$vars.SNAPSHOT_ID`) or hardcoded here. GHL Created? gate stops the flow if creation fails."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Sticky Note - DB Config",
+      "node_id": "sticky-db",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "agents",
+        "onboarding_requests"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Database Configuration Inserts full agent config into Supabase agents table using location_id returned by GHL. Data sourced from onboarding_requests staging record."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Sticky Note - Pipeline Config",
+      "node_id": "sticky-pipeline",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Pipeline Config Auto-Pull After snapshot applied, fetches all pipelines and builds pipeline_config JSONB for agents table. Matches pipelines by name keywords: incubator/nurture/lead, buyer/buying, seller/selling/listing Stage names normalized to UPPER_SNAKE_CASE."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Sticky Note - Calendar Setup",
+      "node_id": "sticky-calendar",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "create",
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Calendar Setup (Post-Snapshot) After GHL snapshot is applied, the agent's calendar ID needs to be stored in Supabase. ### agents table field - buyer_calendar_id \u2014 stores the agent's single calendar ID ### To do after W2 is live 1. HTTP GET https://services.leadconnectorhq.com/calendars/?[REDACTED_QUERY] 2. Find the correct calendar by name 3. UPDATE agents SET buyer_calendar_id = ... WHERE location_id = ... ### Collect during onboarding call - Calendar name (for auto-pull matching) - ghl_\u2026[TR\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Normalize Webhook Input",
+      "node_id": "normalize-wh",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Load Onboarding Request",
+      "node_id": "load-request",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "onboarding_requests"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "SELECT * FROM onboarding_requests WHERE id = '{{ $json.onboarding_request_id }}'::uuid AND status = 'pending_ghl' LIMIT 1;"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Extract Location ID",
+      "node_id": "extract-loc",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Insert Default Agent Rules",
+      "node_id": "insert-rules",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "agent_rules",
+        "appointments",
+        "leads"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "INSERT INTO agent_rules (location_id, rule_type, rule_content, priority) VALUES ('{{ $('Extract Location ID').first().json.location_id }}', 'greeting', 'Always greet leads warmly and professionally', 1), ('{{ $('Extract Location ID').first().json.location_id }}', 'scheduling', 'Push for appointments when lead shows interest', 2), ('{{ $('Extract Location ID').first().json.location_id }}', 'escalation', 'Transfer to human if lead asks for specific agent or becomes frustrated', 3);"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Gather Pipeline Context",
+      "node_id": "gather-pipeline",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Save Pipeline Config",
+      "node_id": "save-pipeline",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "UPDATE agents SET pipeline_config = '{{ JSON.stringify($json.pipeline_config) }}'::jsonb, updated_at = NOW() WHERE location_id = '{{ $json.location_id }}';"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Mark Agent as Live",
+      "node_id": "mark-live",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "UPDATE agents SET active = true, onboarding_completed_at = NOW(), updated_at = NOW() WHERE location_id = '{{ $(''Extract Location ID'').first().json.location_id }}';"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/Onboarding_Part_2_GHL_Setup__iMG9ggquVeLbmKuv.json",
+      "workflow_name": "\ud83c\udfd7\ufe0f Onboarding \u2014 Part 2: GHL Setup",
+      "workflow_id": "iMG9ggquVeLbmKuv",
+      "workflow_active": false,
+      "node_name": "Complete Onboarding Request",
+      "node_id": "complete-req",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "onboarding_requests"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "UPDATE onboarding_requests SET status = 'ghl_complete', location_id = '{{ $(''Extract Location ID'').first().json.location_id }}', updated_at = NOW() WHERE id = '{{ $(''Load Onboarding Request'').first().json.id }}'::uuid;"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "LeadDetails",
+      "node_id": "8ce3154e-bfd3-49d5-91a0-0b4f9e5ae3a0",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "searchLeads",
+      "node_id": "40d82b2e-a0f5-41aa-ad48-0c49a0ea5bfb",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "addLead",
+      "node_id": "b41e3865-9131-4bce-be6a-de05a29dbb0f",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "errorLogMessageType",
+      "node_id": "5c7b6942-0059-41b7-9a32-a783de164d2e",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "carryContactID",
+      "node_id": "3e80cd4d-cf66-4683-97f2-ede52f73952e",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Set Direction: Inbound",
+      "node_id": "bada83c8-df53-4c92-8965-9ac292894e4d",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Update Last Agent Message",
+      "node_id": "96482273-a134-4356-8cb4-4fa05de49f0b",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "logMessageLeads",
+      "node_id": "bc7fe45c-2b30-423a-a520-a0b75e02ce1c",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Agent Config (RAG)",
+      "node_id": "ad3bc785-60a5-43b0-8db6-e2bb8b91ce69",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Message History",
+      "node_id": "64e64ba6-3677-4327-a4e2-8b297f6059c8",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT ml.*, (SELECT COUNT(*) FROM message_log WHERE contact_id = '{{ $('LeadDetails').first().json.contact_id }}') as interaction_count FROM message_log ml WHERE ml.contact_id = '{{ $('LeadDetails').first().json.contact_id }}' ORDER BY ml.timestamp DESC LIMIT 15"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Conversation Summary",
+      "node_id": "cd91a117-4411-4c1a-9ef8-9fa86266eebb",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "conversation_context"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "conversation_context"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Log Outbound Message",
+      "node_id": "13c76da0-658e-43c4-9336-c331af299bb6",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "AI Sentiment Analysis",
+      "node_id": "6aefff39-5ec7-4b37-9e76-918072c9daf3",
+      "node_type": "@n8n/n8n-nodes-langchain.anthropic",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "messages.values[0].content",
+          "text": "=CONVERSATION CONTEXT (read first \u2014 context frames the current message): Conversation Summary: {{ $json.conversationSummary }} Recent Messages (newest last): {{ $json.historyText }} Lead State: - First Name: {{ $json.firstName }} - Agent: {{ $json.agentName }} - Pipeline Stage: {{ $json.pipelineStage }} - Pipeline State: {{ $json.pipelineState }} === CURRENT MESSAGE (classify using STEP 1 \u2192 4 from system prompt) === {{ $json.currentMessage }} Return ONLY valid JSON. No markdown fences. No e\u2026[TRU\u2026"
+        },
+        {
+          "path": "options.system",
+          "text": "You are a sentiment classifier for SMRT Bot. You analyze inbound messages and classify them into behavioral tiers to route the Brain Engine correctly. CRITICAL: Your reasoning field is used INTERNALLY by downstream nodes ONLY. It is NEVER shown to the lead. The Brain Engine AI Agent uses its own prompt to write the actual SMS/email reply. Be thorough in your reasoning - it helps downstream routing, it never leaks to the customer. === CLASSIFICATION PRIORITY ORDER === Follow these steps IN ORD\u2026[T\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Parse Sentiment",
+      "node_id": "d841fa41-fc17-4017-9e0c-b2bc993e8be0",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "const input = $json; let parsed; try { let text = ''; if (input.content && Array.isArray(input.content)) { text = input.content.map(c => c.text || '').join(''); } else if (input.message && input.message.content) { text = input.message.content; } else if (input.text) { text = input.text; } else if (typeof input === 'string') { text = input; } else { text = JSON.stringify(input); } const fenceMatch = text.match(/\\`\\`\\`(?:json)?\\n?([\\s\\S]*?)\\`\\`\\`/); if (fe\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "KB Tool",
+      "node_id": "2b853c59-a757-49b7-b9ce-62a1b90738d8",
+      "node_type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "description",
+          "text": "=Search the approved company knowledge base for client location {{ (() => { try { return $('Set Outbound Context').first().json.location_id } catch(e) { return $('LeadDetails').first().json.location_id } })() }}. WHEN TO USE: - When the lead asks about commission rates, fees, or pricing - When the lead asks about services offered, property types, or areas served - When the lead asks how the team operates or any company-specific question - ANY question about the business, team, or real estate se\u2026\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Docs Store",
+      "node_id": "229a9dbe-e721-4a3a-8271-5f009807910c",
+      "node_type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "tables": [
+        "documents"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "tableName.value",
+          "text": "documents"
+        },
+        {
+          "path": "tableName.cachedResultName",
+          "text": "documents"
+        },
+        {
+          "path": "options.queryName",
+          "text": "match_documents"
+        },
+        {
+          "path": "options.metadata.metadataValues[0].value",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.location_id } catch(e) { return $('LeadDetails').first().json.location_id } })() }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Set Direction: Inbound2",
+      "node_id": "c6a7b663-cd67-4f10-b0a5-10ec88184d00",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Apply Time Decay",
+      "node_id": "7ddeb6e8-9851-4bfd-bac3-fc23486b6ec0",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "UPDATE leads SET pipeline_state = CASE WHEN pipeline_state = 'hot' AND last_customer_message_at < NOW() - INTERVAL '14 days' THEN 'warm' WHEN pipeline_state = 'warm' AND last_customer_message_at < NOW() - INTERVAL '42 days' THEN 'cold' ELSE pipeline_state END WHERE status = 'active_conversation' AND pipeline_state IN ('hot', 'warm') AND last_customer_message_at IS NOT NULL AND location_id = '{{ $json.location_id }}' AND ( (pipeline_state = 'hot' AND last_customer_me\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Fetch Outbound Candidates",
+      "node_id": "5440b6a9-a8a1-41f2-91ed-d6aed6d3dd33",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "WITH eligible_splinter AS ( SELECT cs.id AS splinter_id, cs.location_id, cs.content AS splinter_content, cs.topic AS splinter_topic, cs.data_point AS splinter_data_point, cs.splinter_title, cs.dominant_theme, cs.signal_type, cs.insight_core, cs.interpretation, cs.behavioral_implication, cs.audience_fit, cs.stage_fit, cs.embedding_text, cs.delivery_variants, cs.priority, cs.week_start_date, cs.created_at FROM content_spli\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Check Escalation State",
+      "node_id": "dbac2095-ca6f-44af-9f77-3be8588419c1",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Log Already Escalated",
+      "node_id": "718a783a-9dbc-4000-994c-78808d77a25e",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Update Lead Escalation",
+      "node_id": "def16b77-db61-46c3-a7ea-e680bbbc4cbe",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Update Conversation Context",
+      "node_id": "6e6be3cb-3055-4579-a496-7bef75d2528f",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "conversation_context"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "conversation_context"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Prepare Tier Response",
+      "node_id": "af67488b-cca7-4808-8793-d280bab7a370",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "// Prepare tier-specific response instructions for the AI Agent // Pull tier/sentiment/sms_action from Parse Sentiment directly \u2014 input $json may be from Apply L1: Mark Lead (no tier) const ps = (() => { try { return $('Parse Sentiment').first().json; } catch(e) { return {}; } })(); const tier = ps.tier || $json.tier || 'normal'; const sentiment = ps.sentiment || $json.sentiment || 'neutral'; const smsAction = ps.sms_action || $json.sms_action || 'none'; const tierInstructions = { tier_1_conf\u2026[T\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Pause SMS 30 Days (Tier 2)",
+      "node_id": "462a5a5d-5707-4527-b0a9-da5f6685db0f",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Extract Keywords",
+      "node_id": "4fb1f71a-8f9c-4a24-af55-582b12fceac8",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "const input = $input.first().json; const currentMessage = (input.message || input.message_body || '').toLowerCase(); const keywordPatterns = { pricing: /\\b(price|pricing|cost|fee|rate|charge|dollar|\\$|expensive|cheap|afford)\\b/i, property: /\\b(house|home|property|apartment|condo|bedroom|bath|sqft|square|lot)\\b/i, location: /\\b(address|where|location|area|neighborhood|city|street|zip)\\b/i, availability: /\\b(available|availability|vacancy|vacant|ready|move.?in|when|schedule|showing)\\b/i, \u2026[TRUNCAT\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Search Relevant Messages",
+      "node_id": "4a11760f-35b6-4c6b-8aab-62a27b98680d",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT id, message_body, direction, timestamp, message_type, 'keyword_match' as source FROM message_log WHERE contact_id = '{{ $json.contact_id }}' AND id NOT IN ( SELECT id FROM message_log WHERE contact_id = '{{ $json.contact_id }}' ORDER BY timestamp DESC LIMIT 10 ) AND ( {{ $json.keywords.map(k => \"message_body ILIKE '%\" + k + \"%'\").join(' OR ') }} ) ORDER BY timestamp DESC LIMIT 5"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Merge & Deduplicate Messages",
+      "node_id": "e2a4df90-a71b-456c-b8df-bed8965f7c25",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "create",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "// Merge recent messages + keyword-matched messages, deduplicate by id const allMessages = $input.all().map(item => item.json); // Deduplicate by id (not message_id) const seen = new Set(); const uniqueMessages = []; for (const msg of allMessages) { const msgId = msg.id || msg.message_id; // Support both field names if (!seen.has(msgId)) { seen.add(msgId); uniqueMessages.push(msg); } } // Sort by timestamp (newest first) uniqueMessages.sort((a, b) => { const timeA = new Date(a\u2026[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "searchPastMessages",
+      "node_id": "c17eed39-5b2a-445d-a4d1-38516ff7cd15",
+      "node_type": "n8n-nodes-base.supabaseTool",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create",
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "toolDescription",
+          "text": "Search this lead's past message log beyond the 15 most recent messages already in your context. WHEN TO USE: - Lead references something old (\"I told you\", \"I mentioned before\", \"remember when\", \"weeks ago\") - You need to verify a claim about a past conversation - You need to recall a commitment, date, or topic from earlier in the relationship WHEN NOT TO USE: - For general knowledge or company info (use KB Tool) - For information already visible in RECENT MESSAGES (your 15-turn window) INPUT\u2026[T\u2026"
+        },
+        {
+          "path": "tableId",
+          "text": "message_log"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Prompt Blocks (SMRT)",
+      "node_id": "33ef71fb-dc80-4d61-a7e9-2500048a218b",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "prompt_blocks"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "SELECT pb.block_id, pb.category, pb.prompt_content, pb.priority, pb.conditions FROM prompt_blocks pb WHERE pb.is_active = true ORDER BY CASE pb.category WHEN 'mode' THEN 1 WHEN 'channel' THEN 2 WHEN 'relationship' THEN 3 WHEN 'history' THEN 4 WHEN 'situation' THEN 5 END, pb.priority DESC"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Default Personality",
+      "node_id": "46d1fca8-4e84-4a2d-8ba1-8fe8c0600a5b",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "system_defaults"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "SELECT value FROM system_defaults WHERE key = 'default_personality_prompt' LIMIT 1"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Set Outbound Context",
+      "node_id": "df03d6de-a69e-400b-b83c-6b005451e132",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Outbound Agent Config",
+      "node_id": "a56b8491-54ad-4871-acf1-f44873314173",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Outbound Message History",
+      "node_id": "f2fc30d3-ee24-491e-9a59-4e3edabde7c1",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "SELECT ml.*, (SELECT COUNT(*) FROM message_log WHERE contact_id = '{{ $json.contact_id }}') as interaction_count FROM message_log ml WHERE ml.contact_id = '{{ $json.contact_id }}' ORDER BY ml.timestamp DESC LIMIT 15"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Outbound Conversation Summary",
+      "node_id": "1d9dc1c4-4831-48bb-b09d-9cfd744050d8",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "conversation_context"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "conversation_context"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Agent Config",
+      "node_id": "5243376a-48ab-4f7b-b8db-3dc8b9b0f271",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "agents"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "getContact",
+      "node_id": "715debe0-e4f9-4077-a8a4-0336a7772cb8",
+      "node_type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "toolDescription",
+          "text": "Fetch the full contact profile for the current lead from GoHighLevel, including custom fields, tags, lead source, and all contact details. WHEN TO USE: - When you need lead details NOT available in the conversation (email, address, tags, lead source) - When the lead asks you to confirm their contact information - When you need CRM context about the lead's history or status INPUT: No input needed. Automatically looks up the current lead. OUTPUT: Full contact record with name, email, phone, tag\u2026[T\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "getNotes",
+      "node_id": "8319ee59-17bc-4126-b51a-c825e7d2fce8",
+      "node_type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "tables": [
+        "agents"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "toolDescription",
+          "text": "Fetch all notes recorded on this lead's GoHighLevel contact by agents or the AI system. WHEN TO USE: - When the lead references a previous conversation or commitment (\"someone told me...\", \"I was promised...\") - When you need historical context about what has been discussed or agreed with this lead - Before escalating, to check if there are existing agent notes INPUT: No input needed. Automatically looks up the current lead. OUTPUT: List of notes with timestamps and content. RULES: - Use to \u2026[TR\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "getAppointments",
+      "node_id": "aee7ae79-59ec-41c0-92c0-5eccf7a95add",
+      "node_type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "tables": [
+        "appointments"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "toolDescription",
+          "text": "Fetch all appointments (past and upcoming) for the current lead from GoHighLevel. WHEN TO USE: - When the lead asks about existing appointments (\"when is my appointment?\", \"do I have anything scheduled?\") - When the lead wants to cancel or reschedule (you need the event_id from here) - When you need to check if the lead already has a booking before offering to schedule INPUT: No input needed. Automatically looks up the current lead. OUTPUT: List of appointment objects with event IDs, dates, t\u2026[T\u2026"
+        },
+        {
+          "path": "url",
+          "text": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/appointments"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Insert Conversation Context",
+      "node_id": "888419bf-dd95-43b0-93ff-4fa8f0c23ec4",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "conversation_context"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "conversation_context"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "checkQualificationStatus",
+      "node_id": "e5010ff8-a0c6-4efd-9d17-81ea31854a60",
+      "node_type": "n8n-nodes-base.supabaseTool",
+      "tables": [
+        "conversation_context"
+      ],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "toolDescription",
+          "text": "Check how many of the 3 qualifying questions this lead has answered so far. WHEN TO USE: - BEFORE calling saveQualifyingAnswer, to get the current qualifying_answers object - When the lead says they want to book an appointment, to verify they are qualified - When you are unsure which qualifying questions have already been answered INPUT: No input needed. Automatically looks up this lead's conversation_context record. OUTPUT: Returns the qualifying_answers JSONB object with keys q1, q2, q3. - \u2026[T\u2026"
+        },
+        {
+          "path": "tableId",
+          "text": "conversation_context"
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.contact_id } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "saveQualifyingAnswer",
+      "node_id": "5d5b2a1d-c388-427b-bca0-01b753af72f2",
+      "node_type": "n8n-nodes-base.supabaseTool",
+      "tables": [
+        "conversation_context"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "toolDescription",
+          "text": "MANDATORY TOOL - Save a qualifying answer to the database after the lead answers one of the 3 qualifying questions. WHEN TO USE: You MUST call this tool IMMEDIATELY every time the lead provides information that answers Q1, Q2, or Q3. Do NOT wait until all questions are answered. Save each answer the moment you receive it. The tool updates the qualifying_answers JSONB column in conversation_context for this lead. INPUT: You must provide a JSON object with the field 'qualifying_answers' contain\u2026[T\u2026"
+        },
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "conversation_context"
+        },
+        {
+          "path": "filters.conditions[0].keyValue",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.contact_id } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Check Qualification Gate",
+      "node_id": "dfab2608-8b15-499a-a900-125e77bf33f1",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "conversation_context"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "conversation_context"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Lead Memory",
+      "node_id": "5d28cb73-fdf5-423e-ad7f-ffb41c8c682f",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Lead Memory (After)",
+      "node_id": "dc06bb2c-6ec8-4fcd-a784-139a2ebd87c7",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Build GHL Sync Body",
+      "node_id": "c1d63def-3c4e-4784-bd85-99f980cfc4c7",
+      "node_type": "n8n-nodes-base.code",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "jsCode",
+          "text": "// Get GHL custom field definitions from input (Get GHL Contact) const ghlFields = $input.first().json.customFields || []; // Get memory + enrichment values from Compare Memory const mem = $('Compare Memory').first().json; // === CORE FIELDS (standard GHL contact fields) === const coreFields = {}; if (mem.first_name) coreFields.firstName = mem.first_name; if (mem.last_name) coreFields.lastName = mem.last_name; if (mem.email) coreFields.email = mem.email; if (mem.phone) coreFields.phone = mem.p\u2026[\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Update Inbound Timestamps",
+      "node_id": "e710faf6-dfce-4c9a-84c5-9d5c61e04025",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Update Pipeline in DB",
+      "node_id": "4b74bc6b-8506-441e-a3b2-25688c51408b",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "updateContactMemory",
+      "node_id": "d9d4d69d-575d-46a3-b6dd-3f6c32786274",
+      "node_type": "@n8n/n8n-nodes-langchain.toolCode",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "description",
+          "text": "Update the contact's memory and enrichment fields. Call this when you detect ANY of the signals below. Include ALL detected fields in a single call \u2014 never make multiple calls. INPUT (required JSON): - contact_id: string - CONTACT_ID from context (always required) - Plus any fields below that you detected: FIELD TRIGGERS \u2014 scan every message for these: IDENTITY / CONTACT INFO - Lead says their name \u2192 first_name, last_name - Lead gives their email address \u2192 email - Lead gives their phone numbe\u2026[T\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Outbound Lead Memory",
+      "node_id": "58fdd025-d75a-4ea5-92dc-fb2ab1deba25",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Set Newsletter Pending",
+      "node_id": "d842c9de-d9ee-45e2-927a-13801d48022a",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "conversation_context"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "conversation_context"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Clear Newsletter Flags",
+      "node_id": "9cd8df29-4ce7-436b-8af8-2106123fdff3",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "conversation_context"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "conversation_context"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "subscribeToNewsletter",
+      "node_id": "6039bce3-49bc-4f47-ac62-9183d143bd7b",
+      "node_type": "@n8n/n8n-nodes-langchain.toolCode",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "description",
+          "text": "Subscribe the current lead to the weekly market newsletter. Updates leads.newsletter_opted_in = true, tags the contact in GHL, and clears pending flags. INPUT (required JSON): - contact_id: string - the CONTACT_ID from the context header (always required) CALL THIS TOOL when the lead signals they want market updates, want to stay in the loop, accept the newsletter offer, or agree to receive periodic info. Call it BEFORE you write your response acknowledging the subscription \u2014 never acknowledge\u2026[\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Get Static Prompt Sections",
+      "node_id": "b27e40e7-2ed9-4d12-bc3e-c871e977db8a",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "static_prompt_sections"
+      ],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "static_prompt_sections"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Record Splinter Usage",
+      "node_id": "d2ac7e1d-aa78-4fa6-a97b-55b9a4de2386",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "splinter_usage"
+      ],
+      "operations": [
+        "reference"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "splinter_usage"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Gather Prompt Data",
+      "node_id": "gather-prompt-data",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "assignments.assignments[4].value",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.direction; } catch(e) { try { return $('LeadDetails').first().json.direction || 'inbound'; } catch(e2) { return 'inbound'; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[5].value",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.channel; } catch(e) { try { return $('LeadDetails').first().json.channel; } catch(e2) { return 'sms'; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[6].value",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.first_name; } catch(e) { try { return $('LeadDetails').first().json.first_name; } catch(e2) { return 'Contact'; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[7].value",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.contact_id; } catch(e) { try { return $('LeadDetails').first().json.contact_id; } catch(e2) { return ''; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[8].value",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.location_id; } catch(e) { try { return $('LeadDetails').first().json.location_id; } catch(e2) { return ''; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[12].value",
+          "text": "={{ (() => { try { const b = $('Check Batch Leader').first().json.batchedMessageBody; if (b) return b; } catch(e) {} try { return $('Set Outbound Context').first().json.message; } catch(e) { try { return $('LeadDetails').first().json.message_body || $('LeadDetails').first().json.message; } catch(e2) { return ''; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[23].value",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_content || ''; } catch(e) { return ''; } })() }}"
+        },
+        {
+          "path": "assignments.assignments[24].value",
+          "text": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_topic || ''; } catch(e) { return ''; } })() }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Gather Sentiment Data1",
+      "node_id": "58ae3ef5-8d85-4ce9-9715-aa65738a6e15",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "read",
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "assignments.assignments[0].value",
+          "text": "={{ (() => { try { const b = $('Check Batch Leader').first().json.batchedMessageBody; if (b) return b; } catch(e) {} try { return $('LeadDetails').first().json.message; } catch(e) { try { return $('Set Outbound Context').first().json.message; } catch(e2) { return ''; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[1].value",
+          "text": "={{ (() => { try { return $('LeadDetails').first().json.contact_id; } catch(e) { try { return $('Set Outbound Context').first().json.contact_id; } catch(e2) { return ''; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[2].value",
+          "text": "={{ (() => { try { return $('LeadDetails').first().json.location_id; } catch(e) { try { return $('Set Outbound Context').first().json.location_id; } catch(e2) { return ''; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[3].value",
+          "text": "={{ (() => { try { return $('LeadDetails').first().json.first_name; } catch(e) { try { return $('Set Outbound Context').first().json.first_name; } catch(e2) { return 'Contact'; } } })() }}"
+        },
+        {
+          "path": "assignments.assignments[6].value",
+          "text": "={{ (() => { try { const msgs = $('Get Message History').all(); return msgs.slice(0, 15).map(m => (m.json.direction === 'inbound' ? '[lead] ' : '[bot] ') + m.json.message_body).join('\\n'); } catch(e) { return 'No previous messages'; } })() }}"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "switchChannel",
+      "node_id": "switch-channel-tool-001",
+      "node_type": "@n8n/n8n-nodes-langchain.toolCode",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "description",
+          "text": "Switch the lead's communication channel and send a hardcoded bridge message on the new channel. Call this ONLY when the lead explicitly asks to move to a different channel (e.g. \"just email me\", \"text me instead\"). SUPPORTED DESTINATIONS: sms, email. You CANNOT switch TO Instagram DM \u2014 only FROM it. If a lead asks to be contacted on Instagram, politely decline and offer SMS or email instead. INPUT (required JSON): - contact_id: string \u2014 CONTACT_ID from context - new_channel: string \u2014 must be \"\u2026[\u2026"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Stamp Batch Key",
+      "node_id": "a753859e-8eb2-4ed0-b149-0e5571c5955e",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Sticky Note - Wait Window",
+      "node_id": "20451e86-34be-4bf2-8239-6c8ae7dccfe3",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "tables": [
+        "message_log"
+      ],
+      "operations": [
+        "create",
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "content",
+          "text": "## Wait Window \u2014 Message Batching **60s debounce + batch leader election.** Stamp log ID \u2192 wait 60s \u2192 query message_log for last 90s of inbound messages from this contact \u2192 newest message (by timestamp, id tiebreaker) is the leader. - TRUE (leader): proceeds through pipeline with `batchedMessageBody` (all messages joined) - FALSE (not leader): dead-ends silently \u2014 another execution will respond If query fails, node fail-safes to leader with single message body (so we never drop a response)."
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Turnaround: Clear State",
+      "node_id": "9ddf213c-52e2-46d9-a4e0-72bf371b61e7",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=UPDATE leads SET opt_out_level=NULL, opted_out_at=NULL, opt_out_reason=NULL, sms_paused_until=NULL, status='active_conversation' WHERE contact_id='{{ $('LeadDetails').first().json.contact_id }}'"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Turnaround: Remove L1 Tag",
+      "node_id": "bc28aa06-3eef-4a0e-a087-0f3da78265d4",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "tables": [],
+      "operations": [
+        "delete"
+      ],
+      "excerpts": [
+        {
+          "path": "method",
+          "text": "DELETE"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Apply L1: Mark Lead",
+      "node_id": "8899370e-b4c8-4822-b564-20d3087150a4",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Apply L2: Mark Lead",
+      "node_id": "633a6dcf-72db-4e21-ba88-1c57954db491",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "leads"
+      ],
+      "operations": [
+        "update"
+      ],
+      "excerpts": [
+        {
+          "path": "operation",
+          "text": "update"
+        },
+        {
+          "path": "tableId",
+          "text": "leads"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Log AI Leak",
+      "node_id": "ce6d0590-cf17-44a6-876d-4ffb069aec82",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "ai_output_errors"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "ai_output_errors"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Save Inbound Capture",
+      "node_id": "2f868d2d-62b8-474c-98dc-c8810509afda",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "inbound_capture"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "inbound_capture"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Check Capture Mode",
+      "node_id": "70784f5a-7c19-4e63-ad15-a9bc5b7f8c21",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [
+        "system_defaults"
+      ],
+      "operations": [
+        "create",
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "SELECT value FROM system_defaults WHERE key = 'inbound_capture_mode' LIMIT 1"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Prep Status Check Input",
+      "node_id": "prep-status-check-001",
+      "node_type": "n8n-nodes-base.set",
+      "tables": [],
+      "operations": [
+        "update"
+      ],
+      "excerpts": []
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Cap Lock Check",
+      "node_id": "cap-lock-check-001",
+      "node_type": "n8n-nodes-base.postgres",
+      "tables": [],
+      "operations": [
+        "read"
+      ],
+      "excerpts": [
+        {
+          "path": "query",
+          "text": "=SELECT can_send, current_level, daily_cap, sent_today, remaining, reset_at, block_reason FROM check_sending_quota('{{ $('Assemble System Prompt').item.json.locationId }}'::text);"
+        }
+      ]
+    },
+    {
+      "workflow_file": "/home/ubuntu/smrt_analysis/sanitized_workflows/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+      "workflow_name": "\ud83e\udde0 SMRT Brain Engine",
+      "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+      "workflow_active": true,
+      "node_name": "Log Cap Suppression",
+      "node_id": "cap-suppress-log-001",
+      "node_type": "n8n-nodes-base.supabase",
+      "tables": [
+        "message_send_errors"
+      ],
+      "operations": [
+        "create"
+      ],
+      "excerpts": [
+        {
+          "path": "tableId",
+          "text": "message_send_errors"
+        }
+      ]
+    }
+  ]
+}

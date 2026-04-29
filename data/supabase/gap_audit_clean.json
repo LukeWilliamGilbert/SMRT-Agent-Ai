@@ -1,0 +1,502 @@
+{
+  "counts": {
+    "leads": 313,
+    "agents": 1,
+    "message_log": 376,
+    "appointments": 0,
+    "active_agents": 1,
+    "inbound_capture": 179,
+    "conversation_context": 25
+  },
+  "agent_state": [
+    {
+      "id": "e7abce43-d217-401e-8df2-5d3ea4fdd284",
+      "active": true,
+      "agent_name": "Luke Gilbert",
+      "created_at": "2026-01-13T03:36:52.435279+00:00",
+      "updated_at": "2026-04-27T19:39:52.005284+00:00",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "business_name": "Open House Boise ",
+      "has_agent_notes": true,
+      "has_calendar_id": true,
+      "has_ghl_user_id": true,
+      "has_calendar_link": true,
+      "has_personality_prompt": false,
+      "use_custom_personality": false
+    }
+  ],
+  "orphan_summary": {
+    "context_sample": [],
+    "message_sample": [],
+    "message_log_without_lead": 0,
+    "inbound_capture_unprocessed": 31,
+    "conversation_context_without_lead": 0
+  },
+  "contexts_booked": {
+    "sample": [],
+    "total_contexts_booked_true": 0,
+    "booked_contexts_without_appointment_row": 0
+  },
+  "appointment_health": {
+    "total": 0,
+    "by_status": {},
+    "null_lead_id": 0,
+    "null_agent_id": 0,
+    "null_location_id": 0,
+    "missing_lead_by_id": 0,
+    "missing_agent_by_id": 0,
+    "missing_agent_by_location": 0,
+    "missing_lead_by_contact_location": 0
+  },
+  "audit_generated_at": "2026-04-29T21:23:37.100326+00:00",
+  "recent_appointments": [],
+  "appointment_language_in_message_log": [
+    {
+      "id": "64677a22-8003-4a66-870d-f2f8a6881c7b",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-29T21:00:10.356+00:00",
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Nothing is showing up on my end. From what we discussed before, there were some issues getting the booking to go through, and I flagged it for Luke to confirm directly with you.\n\nWant me to get it locked in now? I just need to know what time works best."
+    },
+    {
+      "id": "f07eaf1d-edbb-4770-a941-dcd01fe94121",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-29T20:58:15.115+00:00",
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Yeah, we're already set up for a meeting I'm pretty sure? Can you check on that for me?"
+    },
+    {
+      "id": "b549373c-72ca-4c0f-b17c-7d1be6909b69",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-29T18:47:22.114+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Daddy Sayeed,\n\nI wanted to touch base with you real quick as we build out Luke's calendar for the remainder of the year.\n\nIt's been busy so far and I need to make sure that everybody who needs help is on Luke's radar.\n\nAre you planning on buying or selling this year?"
+    },
+    {
+      "id": "102efa45-9244-42b6-a81d-5a58c757222e",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-29T01:00:14.988+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Daddy Sayeed,\n\nI wanted to touch base with you real quick as we build out Luke's calendar for the remainder of the year.\n\nIt's been busy so far and I need to make sure that everybody who needs help is on Luke's radar.\n\nAre you planning on buying or selling this year?"
+    },
+    {
+      "id": "07cd5922-f2cf-4f9a-bcab-a04f0c6e572a",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-29T01:00:14.98+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Sayeed Hobaid,\n\nI wanted to touch base with you real quick as we build out Luke's calendar for the remainder of the year.\n\nIt's been busy so far and I need to make sure that everybody who needs help is on Luke's radar.\n\nAre you planning on buying or selling this year?"
+    },
+    {
+      "id": "52b2ac13-c4b3-460a-a08a-a9ef268c7d13",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-29T00:41:46.499+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Daddy Sayeed,\n\nI wanted to touch base with you real quick as we build out Luke's calendar for the remainder of the year.\n\nIt's been busy so far and I need to make sure that everybody who needs help is on Luke's radar.\n\nAre you planning on buying or selling this year?"
+    },
+    {
+      "id": "4caee9e9-eac5-43f4-aa89-672d89f2e30a",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-29T00:41:46.494+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Sayeed Hobaid,\n\nI wanted to touch base with you real quick as we build out Luke's calendar for the remainder of the year.\n\nIt's been busy so far and I need to make sure that everybody who needs help is on Luke's radar.\n\nAre you planning on buying or selling this year?"
+    },
+    {
+      "id": "14182a23-9c1a-4135-8b5b-1d0a242c8686",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-28T21:43:24.598+00:00",
+      "contact_id": "kwhTzabuEO8ThYZTptf6",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "This message appears to be the outbound touchpoint that was sent *to* the lead (Carolyn), it's showing as an inbound message in\nthe system, but the content and signature (\", Jon\") make clear this is actually the outbound intro email that went out to this\ncontact.Since this is the outbound message and there's no actual reply from the lead yet, there's nothing to respond to.\n\nStaying silent here is the right call.\n\nBest,\nJon\nLuke Gilbert's Real Estate Team"
+    },
+    {
+      "id": "d9892495-c617-4668-803a-e1f1b08b156f",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-28T21:43:17.064+00:00",
+      "contact_id": "kwhTzabuEO8ThYZTptf6",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "This message appears to be the outbound touchpoint that was sent *to* the lead (Carolyn), it's showing as an inbound message in the system, but the content and signature (\", Jon\") make clear this is actually the outbound intro email that went out to this contact.\n\nSince this is the outbound message and there's no actual reply from the lead yet, there's nothing to respond to. Staying silent here is the right call."
+    },
+    {
+      "id": "a2e4f355-de1f-433f-a849-a3cb1105b368",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-28T12:36:05.105+00:00",
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Something came up on my end and the booking didn't go through. I'll flag this for Luke directly so he can confirm Monday May 4th at 9am with you. He'll reach out shortly."
+    },
+    {
+      "id": "6d61ea18-b2b2-4b7c-a6cc-9c953fa7ada1",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-28T12:32:43.733+00:00",
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Monday May 4th at 9am is open. Before I lock it in, what email should I use for the calendar invite?"
+    },
+    {
+      "id": "6a0f61b6-41da-4cfa-8df4-2e1a10f14d2c",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-28T12:28:22.671+00:00",
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Friday isn't showing any open slots. Closest I've got is Monday May 4th at 9am or 9:30am. Does either of those work?"
+    },
+    {
+      "id": "25ad92da-f147-4113-b940-b6af31bdbf1b",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-28T12:26:32.594+00:00",
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Hey Jon, did you get that calendar fixed?"
+    },
+    {
+      "id": "200b6eeb-3416-49df-83e6-2b705a250e02",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-28T00:49:29.187+00:00",
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Still having trouble with the calendar on my end. I'll flag Friday at 1pm directly with Luke so he can confirm with you. You'll hear from him shortly."
+    },
+    {
+      "id": "348c789e-b133-494a-a948-ed25cbeb8f8c",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-28T00:46:23.199+00:00",
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Having trouble pulling up the calendar right now. I'll flag this for Luke directly so he can confirm Friday with you. Does before 8am or around 1pm work better if you had to pick one?"
+    },
+    {
+      "id": "75a1b65f-2fd3-4a37-8bdc-d37468cb805f",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-28T00:28:05.809+00:00",
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Can you get me on the calendar with Luke?"
+    },
+    {
+      "id": "0bc2b1a0-3040-4c4f-849c-c956d52c0b96",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:10:02.14+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Can't pull listings directly, but Luke can filter for basements when he pulls options for you.\n\nOn neighborhoods, that's really a Luke question. He knows Ada County well and can point you toward the right fit.\n\nWant to get a quick call on the books?"
+    },
+    {
+      "id": "e9c435c3-59f5-48c4-9363-a454ea37ffa8",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:08:58.603+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Can't pull listings directly, but Luke can filter by bedrooms, price, and basement when he pulls options for you. Want to get a quick call on the books?"
+    },
+    {
+      "id": "d3fc4880-b7b9-4853-a1d3-fa76076659b6",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:08:30.388+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "HOA fees vary a lot depending on the neighborhood. Newer developments and planned communities tend to run $50-$200/month. Some areas have no HOA at all. Luke can tell you exactly what applies to any specific property you're looking at.\n\nOn tours, what day and time work best for you next week?"
+    },
+    {
+      "id": "dffb8150-2dc6-4b31-ac03-505fc425f4f7",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:08:00.718+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Don't have a current price-per-sqft number I'd trust right now, that shifts frequently and I'd rather not guess.\n\nOn 4-bed homes under 600k in Ada County, yes they exist but that range moves fast. Luke can pull what's actually available right now and filter by your criteria. Want to get a call on the books?"
+    },
+    {
+      "id": "1b715108-4dc0-4968-abe1-392c0cf16f26",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:07:35.309+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "On property taxes, already covered that above. Ada County runs 0.6% to 0.8% of assessed value, so roughly $3, 600 to $4, 800 a year on a $600k home.\n\nFor tours, Luke is the one to set those up and he'll know exactly what's worth seeing at your budget. Want me to get you two connected?"
+    },
+    {
+      "id": "f586b138-29a3-45f3-9e27-d0444996160f",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-25T23:07:09.322+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I'd love to schedule a tour next week if possible."
+    },
+    {
+      "id": "a92dfd25-9ef3-43dc-b6ce-026beeb4d50b",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:06:59.706+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Can't pull listings or search the MLS, so basements are something Luke can filter for when he pulls options for you.\n\nOn price per sqft, I don't have a current number I'd trust right now. That's exactly the kind of thing Luke can give you a real answer on. Want to get a quick call on the books?"
+    },
+    {
+      "id": "4ed47f48-7a9f-42c2-ae76-c6f521c0264e",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:03:49.623+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Don't have current numbers on either right now. Both shift pretty frequently and I'd rather not guess.\n\nLuke can give you the real read on inventory in your range and what rates are doing. Want to get a quick call on the books?"
+    },
+    {
+      "id": "c812f856-aa5f-4d81-991c-823634564a8a",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:02:50.09+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "For neighborhood recommendations, that's really a Luke Gilbert question. He knows Ada County well and can point you toward the right fit based on what you're looking for.\n\nOn inventory, it's been shifting. Last we talked, Ada County was sitting around 1, 459 active listings. For 4-bed homes under 600k specifically, those tend to move faster than the overall market.\n\nWant to get a call on the books with Luke?"
+    },
+    {
+      "id": "6d1eeff9-d017-4c9d-9ae2-6c39d768429a",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:01:43.165+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Ada County property taxes generally run around 0.6% to 0.8% of assessed value. On a $550k home that's roughly $3, 300 to $4, 400 a year, though it varies by location and exemptions.\n\nFor neighborhood recommendations, that's more of a Luke Gilbert question. He knows the area well and can point you toward the right fit. Want me to get a call on the books?"
+    },
+    {
+      "id": "57aa9ccb-d3ec-4b77-8e73-0d69a749dd57",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T23:00:44.745+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Can't pull listings directly, but Luke can walk you through everything available near Eagle, including the new development on Linder Road that's worth a look.\n\nOn property taxes, Ada County generally runs around 0.6% to 0.8% of assessed value. On a $550k home that's roughly $3, 300 to $4, 400 a year, but it varies by exact location and exemptions. Luke can give you the real breakdown for specific areas.\n\nWant to get a call on the books?"
+    },
+    {
+      "id": "57367e5f-2f99-48e1-bc6c-5ba6d18b4bcc",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T22:55:58.246+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I can't pull specific listings, but Luke can walk you through exactly what's active in your range and set up tours.\n\nWhat day and time work best for a quick call with him?"
+    },
+    {
+      "id": "3a312acf-9fac-4b6c-9a7a-77b407acf833",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T22:55:03.026+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "On closing costs, buyers typically budget 2-5% of the purchase price. At 750k that's roughly $15k-$37k covering lender fees, title, escrow, and prepaids like insurance and taxes.\n\nOn the tour, I can't schedule showings directly, but Luke can set that up for you. What day and time work best for a quick call with him?"
+    },
+    {
+      "id": "9f6e631d-da6f-498f-8343-1bdda4b9c6b7",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-25T22:54:40.467+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I'd love to schedule a tour next week if possible."
+    },
+    {
+      "id": "34d35a15-4138-4c46-aa5f-ff676fc77898",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T22:49:11.202+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I can't pull listings or set up tours directly, but I can get you on a call with Luke Gilbert and he can line up the right homes and walk you through neighborhoods that fit what you're looking for.\n\nWhat day and time work best for you next week?"
+    },
+    {
+      "id": "a731d929-eabf-4ff4-8c1a-c1877af44190",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T22:48:54.135+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "Just a heads up, I can't pull up specific listings or schedule showings directly. What I can do is set up a call with Luke Gilbert so he can line up the right homes for you and coordinate tours.\n\nWhat day and time work best for you next week?"
+    },
+    {
+      "id": "fa08a7d1-dfcc-43ae-8759-ba81d949805e",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-25T22:47:09.63+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I'd love to schedule a tour next week if possible."
+    },
+    {
+      "id": "3a65f982-9d95-4684-86bb-66b7d847d6ff",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-25T22:40:52.7+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I'd love to schedule a tour next week if possible."
+    },
+    {
+      "id": "02c7c4da-75dc-4083-855a-ef44627a6e13",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-25T22:29:24.266+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I'd love to schedule a tour next week if possible."
+    },
+    {
+      "id": "74e038c4-8115-44c6-a718-a62a37938adc",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-25T19:31:03.107+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I'd love to schedule a tour next week if possible."
+    },
+    {
+      "id": "813e9fb3-e256-42de-a216-65301221f9b2",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-25T19:30:00.1+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I'd love to schedule a tour next week if possible."
+    },
+    {
+      "id": "82510879-5724-4be6-97a2-afdaa6e0bfdf",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-25T19:24:15.451+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I'd love to schedule a tour next week if possible."
+    },
+    {
+      "id": "29ea76e7-1b14-4e01-9abc-4a02001c2ef4",
+      "ai_intent": null,
+      "direction": "inbound",
+      "timestamp": "2026-04-25T19:20:35.453+00:00",
+      "contact_id": "fPo84Bot6bjOLKnzYGwd",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "I'd love to schedule a tour next week if possible."
+    },
+    {
+      "id": "9dadfe19-9f29-40d0-b42a-09b090136aea",
+      "ai_intent": null,
+      "direction": "outbound",
+      "timestamp": "2026-04-25T17:56:04.599+00:00",
+      "contact_id": "JQD45vnycfHE00GPQPfa",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "intent_detected": null,
+      "message_excerpt": "No qualifying answers yet. I need to gather some context before booking. I'll ask about buying/selling and timeline together in one message.\n\nFor sure. Just want to make sure Luke Gilbert is prepped for you. Are you looking to buy or sell, and what's your general timeline?"
+    }
+  ],
+  "appointment_language_in_inbound_capture": [
+    {
+      "id": "4a5520e0-e121-49be-887a-d7f0490c8905",
+      "processed": false,
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "captured_at": "2026-04-29T20:58:14.764997+00:00",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "ghl_message_id": null,
+      "payload_excerpt": "{\"city\": \"MERIDIAN\", \"tags\": \"\", \"user\": {\"email\": \"Luke@OpenHouseBoise.net\", \"phone\": \"+12083041227\", \"lastName\": \"Gilbert\", \"firstName\": \"Luke\"}, \"email\": \"lukewilliamgilbert@gmail.com\", \"phone\": \"+12083041227\", \"state\": \"Idaho\", \"contact\": {\"attributionSource\": {\"medium\": \"conversation\", \"sessionSource\": \"Other\"}, \"lastAttributionSource\": {}}, \"country\": \"US\", \"message\": {\"body\": \"Yeah, we're already set up for a meeting I'm pretty sure? Can you check on that for me?\", \"type\": 2}, \"Is Lead?\": \"\", \"location\": {\"id\": \"kv1Af9i1qYK7KfIiT0U3\", \"city\": \"MERIDIAN\", \"name\": \" Open House Boise LLC\", \"state\": \"Idaho\", \"address\": \"1401 E MONA LISA DR\", \"country\": \"US\", \"postalCode\": \"83642\", \"fullAd"
+    },
+    {
+      "id": "9ef89d32-c6f0-4590-980f-df628c49e91d",
+      "processed": false,
+      "contact_id": "an96e4yKpOTczApAh1ta",
+      "captured_at": "2026-04-29T19:48:53.101007+00:00",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "ghl_message_id": null,
+      "payload_excerpt": "{\"tags\": \"\", \"email\": \"pavelkucher@yahoo.com\", \"phone\": \"+12066979587\", \"contact\": {\"attributionSource\": {\"medium\": \"csv_import\", \"mediumId\": null, \"sessionSource\": \"CRM UI\"}, \"lastAttributionSource\": {}}, \"message\": {\"body\": \"No\", \"type\": 2}, \"Is Lead?\": \"YES\", \"location\": {\"id\": \"kv1Af9i1qYK7KfIiT0U3\", \"city\": \"MERIDIAN\", \"name\": \" Open House Boise LLC\", \"state\": \"Idaho\", \"address\": \"1401 E MONA LISA DR\", \"country\": \"US\", \"postalCode\": \"83642\", \"fullAddress\": \"1401 E MONA LISA DR, MERIDIAN Idaho 83642\"}, \"workflow\": {\"id\": \"737b4bad-8938-4603-9ae5-6066151885fd\", \"name\": \"01-SMS Intake\"}, \"full_name\": \"Pavel Kucher\", \"last_name\": \"Kucher\", \"Must-haves\": \"\", \"contact_id\": \"an96e4yKpOTczApAh1"
+    },
+    {
+      "id": "8e2f40a5-9476-46ad-9f32-ab61f91bda49",
+      "processed": false,
+      "contact_id": "kwhTzabuEO8ThYZTptf6",
+      "captured_at": "2026-04-28T21:43:24.238592+00:00",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "ghl_message_id": null,
+      "payload_excerpt": "{\"tags\": \"\", \"user\": {\"email\": \"Luke@OpenHouseBoise.net\", \"phone\": \"+12083041227\", \"lastName\": \"Gilbert\", \"firstName\": \"Luke\"}, \"email\": \"jon@mail.openhouseboise.net\", \"country\": \"US\", \"message\": {\"body\": \"This message appears to be the outbound touchpoint that was sent *to* the lead (Carolyn), it's showing as an inbound message in\\nthe system, but the content and signature (\\\", Jon\\\") make clear this is actually the outbound intro email that went out to this\\ncontact.Since this is the outbound message and there's no actual reply from the lead yet, there's nothing to respond to.\\n\\nStaying silent here is the right call.\\n\\nBest,\\nJon\\nLuke Gilbert's Real Estate Team\"}, \"location\": {\"id\": \"kv"
+    },
+    {
+      "id": "c53d45fb-252c-4aeb-9423-cc2f7a72d41d",
+      "processed": false,
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "captured_at": "2026-04-28T12:26:32.458447+00:00",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "ghl_message_id": null,
+      "payload_excerpt": "{\"city\": \"MERIDIAN\", \"tags\": \"\", \"user\": {\"email\": \"Luke@OpenHouseBoise.net\", \"phone\": \"+12083041227\", \"lastName\": \"Gilbert\", \"firstName\": \"Luke\"}, \"phone\": \"+12083041227\", \"state\": \"Idaho\", \"contact\": {\"attributionSource\": {\"medium\": \"conversation\", \"sessionSource\": \"Other\"}, \"lastAttributionSource\": {}}, \"country\": \"US\", \"message\": {\"body\": \"Hey Jon, did you get that calendar fixed?\", \"type\": 2}, \"Is Lead?\": \"\", \"location\": {\"id\": \"kv1Af9i1qYK7KfIiT0U3\", \"city\": \"MERIDIAN\", \"name\": \" Open House Boise LLC\", \"state\": \"Idaho\", \"address\": \"1401 E MONA LISA DR\", \"country\": \"US\", \"postalCode\": \"83642\", \"fullAddress\": \"1401 E MONA LISA DR, MERIDIAN Idaho 83642\"}, \"workflow\": {\"id\": \"737b4bad-8938"
+    },
+    {
+      "id": "ba306d7f-a3d4-4a30-a90e-1a99ac239318",
+      "processed": false,
+      "contact_id": "lEwvRUfBJaJPmr7d73z2",
+      "captured_at": "2026-04-28T00:28:05.476424+00:00",
+      "location_id": "kv1Af9i1qYK7KfIiT0U3",
+      "ghl_message_id": null,
+      "payload_excerpt": "{\"tags\": \"\", \"user\": {\"email\": \"Luke@OpenHouseBoise.net\", \"phone\": \"+12083041227\", \"lastName\": \"Gilbert\", \"firstName\": \"Luke\"}, \"phone\": \"+12083041227\", \"contact\": {\"attributionSource\": {\"medium\": \"conversation\", \"sessionSource\": \"Other\"}, \"lastAttributionSource\": {}}, \"country\": \"US\", \"message\": {\"body\": \"Can you get me on the calendar with Luke?\", \"type\": 2}, \"location\": {\"id\": \"kv1Af9i1qYK7KfIiT0U3\", \"city\": \"MERIDIAN\", \"name\": \" Open House Boise LLC\", \"state\": \"Idaho\", \"address\": \"1401 E MONA LISA DR\", \"country\": \"US\", \"postalCode\": \"83642\", \"fullAddress\": \"1401 E MONA LISA DR, MERIDIAN Idaho 83642\"}, \"workflow\": {\"id\": \"737b4bad-8938-4603-9ae5-6066151885fd\", \"name\": \"01-SMS Intake\"}, \"f"
+    }
+  ]
+}

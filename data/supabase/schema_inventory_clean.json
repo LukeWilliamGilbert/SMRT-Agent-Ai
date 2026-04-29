@@ -1,0 +1,6817 @@
+[
+  {
+    "table": "agent_rules",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "rule_type",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "rule_content",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "priority",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "active",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX agent_rules_pkey ON public.agent_rules USING btree (id)",
+        "indexname": "agent_rules_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_agent_rules_location_id ON public.agent_rules USING btree (location_id)",
+        "indexname": "idx_agent_rules_location_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_agent_rules_rule_type ON public.agent_rules USING btree (location_id, rule_type)",
+        "indexname": "idx_agent_rules_rule_type"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_91257_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_91257_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_91257_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_91257_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "constraint_name": "agent_rules_location_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "agent_rules_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "location_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "location_id",
+        "foreign_schema": "public",
+        "constraint_name": "agent_rules_location_id_fkey"
+      }
+    ],
+    "estimated_rows": -1
+  },
+  {
+    "table": "agent_sending_stats",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "date",
+        "data_type": "date",
+        "column_name": "date",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "level",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "sent",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "delivered",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "undelivered",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "failed",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "delivery_rate",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "cap_at_time",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "hit_cap",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX agent_sending_stats_date_location_id_key ON public.agent_sending_stats USING btree (date, location_id)",
+        "indexname": "agent_sending_stats_date_location_id_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX agent_sending_stats_pkey ON public.agent_sending_stats USING btree (id)",
+        "indexname": "agent_sending_stats_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_agent_stats_loc_date ON public.agent_sending_stats USING btree (location_id, date DESC)",
+        "indexname": "idx_agent_stats_loc_date"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_123458_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123458_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123458_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123458_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "agent_sending_stats_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "date",
+          "location_id"
+        ],
+        "constraint_name": "agent_sending_stats_date_location_id_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "agents",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_name",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "business_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "market",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "brand_voice",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "tone",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "calendar_link",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "openai_api_key",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "rules",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "active",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "state",
+        "is_nullable": "YES",
+        "column_default": "'CA'::text",
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "timezone",
+        "is_nullable": "YES",
+        "column_default": "'America/Denver'::text",
+        "ordinal_position": 15,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "market_area",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 16,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "knowledge_base_folder_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 17,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "knowledge_base_folder_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 18,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_email",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 19,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_phone",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 20,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "_text",
+        "data_type": "ARRAY",
+        "column_name": "target_zips",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 21,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "market_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 22,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "altos_location_hashes",
+        "is_nullable": "YES",
+        "column_default": "'{}'::jsonb",
+        "ordinal_position": 23,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "newsletter_enabled",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 24,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "newsletter_day",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 25,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "time",
+        "data_type": "time without time zone",
+        "column_name": "newsletter_time",
+        "is_nullable": "YES",
+        "column_default": "'03:00:00'::time without time zone",
+        "ordinal_position": 26,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_user_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 27,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "calendar_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 28,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "calendar_settings",
+        "is_nullable": "YES",
+        "column_default": "'{\"working_days\": [1, 2, 3, 4, 5], \"working_hours\": {\"end\": \"17:00\", \"start\": \"09:00\"}, \"buffer_minutes\": 15, \"default_duration\": 30}'::jsonb",
+        "ordinal_position": 30,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "city",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 31,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "personality_prompt",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 32,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "use_custom_personality",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 33,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "_text",
+        "data_type": "ARRAY",
+        "column_name": "specialties",
+        "is_nullable": "YES",
+        "column_default": "'{}'::text[]",
+        "ordinal_position": 34,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "knowledge_base_faq_doc_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 35,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "knowledge_base_faq_doc_url",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 36,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_api_key",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 37,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "knowledge_base_ready",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 38,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "onboarding_completed_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 39,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "coordinator_name",
+        "is_nullable": "YES",
+        "column_default": "'Hannah'::text",
+        "ordinal_position": 40,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "pipeline_config",
+        "is_nullable": "YES",
+        "column_default": "'{}'::jsonb",
+        "ordinal_position": 41,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "newsletters_sent_total",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 42,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "coordinator_email",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 43,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_notes",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 44,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "county_fips",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 45,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "altos_pai",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 46,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "altos_user_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 47,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "altos_account_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 48,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "account_created_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 49,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "sending_level",
+        "is_nullable": "YES",
+        "column_default": "1",
+        "ordinal_position": 50,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "sending_level_updated_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 51,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "daily_cap_override",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 52,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "daily_cap_locked_until",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 53,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_website",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 54,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_funnel_url",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 55,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "agent_funnel_active",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 56,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "agent_website_active",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 57,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "_text",
+        "data_type": "ARRAY",
+        "column_name": "preferred_area_codes",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 58,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX agents_location_id_key ON public.agents USING btree (location_id)",
+        "indexname": "agents_location_id_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX agents_pkey ON public.agents USING btree (id)",
+        "indexname": "agents_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_agents_location_id ON public.agents USING btree (location_id)",
+        "indexname": "idx_agents_location_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_agents_state ON public.agents USING btree (state)",
+        "indexname": "idx_agents_state"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_26325_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26325_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26325_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "agents_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "constraint_name": "agents_location_id_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "ai_output_errors",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "execution_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "channel",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "direction",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "raw_output",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "sanitized",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "markers_hit",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "NO",
+        "column_default": "now()",
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX ai_output_errors_contact_idx ON public.ai_output_errors USING btree (contact_id, created_at DESC)",
+        "indexname": "ai_output_errors_contact_idx"
+      },
+      {
+        "indexdef": "CREATE INDEX ai_output_errors_created_idx ON public.ai_output_errors USING btree (created_at DESC)",
+        "indexname": "ai_output_errors_created_idx"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX ai_output_errors_pkey ON public.ai_output_errors USING btree (id)",
+        "indexname": "ai_output_errors_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_119923_10_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_119923_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_119923_7_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "ai_output_errors_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "altos_weekly_stats",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "date",
+        "data_type": "date",
+        "column_name": "week_start_date",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "zips_processed",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "total_zips",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "price_median",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "count",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "per_sqft_median",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "dom_median",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "absorbed_price_median",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "median_ppsqft_absorbed",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "price_mean",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "dom_mean",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "mai",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "raw_summary",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 15,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 16,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "new_price_median",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 17,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "absorbed_dom_median",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 18,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "price_decreased_percent",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 19,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "price_increased_percent",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 20,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 21,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX altos_weekly_stats_location_id_week_start_date_key ON public.altos_weekly_stats USING btree (location_id, week_start_date)",
+        "indexname": "altos_weekly_stats_location_id_week_start_date_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX altos_weekly_stats_pkey ON public.altos_weekly_stats USING btree (id)",
+        "indexname": "altos_weekly_stats_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_altos_weekly_stats_location ON public.altos_weekly_stats USING btree (location_id)",
+        "indexname": "idx_altos_weekly_stats_location"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_altos_weekly_stats_week ON public.altos_weekly_stats USING btree (week_start_date DESC)",
+        "indexname": "idx_altos_weekly_stats_week"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_85558_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_85558_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_85558_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "constraint_name": "altos_weekly_stats_location_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "altos_weekly_stats_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "location_id",
+          "week_start_date"
+        ],
+        "constraint_name": "altos_weekly_stats_location_id_week_start_date_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "location_id"
+        ],
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "location_id",
+        "foreign_schema": "public",
+        "constraint_name": "altos_weekly_stats_location_id_fkey"
+      }
+    ],
+    "estimated_rows": -1
+  },
+  {
+    "table": "appointments",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "agent_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "lead_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_event_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "calendar_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "start_time",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "end_time",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "duration_minutes",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "appointment_type",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "status",
+        "is_nullable": "YES",
+        "column_default": "'scheduled'::text",
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "booked_via",
+        "is_nullable": "YES",
+        "column_default": "'ai'::text",
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "conversation_summary",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "lead_intent",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 15,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 16,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "confirmed_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 17,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "completed_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 18,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 19,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "reminder_24h_sent_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 20,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "reminder_5h_sent_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 21,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "reminder_1h_sent_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 22,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": "Tracks all appointments booked through SMRT AI",
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX appointments_ghl_event_id_unique ON public.appointments USING btree (ghl_event_id)",
+        "indexname": "appointments_ghl_event_id_unique"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX appointments_pkey ON public.appointments USING btree (id)",
+        "indexname": "appointments_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_appointments_agent ON public.appointments USING btree (agent_id)",
+        "indexname": "idx_appointments_agent"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_appointments_contact ON public.appointments USING btree (contact_id)",
+        "indexname": "idx_appointments_contact"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_appointments_contact_agent ON public.appointments USING btree (contact_id, agent_id)",
+        "indexname": "idx_appointments_contact_agent"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_appointments_lead ON public.appointments USING btree (lead_id)",
+        "indexname": "idx_appointments_lead"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_appointments_location_id ON public.appointments USING btree (location_id)",
+        "indexname": "idx_appointments_location_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_appointments_reminder_lookup ON public.appointments USING btree (status, start_time) WHERE (status = 'scheduled'::text)",
+        "indexname": "idx_appointments_reminder_lookup"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_appointments_start_time ON public.appointments USING btree (start_time)",
+        "indexname": "idx_appointments_start_time"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_appointments_status ON public.appointments USING btree (status)",
+        "indexname": "idx_appointments_status"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_70814_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_70814_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_70814_6_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_70814_7_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_70814_8_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_70814_9_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "valid_appointment_type",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "valid_status",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "agent_id"
+        ],
+        "constraint_name": "appointments_agent_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "lead_id"
+        ],
+        "constraint_name": "appointments_lead_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "appointments_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "ghl_event_id"
+        ],
+        "constraint_name": "appointments_ghl_event_id_unique",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "agent_id"
+        ],
+        "delete_rule": "RESTRICT",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "appointments_agent_id_fkey"
+      },
+      {
+        "columns": [
+          "lead_id"
+        ],
+        "delete_rule": "SET NULL",
+        "update_rule": "NO ACTION",
+        "foreign_table": "leads",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "appointments_lead_id_fkey"
+      }
+    ],
+    "estimated_rows": -1
+  },
+  {
+    "table": "audit_log",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "table_name",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "record_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "operation",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "_text",
+        "data_type": "ARRAY",
+        "column_name": "changed_fields",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "old_values",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "new_values",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "changed_by",
+        "is_nullable": "YES",
+        "column_default": "CURRENT_USER",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX audit_log_pkey ON public.audit_log USING btree (id)",
+        "indexname": "audit_log_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_audit_log_created ON public.audit_log USING btree (created_at DESC)",
+        "indexname": "idx_audit_log_created"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_audit_log_record ON public.audit_log USING btree (record_id)",
+        "indexname": "idx_audit_log_record"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_audit_log_table ON public.audit_log USING btree (table_name)",
+        "indexname": "idx_audit_log_table"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_117308_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_117308_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_117308_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_117308_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "audit_log_operation_check",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "audit_log_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": 439
+  },
+  {
+    "table": "channel_prompts",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "uuid_generate_v4()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "channel",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "prompt_content",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "max_tokens",
+        "is_nullable": "YES",
+        "column_default": "150",
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "tone",
+        "is_nullable": "YES",
+        "column_default": "'friendly'::text",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX channel_prompts_location_id_channel_key ON public.channel_prompts USING btree (location_id, channel)",
+        "indexname": "channel_prompts_location_id_channel_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX channel_prompts_pkey ON public.channel_prompts USING btree (id)",
+        "indexname": "channel_prompts_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_51423_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_51423_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_51423_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_51423_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "channel_prompts_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "location_id",
+          "channel"
+        ],
+        "constraint_name": "channel_prompts_location_id_channel_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "contact_intake_queue",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "task_type",
+        "is_nullable": "NO",
+        "column_default": "'intro'::text",
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "status",
+        "is_nullable": "NO",
+        "column_default": "'pending'::text",
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "scheduled_for",
+        "is_nullable": "NO",
+        "column_default": "now()",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "payload",
+        "is_nullable": "NO",
+        "column_default": "'{}'::jsonb",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "attempts",
+        "is_nullable": "NO",
+        "column_default": "0",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "processed_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "error",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX contact_intake_queue_pkey ON public.contact_intake_queue USING btree (id)",
+        "indexname": "contact_intake_queue_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_intake_queue_status_scheduled ON public.contact_intake_queue USING btree (status, scheduled_for)",
+        "indexname": "idx_intake_queue_status_scheduled"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_114897_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_114897_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_114897_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_114897_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_114897_5_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_114897_6_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_114897_7_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_114897_8_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "contact_intake_queue_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": 581
+  },
+  {
+    "table": "content_splinters",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "newsletter_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "agent_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "content",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "topic",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "data_point",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "active",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "priority",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "date",
+        "data_type": "date",
+        "column_name": "week_start_date",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "splinter_title",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "dominant_theme",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "signal_type",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "insight_core",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 15,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "interpretation",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 16,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "behavioral_implication",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 17,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "_text",
+        "data_type": "ARRAY",
+        "column_name": "audience_fit",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 18,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "_text",
+        "data_type": "ARRAY",
+        "column_name": "stage_fit",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 19,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "_text",
+        "data_type": "ARRAY",
+        "column_name": "relevance_tags",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 20,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "send_eligibility_note",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 21,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "rationale",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 22,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "source_excerpt",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 23,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "embedding_text",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 24,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "delivery_variants",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 25,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX content_splinters_pkey ON public.content_splinters USING btree (id)",
+        "indexname": "content_splinters_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_content_splinters_location_id ON public.content_splinters USING btree (location_id)",
+        "indexname": "idx_content_splinters_location_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_splinters_active_location ON public.content_splinters USING btree (location_id, active) WHERE (active = true)",
+        "indexname": "idx_splinters_active_location"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_splinters_stage_fit ON public.content_splinters USING gin (stage_fit) WHERE (active = true)",
+        "indexname": "idx_splinters_stage_fit"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_67387_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "valid_topic",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "agent_id"
+        ],
+        "constraint_name": "content_splinters_agent_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "newsletter_id"
+        ],
+        "constraint_name": "content_splinters_newsletter_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "content_splinters_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "agent_id"
+        ],
+        "delete_rule": "RESTRICT",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "content_splinters_agent_id_fkey"
+      },
+      {
+        "columns": [
+          "newsletter_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "newsletters",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "content_splinters_newsletter_id_fkey"
+      }
+    ],
+    "estimated_rows": 34
+  },
+  {
+    "table": "conversation_context",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "last_intent",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "appointment_offered",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "appointment_booked",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "last_interaction",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "conversation_summary",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "next_action",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "metadata",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "summary",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "lead_temperature",
+        "is_nullable": "YES",
+        "column_default": "'warm'::text",
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "detected_intents",
+        "is_nullable": "YES",
+        "column_default": "'[]'::jsonb",
+        "ordinal_position": 15,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "key_topics",
+        "is_nullable": "YES",
+        "column_default": "'[]'::jsonb",
+        "ordinal_position": 16,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "last_summarized_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 17,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "appointment_slots_offered",
+        "is_nullable": "YES",
+        "column_default": "'[]'::jsonb",
+        "ordinal_position": 18,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "appointment_pending_slot",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 19,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "lead_intent",
+        "is_nullable": "YES",
+        "column_default": "'unknown'::character varying",
+        "ordinal_position": 20,
+        "character_maximum_length": 20
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "lead_source",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 21,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "lead_timeline",
+        "is_nullable": "YES",
+        "column_default": "'unknown'::character varying",
+        "ordinal_position": 22,
+        "character_maximum_length": 20
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "first_contact_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 23,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "qualifying_answers",
+        "is_nullable": "YES",
+        "column_default": "'{}'::jsonb",
+        "ordinal_position": 24,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "newsletter_offer_pending",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 25,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "newsletter_offer_declined",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 26,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "intent_qualifier_pending",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 27,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "intent_qualifier_declined",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 28,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX conversation_context_contact_location_key ON public.conversation_context USING btree (contact_id, location_id)",
+        "indexname": "conversation_context_contact_location_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX conversation_context_pkey ON public.conversation_context USING btree (id)",
+        "indexname": "conversation_context_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_conversation_context_contact_id ON public.conversation_context USING btree (contact_id)",
+        "indexname": "idx_conversation_context_contact_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_conversation_context_intent_qualifier_pending ON public.conversation_context USING btree (contact_id) WHERE (intent_qualifier_pending = true)",
+        "indexname": "idx_conversation_context_intent_qualifier_pending"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_conversation_context_location_id ON public.conversation_context USING btree (location_id)",
+        "indexname": "idx_conversation_context_location_id"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_26732_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26732_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26732_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "constraint_name": "conversation_context_contact_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "constraint_name": "conversation_context_location_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "constraint_name": "fk_conversation_context_contact_id",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "constraint_name": "fk_conversation_context_location_id",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "conversation_context_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "contact_id",
+          "location_id"
+        ],
+        "constraint_name": "conversation_context_contact_location_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "leads",
+        "foreign_column": "contact_id",
+        "foreign_schema": "public",
+        "constraint_name": "conversation_context_contact_id_fkey"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "location_id",
+        "foreign_schema": "public",
+        "constraint_name": "conversation_context_location_id_fkey"
+      },
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "leads",
+        "foreign_column": "contact_id",
+        "foreign_schema": "public",
+        "constraint_name": "fk_conversation_context_contact_id"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "location_id",
+        "foreign_schema": "public",
+        "constraint_name": "fk_conversation_context_location_id"
+      }
+    ],
+    "estimated_rows": 23
+  },
+  {
+    "table": "documents",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "uuid_generate_v4()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "content",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "metadata",
+        "is_nullable": "YES",
+        "column_default": "'{}'::jsonb",
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "vector",
+        "data_type": "USER-DEFINED",
+        "column_name": "embedding",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "document_type",
+        "is_nullable": "YES",
+        "column_default": "'faq'::text",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "date",
+        "data_type": "date",
+        "column_name": "week_start_date",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX documents_embedding_idx ON public.documents USING ivfflat (embedding vector_cosine_ops) WITH (lists='100')",
+        "indexname": "documents_embedding_idx"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX documents_pkey ON public.documents USING btree (id)",
+        "indexname": "documents_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_documents_location_type ON public.documents USING btree (location_id, document_type)",
+        "indexname": "idx_documents_location_type"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_51410_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_51410_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "documents_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": 50
+  },
+  {
+    "table": "dormancy_events",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "nextval('dormancy_events_id_seq'::regclass)",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "contact_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": 255
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": 255
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "event_type",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "reason",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "turn_counter_at_event",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamp",
+        "data_type": "timestamp without time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX dormancy_events_pkey ON public.dormancy_events USING btree (id)",
+        "indexname": "dormancy_events_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_dormancy_events_contact ON public.dormancy_events USING btree (contact_id)",
+        "indexname": "idx_dormancy_events_contact"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_dormancy_events_type ON public.dormancy_events USING btree (event_type)",
+        "indexname": "idx_dormancy_events_type"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_33635_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_33635_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_33635_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_33635_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "constraint_name": "fk_contact_dormancy",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "dormancy_events_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "leads",
+        "foreign_column": "contact_id",
+        "foreign_schema": "public",
+        "constraint_name": "fk_contact_dormancy"
+      }
+    ],
+    "estimated_rows": -1
+  },
+  {
+    "table": "inbound_capture",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "captured_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "source",
+        "is_nullable": "YES",
+        "column_default": "'webhook'::text",
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "payload",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "headers",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_message_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "processed",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "processed_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "replay_count",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "notes",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_inbound_capture_msgid ON public.inbound_capture USING btree (ghl_message_id) WHERE (ghl_message_id IS NOT NULL)",
+        "indexname": "idx_inbound_capture_msgid"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_inbound_capture_unprocessed ON public.inbound_capture USING btree (captured_at) WHERE (processed = false)",
+        "indexname": "idx_inbound_capture_unprocessed"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX inbound_capture_pkey ON public.inbound_capture USING btree (id)",
+        "indexname": "inbound_capture_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_123493_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123493_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "inbound_capture_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": 149
+  },
+  {
+    "table": "leads",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "phone",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "email",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "first_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "last_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "tags",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "lead_source",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "city",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "state",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "pipeline_stage",
+        "is_nullable": "YES",
+        "column_default": "'MONTHLY'::character varying",
+        "ordinal_position": 15,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "turn_counter",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 17,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamp",
+        "data_type": "timestamp without time zone",
+        "column_name": "last_customer_message_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 18,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamp",
+        "data_type": "timestamp without time zone",
+        "column_name": "last_agent_message_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 19,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamp",
+        "data_type": "timestamp without time zone",
+        "column_name": "last_value_delivery_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 21,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "channel",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 22,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "status",
+        "is_nullable": "YES",
+        "column_default": "'active_conversation'::character varying",
+        "ordinal_position": 23,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "conversation_summary",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 24,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "next_outbound_due_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 26,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "opted_out_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 27,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "opt_out_reason",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 28,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "review_reason",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 29,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "emotional_signal",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 30,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "sentiment_score",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 31,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "last_sentiment",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 32,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "pipeline_state",
+        "is_nullable": "YES",
+        "column_default": "'hot'::character varying",
+        "ordinal_position": 33,
+        "character_maximum_length": 10
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "next_touch_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 34,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "escalation_status",
+        "is_nullable": "YES",
+        "column_default": "'none'::text",
+        "ordinal_position": 35,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "needs_human_review",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 36,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "current_pipeline_stage",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 37,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "last_signal_type",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 38,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "last_action",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 39,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "last_pipeline_update",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 40,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "escalated_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 41,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "escalation_reason",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 42,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "sms_paused_until",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 43,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "relationship_type",
+        "is_nullable": "YES",
+        "column_default": "'unknown'::text",
+        "ordinal_position": 44,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "market_role",
+        "is_nullable": "YES",
+        "column_default": "'unknown'::text",
+        "ordinal_position": 45,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "intent_level",
+        "is_nullable": "YES",
+        "column_default": "'none'::text",
+        "ordinal_position": 46,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "intent_topic",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 47,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "open_loop",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 48,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "handoff_reason",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 49,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_preference",
+        "is_nullable": "YES",
+        "column_default": "'unknown'::text",
+        "ordinal_position": 50,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "boundary_flags",
+        "is_nullable": "YES",
+        "column_default": "'{}'::text[]",
+        "ordinal_position": 51,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "short_summary_note",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 52,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "agent_dormant",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 53,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "newsletter_opted_in",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 54,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "newsletter_opted_in_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 55,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "newsletters_received",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 56,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "address",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 57,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "postal_code",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 58,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 59,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "opt_out_level",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 60,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "custom_fields",
+        "is_nullable": "YES",
+        "column_default": "'{}'::jsonb",
+        "ordinal_position": 61,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "ghl_tags",
+        "is_nullable": "YES",
+        "column_default": "'[]'::jsonb",
+        "ordinal_position": 62,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_source",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 63,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_source_other",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 64,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_notes",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 65,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "send_blocked",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 66,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "send_block_reason",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 67,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "send_blocked_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 68,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_leads_contact_id ON public.leads USING btree (contact_id)",
+        "indexname": "idx_leads_contact_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_dormancy_check ON public.leads USING btree (status, last_customer_message_at) WHERE ((status)::text = 'active_conversation'::text)",
+        "indexname": "idx_leads_dormancy_check"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_email ON public.leads USING btree (email)",
+        "indexname": "idx_leads_email"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_location_id ON public.leads USING btree (location_id)",
+        "indexname": "idx_leads_location_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_newsletter ON public.leads USING btree (newsletter_opted_in) WHERE (newsletter_opted_in = true)",
+        "indexname": "idx_leads_newsletter"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_opt_out_level ON public.leads USING btree (opt_out_level) WHERE (opt_out_level IS NOT NULL)",
+        "indexname": "idx_leads_opt_out_level"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_outbound_candidates ON public.leads USING btree (location_id, status, next_outbound_due_at)",
+        "indexname": "idx_leads_outbound_candidates"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_phone ON public.leads USING btree (phone)",
+        "indexname": "idx_leads_phone"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_pipeline_stage ON public.leads USING btree (pipeline_stage)",
+        "indexname": "idx_leads_pipeline_stage"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_sms_paused_until ON public.leads USING btree (sms_paused_until) WHERE (sms_paused_until IS NOT NULL)",
+        "indexname": "idx_leads_sms_paused_until"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_leads_status_outbound_due ON public.leads USING btree (status, next_outbound_due_at) WHERE ((status)::text = 'outbound_due'::text)",
+        "indexname": "idx_leads_status_outbound_due"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX leads_contact_id_key ON public.leads USING btree (contact_id)",
+        "indexname": "leads_contact_id_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX leads_pkey ON public.leads USING btree (id)",
+        "indexname": "leads_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_26339_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26339_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26339_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "chk_pipeline_state",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "leads_pipeline_stage_check",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "constraint_name": "leads_location_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "leads_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "constraint_name": "leads_contact_id_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "location_id"
+        ],
+        "delete_rule": "RESTRICT",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "location_id",
+        "foreign_schema": "public",
+        "constraint_name": "leads_location_id_fkey"
+      }
+    ],
+    "estimated_rows": 313
+  },
+  {
+    "table": "message_log",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "message_body",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "channel",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "ai_processed",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "ai_confidence",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ai_intent",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "escalated_to_human",
+        "is_nullable": "YES",
+        "column_default": "false",
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_message_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "timestamp",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "intent_detected",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 15,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "emotional_signal",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 16,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "direction",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 17,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "delivery_status",
+        "is_nullable": "YES",
+        "column_default": "'queued'::text",
+        "ordinal_position": 18,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_conversation_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 19,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "ghl_accepted_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 20,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "delivered_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 21,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "failure_reason",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 22,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "failure_carrier_code",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 23,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "last_delivery_event_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 24,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_message_log_contact_id ON public.message_log USING btree (contact_id)",
+        "indexname": "idx_message_log_contact_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_message_log_emotional_signal ON public.message_log USING btree (emotional_signal) WHERE (emotional_signal IS NOT NULL)",
+        "indexname": "idx_message_log_emotional_signal"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_message_log_ghl_message_id ON public.message_log USING btree (ghl_message_id)",
+        "indexname": "idx_message_log_ghl_message_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_message_log_location_id ON public.message_log USING btree (location_id)",
+        "indexname": "idx_message_log_location_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_message_log_timestamp ON public.message_log USING btree (\"timestamp\" DESC)",
+        "indexname": "idx_message_log_timestamp"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_msglog_ghl_message_id ON public.message_log USING btree (ghl_message_id)",
+        "indexname": "idx_msglog_ghl_message_id"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_msglog_loc_accepted_status ON public.message_log USING btree (location_id, ghl_accepted_at) WHERE (delivery_status = ANY (ARRAY['sent'::text, 'delivered'::text]))",
+        "indexname": "idx_msglog_loc_accepted_status"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX message_log_pkey ON public.message_log USING btree (id)",
+        "indexname": "message_log_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_26360_13_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26360_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26360_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26360_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26360_5_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "constraint_name": "fk_message_log_contact_id",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "constraint_name": "fk_message_log_location_id",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "constraint_name": "message_log_contact_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "constraint_name": "message_log_location_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "message_log_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "leads",
+        "foreign_column": "contact_id",
+        "foreign_schema": "public",
+        "constraint_name": "fk_message_log_contact_id"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "location_id",
+        "foreign_schema": "public",
+        "constraint_name": "fk_message_log_location_id"
+      },
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "leads",
+        "foreign_column": "contact_id",
+        "foreign_schema": "public",
+        "constraint_name": "message_log_contact_id_fkey"
+      },
+      {
+        "columns": [
+          "location_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "location_id",
+        "foreign_schema": "public",
+        "constraint_name": "message_log_location_id_fkey"
+      }
+    ],
+    "estimated_rows": 371
+  },
+  {
+    "table": "message_send_errors",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "message_log_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "attempt_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "http_status",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_error_code",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_error_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "raw_message",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "raw_response",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "classification",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "retry_count",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_send_errors_classification ON public.message_send_errors USING btree (classification)",
+        "indexname": "idx_send_errors_classification"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_send_errors_contact ON public.message_send_errors USING btree (contact_id)",
+        "indexname": "idx_send_errors_contact"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_send_errors_loc_attempt ON public.message_send_errors USING btree (location_id, attempt_at DESC)",
+        "indexname": "idx_send_errors_loc_attempt"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX message_send_errors_pkey ON public.message_send_errors USING btree (id)",
+        "indexname": "message_send_errors_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_123440_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123440_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123440_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "message_log_id"
+        ],
+        "constraint_name": "message_send_errors_message_log_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "message_send_errors_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "message_log_id"
+        ],
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION",
+        "foreign_table": "message_log",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "message_send_errors_message_log_id_fkey"
+      }
+    ],
+    "estimated_rows": -1
+  },
+  {
+    "table": "newsletter_deliveries",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "newsletter_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "lead_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "ghl_message_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "subject_line",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "status",
+        "is_nullable": "YES",
+        "column_default": "'pending'::text",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "error_message",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "sent_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_newsletter_deliveries_status ON public.newsletter_deliveries USING btree (status)",
+        "indexname": "idx_newsletter_deliveries_status"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX newsletter_deliveries_newsletter_id_lead_id_key ON public.newsletter_deliveries USING btree (newsletter_id, lead_id)",
+        "indexname": "newsletter_deliveries_newsletter_id_lead_id_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX newsletter_deliveries_pkey ON public.newsletter_deliveries USING btree (id)",
+        "indexname": "newsletter_deliveries_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_104922_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_104922_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_104922_5_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "valid_delivery_status",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "lead_id"
+        ],
+        "constraint_name": "newsletter_deliveries_lead_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "newsletter_id"
+        ],
+        "constraint_name": "newsletter_deliveries_newsletter_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "newsletter_deliveries_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "newsletter_id",
+          "lead_id"
+        ],
+        "constraint_name": "newsletter_deliveries_newsletter_id_lead_id_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "lead_id"
+        ],
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION",
+        "foreign_table": "leads",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "newsletter_deliveries_lead_id_fkey"
+      },
+      {
+        "columns": [
+          "newsletter_id"
+        ],
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION",
+        "foreign_table": "newsletters",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "newsletter_deliveries_newsletter_id_fkey"
+      }
+    ],
+    "estimated_rows": -1
+  },
+  {
+    "table": "newsletters",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "agent_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "date",
+        "data_type": "date",
+        "column_name": "week_start_date",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "week_number",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "year",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "full_content",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "subject_line",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "raw_altos_data",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "raw_perplexity_data",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "active",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "generation_status",
+        "is_nullable": "YES",
+        "column_default": "'pending'::text",
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "generation_error",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "gdrive_file_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "gdrive_file_url",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 15,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 16,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 17,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "image_url",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 18,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_newsletters_active ON public.newsletters USING btree (agent_id, active) WHERE (active = true)",
+        "indexname": "idx_newsletters_active"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX newsletters_agent_id_week_start_date_key ON public.newsletters USING btree (agent_id, week_start_date)",
+        "indexname": "newsletters_agent_id_week_start_date_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX newsletters_pkey ON public.newsletters USING btree (id)",
+        "indexname": "newsletters_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_67365_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_67365_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_67365_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "agent_id"
+        ],
+        "constraint_name": "newsletters_agent_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "newsletters_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "agent_id",
+          "week_start_date"
+        ],
+        "constraint_name": "newsletters_agent_id_week_start_date_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "agent_id"
+        ],
+        "delete_rule": "RESTRICT",
+        "update_rule": "NO ACTION",
+        "foreign_table": "agents",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "newsletters_agent_id_fkey"
+      }
+    ],
+    "estimated_rows": -1
+  },
+  {
+    "table": "onboarding_requests",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "status",
+        "is_nullable": "YES",
+        "column_default": "'pending_ghl'::text",
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_email",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_phone",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "business_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "market_area",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "brand_voice",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "calendar_link",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "openai_api_key",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "personality_prompt",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "knowledge_base_folder_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "knowledge_base_folder_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "faq_doc_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "faq_doc_url",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 15,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 16,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "_text",
+        "data_type": "ARRAY",
+        "column_name": "missing_fields",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 17,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "error_message",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 18,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 19,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 20,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX onboarding_requests_pkey ON public.onboarding_requests USING btree (id)",
+        "indexname": "onboarding_requests_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_114912_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "onboarding_requests_status_check",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "valid_onboarding_status",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "onboarding_requests_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "personality_options",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "category",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "option_key",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "option_label",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": 100
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "prompt_chunk",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "display_order",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "is_active",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_personality_options_category ON public.personality_options USING btree (category)",
+        "indexname": "idx_personality_options_category"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX personality_options_pkey ON public.personality_options USING btree (id)",
+        "indexname": "personality_options_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_79966_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_79966_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_79966_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_79966_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_79966_5_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "personality_options_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "pipeline_transitions",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "nextval('pipeline_transitions_id_seq'::regclass)",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "contact_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": 255
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": 255
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "from_stage",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "to_stage",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "reason",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "triggered_by",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "timestamp",
+        "data_type": "timestamp without time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_pipeline_transitions_contact ON public.pipeline_transitions USING btree (contact_id)",
+        "indexname": "idx_pipeline_transitions_contact"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_pipeline_transitions_created ON public.pipeline_transitions USING btree (created_at)",
+        "indexname": "idx_pipeline_transitions_created"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX pipeline_transitions_pkey ON public.pipeline_transitions USING btree (id)",
+        "indexname": "pipeline_transitions_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_33618_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_33618_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_33618_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_33618_5_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "constraint_name": "fk_contact",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "pipeline_transitions_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "contact_id"
+        ],
+        "delete_rule": "CASCADE",
+        "update_rule": "NO ACTION",
+        "foreign_table": "leads",
+        "foreign_column": "contact_id",
+        "foreign_schema": "public",
+        "constraint_name": "fk_contact"
+      }
+    ],
+    "estimated_rows": -1
+  },
+  {
+    "table": "prompt_blocks",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "block_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": 100
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "category",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": 50
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "prompt_content",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "conditions",
+        "is_nullable": "YES",
+        "column_default": "'{}'::jsonb",
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "is_active",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "priority",
+        "is_nullable": "YES",
+        "column_default": "0",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_prompt_blocks_active ON public.prompt_blocks USING btree (is_active) WHERE (is_active = true)",
+        "indexname": "idx_prompt_blocks_active"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_prompt_blocks_category ON public.prompt_blocks USING btree (category)",
+        "indexname": "idx_prompt_blocks_category"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_prompt_blocks_conditions ON public.prompt_blocks USING gin (conditions)",
+        "indexname": "idx_prompt_blocks_conditions"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX prompt_blocks_block_id_key ON public.prompt_blocks USING btree (block_id)",
+        "indexname": "prompt_blocks_block_id_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX prompt_blocks_pkey ON public.prompt_blocks USING btree (id)",
+        "indexname": "prompt_blocks_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_79944_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_79944_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_79944_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_79944_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "prompt_blocks_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "block_id"
+        ],
+        "constraint_name": "prompt_blocks_block_id_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "smrt_admin_emails",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "email",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "full_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "added_at",
+        "is_nullable": "NO",
+        "column_default": "now()",
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "added_by",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "notes",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": "SMRT SaaS admin allowlist. is_smrt_admin() reads this. Insert email to grant admin role.",
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX smrt_admin_emails_pkey ON public.smrt_admin_emails USING btree (email)",
+        "indexname": "smrt_admin_emails_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_123507_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123507_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "added_by"
+        ],
+        "constraint_name": "smrt_admin_emails_added_by_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "email"
+        ],
+        "constraint_name": "smrt_admin_emails_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "smrt_saas_submissions",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "NO",
+        "column_default": "now()",
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "NO",
+        "column_default": "now()",
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "submitted_by",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "submitter_email",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_full_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "business_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "market_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "payload",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "status",
+        "is_nullable": "NO",
+        "column_default": "'pending'::text",
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "status_note",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "provisioned_location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "provisioned_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "user_agent",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": "SMRT SaaS onboarding form submissions from admin.smrtagent.ai. Only authenticated users can submit. Triggers auto-set submitted_by to auth.uid().",
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX smrt_saas_submissions_created_at_idx ON public.smrt_saas_submissions USING btree (created_at DESC)",
+        "indexname": "smrt_saas_submissions_created_at_idx"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX smrt_saas_submissions_pkey ON public.smrt_saas_submissions USING btree (id)",
+        "indexname": "smrt_saas_submissions_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX smrt_saas_submissions_status_idx ON public.smrt_saas_submissions USING btree (status)",
+        "indexname": "smrt_saas_submissions_status_idx"
+      },
+      {
+        "indexdef": "CREATE INDEX smrt_saas_submissions_submitted_by_idx ON public.smrt_saas_submissions USING btree (submitted_by)",
+        "indexname": "smrt_saas_submissions_submitted_by_idx"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_123332_10_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123332_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123332_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123332_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123332_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123332_9_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "smrt_saas_submissions_status_check",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "submitted_by"
+        ],
+        "constraint_name": "smrt_saas_submissions_submitted_by_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "smrt_saas_submissions_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "splinter_usage",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "splinter_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "lead_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "channel",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "message_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "used_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_splinter_usage_lead ON public.splinter_usage USING btree (lead_id)",
+        "indexname": "idx_splinter_usage_lead"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_splinter_usage_splinter ON public.splinter_usage USING btree (splinter_id)",
+        "indexname": "idx_splinter_usage_splinter"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX splinter_usage_pkey ON public.splinter_usage USING btree (id)",
+        "indexname": "splinter_usage_pkey"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX splinter_usage_splinter_id_lead_id_key ON public.splinter_usage USING btree (splinter_id, lead_id)",
+        "indexname": "splinter_usage_splinter_id_lead_id_key"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_113689_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "lead_id"
+        ],
+        "constraint_name": "splinter_usage_lead_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "splinter_id"
+        ],
+        "constraint_name": "splinter_usage_splinter_id_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "splinter_usage_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "splinter_id",
+          "lead_id"
+        ],
+        "constraint_name": "splinter_usage_splinter_id_lead_id_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "lead_id"
+        ],
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION",
+        "foreign_table": "leads",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "splinter_usage_lead_id_fkey"
+      },
+      {
+        "columns": [
+          "splinter_id"
+        ],
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION",
+        "foreign_table": "content_splinters",
+        "foreign_column": "id",
+        "foreign_schema": "public",
+        "constraint_name": "splinter_usage_splinter_id_fkey"
+      }
+    ],
+    "estimated_rows": -1
+  },
+  {
+    "table": "static_prompt_sections",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "section_key",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "heading",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "content",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "sort_order",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "is_active",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "notes",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_static_prompt_sections_location ON public.static_prompt_sections USING btree (location_id, sort_order)",
+        "indexname": "idx_static_prompt_sections_location"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX static_prompt_sections_location_id_section_key_key ON public.static_prompt_sections USING btree (location_id, section_key)",
+        "indexname": "static_prompt_sections_location_id_section_key_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX static_prompt_sections_pkey ON public.static_prompt_sections USING btree (id)",
+        "indexname": "static_prompt_sections_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_106070_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_106070_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_106070_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_106070_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_106070_5_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_106070_6_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "static_prompt_sections_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "location_id",
+          "section_key"
+        ],
+        "constraint_name": "static_prompt_sections_location_id_section_key_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": 24
+  },
+  {
+    "table": "system_defaults",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "varchar",
+        "data_type": "character varying",
+        "column_name": "key",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": 100
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "value",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "description",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "updated_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE UNIQUE INDEX system_defaults_key_key ON public.system_defaults USING btree (key)",
+        "indexname": "system_defaults_key_key"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX system_defaults_pkey ON public.system_defaults USING btree (id)",
+        "indexname": "system_defaults_pkey"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_83289_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_83289_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_83289_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "system_defaults_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "key"
+        ],
+        "constraint_name": "system_defaults_key_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "system_errors",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "NO",
+        "column_default": "now()",
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "source",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "workflow_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "workflow_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "execution_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "node_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "error_message",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "error_stack",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "error_level",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "contact_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 12,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "jsonb",
+        "data_type": "jsonb",
+        "column_name": "payload",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 13,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "resolved_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 14,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "resolved_by",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 15,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "resolved_note",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 16,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": "Persistent log of n8n workflow errors, AI leaks, and send failures. Source-tagged for unified UI feed.",
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX system_errors_created_at_idx ON public.system_errors USING btree (created_at DESC)",
+        "indexname": "system_errors_created_at_idx"
+      },
+      {
+        "indexdef": "CREATE INDEX system_errors_location_idx ON public.system_errors USING btree (location_id)",
+        "indexname": "system_errors_location_idx"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX system_errors_pkey ON public.system_errors USING btree (id)",
+        "indexname": "system_errors_pkey"
+      },
+      {
+        "indexdef": "CREATE INDEX system_errors_source_idx ON public.system_errors USING btree (source)",
+        "indexname": "system_errors_source_idx"
+      },
+      {
+        "indexdef": "CREATE INDEX system_errors_unresolved_idx ON public.system_errors USING btree (created_at DESC) WHERE (resolved_at IS NULL)",
+        "indexname": "system_errors_unresolved_idx"
+      },
+      {
+        "indexdef": "CREATE INDEX system_errors_workflow_idx ON public.system_errors USING btree (workflow_id)",
+        "indexname": "system_errors_workflow_idx"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_123555_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123555_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_123555_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "system_errors_error_level_check",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "system_errors_source_check",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "resolved_by"
+        ],
+        "constraint_name": "system_errors_resolved_by_fkey",
+        "constraint_type": "FOREIGN KEY"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "system_errors_pkey",
+        "constraint_type": "PRIMARY KEY"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "timezones",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "uuid",
+        "data_type": "uuid",
+        "column_name": "id",
+        "is_nullable": "NO",
+        "column_default": "gen_random_uuid()",
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "state_name",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "state_code",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "timezone_name",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "timezone_abbr",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "utc_offset_standard",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "utc_offset_dst",
+        "is_nullable": "NO",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "observes_dst",
+        "is_nullable": "YES",
+        "column_default": "true",
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "created_at",
+        "is_nullable": "YES",
+        "column_default": "now()",
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [
+      {
+        "indexdef": "CREATE INDEX idx_timezones_state_code ON public.timezones USING btree (state_code)",
+        "indexname": "idx_timezones_state_code"
+      },
+      {
+        "indexdef": "CREATE INDEX idx_timezones_state_name ON public.timezones USING btree (state_name)",
+        "indexname": "idx_timezones_state_name"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX timezones_pkey ON public.timezones USING btree (id)",
+        "indexname": "timezones_pkey"
+      },
+      {
+        "indexdef": "CREATE UNIQUE INDEX timezones_state_name_key ON public.timezones USING btree (state_name)",
+        "indexname": "timezones_state_name_key"
+      }
+    ],
+    "relkind": "r",
+    "constraints": [
+      {
+        "columns": null,
+        "constraint_name": "2200_26801_1_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26801_2_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26801_3_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26801_4_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26801_5_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26801_6_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": null,
+        "constraint_name": "2200_26801_7_not_null",
+        "constraint_type": "CHECK"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint_name": "timezones_pkey",
+        "constraint_type": "PRIMARY KEY"
+      },
+      {
+        "columns": [
+          "state_name"
+        ],
+        "constraint_name": "timezones_state_name_key",
+        "constraint_type": "UNIQUE"
+      }
+    ],
+    "foreign_keys": [],
+    "estimated_rows": 50
+  },
+  {
+    "table": "v_agent_delivery_health",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "date",
+        "data_type": "date",
+        "column_name": "date",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "level",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "sent",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "delivered",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "failed",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "undelivered",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "numeric",
+        "data_type": "numeric",
+        "column_name": "delivery_rate",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "cap_at_time",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 9,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "bool",
+        "data_type": "boolean",
+        "column_name": "hit_cap",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 10,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "health_status",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 11,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [],
+    "relkind": "v",
+    "constraints": [],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "v_quota_status",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "agent_name",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "current_level",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int4",
+        "data_type": "integer",
+        "column_name": "daily_cap",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int8",
+        "data_type": "bigint",
+        "column_name": "sent_last_24h",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "daily_cap_locked_until",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "account_created_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "sending_level_updated_at",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 8,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [],
+    "relkind": "v",
+    "constraints": [],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  },
+  {
+    "table": "v_send_errors_24h",
+    "schema": "public",
+    "columns": [
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "location_id",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 1,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "text",
+        "data_type": "text",
+        "column_name": "classification",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 2,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int8",
+        "data_type": "bigint",
+        "column_name": "error_count",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 3,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "int8",
+        "data_type": "bigint",
+        "column_name": "unique_leads_affected",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 4,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "first_seen",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 5,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "timestamptz",
+        "data_type": "timestamp with time zone",
+        "column_name": "last_seen",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 6,
+        "character_maximum_length": null
+      },
+      {
+        "udt_name": "_text",
+        "data_type": "ARRAY",
+        "column_name": "error_codes_seen",
+        "is_nullable": "YES",
+        "column_default": null,
+        "ordinal_position": 7,
+        "character_maximum_length": null
+      }
+    ],
+    "comment": null,
+    "indexes": [],
+    "relkind": "v",
+    "constraints": [],
+    "foreign_keys": [],
+    "estimated_rows": -1
+  }
+]
