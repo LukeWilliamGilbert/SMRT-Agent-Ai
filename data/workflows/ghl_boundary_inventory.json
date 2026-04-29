@@ -1,0 +1,3679 @@
+{
+  "summary": {
+    "workflows_scanned": 21,
+    "workflows_with_ghl_refs": 15,
+    "ghl_relevant_nodes": 133,
+    "direction_counts": {
+      "entry_from_ghl_or_external_webhook": 13,
+      "ghl_reference_or_transform": 61,
+      "exit_to_ghl_api": 48,
+      "read_from_ghl_api": 11
+    },
+    "domain_counts": {
+      "webhooks": 78,
+      "calendars_appointments": 18,
+      "contacts": 74,
+      "conversations_messages": 73,
+      "users_locations": 42,
+      "opportunities_pipelines": 13
+    },
+    "supabase_table_mentions_near_ghl": {
+      "appointments": 4,
+      "leads": 11,
+      "message_log": 12,
+      "message_send_errors": 4,
+      "Documents": 1,
+      "inbound_capture": 3,
+      "newsletter_deliveries": 1,
+      "onboarding_requests": 5,
+      "agents": 3,
+      "agent_rules": 1,
+      "conversation_context": 5,
+      "ai_output_errors": 1
+    }
+  },
+  "workflow_summaries": [
+    {
+      "workflow_name": "🧪 Altos Image Test",
+      "active": false,
+      "total_nodes": 12,
+      "ghl_nodes": 1,
+      "directions": {
+        "entry_from_ghl_or_external_webhook": 1
+      },
+      "domains": {
+        "webhooks": 1
+      },
+      "tables": {}
+    },
+    {
+      "workflow_name": "⏰ Appointment Reminders",
+      "active": true,
+      "total_nodes": 9,
+      "ghl_nodes": 4,
+      "directions": {
+        "ghl_reference_or_transform": 3,
+        "exit_to_ghl_api": 1
+      },
+      "domains": {
+        "calendars_appointments": 3,
+        "contacts": 3,
+        "conversations_messages": 3,
+        "users_locations": 1,
+        "webhooks": 2
+      },
+      "tables": {
+        "appointments": 2,
+        "leads": 1,
+        "message_log": 2
+      }
+    },
+    {
+      "workflow_name": "🎯 Cap Hit Empirical Test",
+      "active": false,
+      "total_nodes": 10,
+      "ghl_nodes": 4,
+      "directions": {
+        "exit_to_ghl_api": 3,
+        "read_from_ghl_api": 1
+      },
+      "domains": {
+        "contacts": 4,
+        "conversations_messages": 4,
+        "webhooks": 2,
+        "users_locations": 2
+      },
+      "tables": {
+        "message_log": 2,
+        "message_send_errors": 1,
+        "leads": 1
+      }
+    },
+    {
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "active": true,
+      "total_nodes": 26,
+      "ghl_nodes": 10,
+      "directions": {
+        "entry_from_ghl_or_external_webhook": 1,
+        "exit_to_ghl_api": 4,
+        "ghl_reference_or_transform": 3,
+        "read_from_ghl_api": 2
+      },
+      "domains": {
+        "webhooks": 7,
+        "contacts": 9,
+        "conversations_messages": 5,
+        "users_locations": 3,
+        "opportunities_pipelines": 2
+      },
+      "tables": {
+        "leads": 2
+      }
+    },
+    {
+      "workflow_name": "⏱️ Contact Intake Queue Processor",
+      "active": false,
+      "total_nodes": 28,
+      "ghl_nodes": 7,
+      "directions": {
+        "exit_to_ghl_api": 4,
+        "ghl_reference_or_transform": 3
+      },
+      "domains": {
+        "contacts": 7,
+        "conversations_messages": 6,
+        "users_locations": 6,
+        "webhooks": 7
+      },
+      "tables": {
+        "message_log": 3
+      }
+    },
+    {
+      "workflow_name": "📰 Data Source & Newsletter Creation",
+      "active": true,
+      "total_nodes": 37,
+      "ghl_nodes": 1,
+      "directions": {
+        "ghl_reference_or_transform": 1
+      },
+      "domains": {
+        "conversations_messages": 1,
+        "users_locations": 1
+      },
+      "tables": {}
+    },
+    {
+      "workflow_name": "📄 Document Ingestion",
+      "active": true,
+      "total_nodes": 27,
+      "ghl_nodes": 3,
+      "directions": {
+        "entry_from_ghl_or_external_webhook": 2,
+        "ghl_reference_or_transform": 1
+      },
+      "domains": {
+        "webhooks": 3,
+        "conversations_messages": 1,
+        "users_locations": 1
+      },
+      "tables": {
+        "Documents": 1
+      }
+    },
+    {
+      "workflow_name": "🔍 GHL Conversation Backfill",
+      "active": false,
+      "total_nodes": 8,
+      "ghl_nodes": 5,
+      "directions": {
+        "read_from_ghl_api": 2,
+        "exit_to_ghl_api": 1,
+        "ghl_reference_or_transform": 2
+      },
+      "domains": {
+        "conversations_messages": 5,
+        "users_locations": 3,
+        "webhooks": 2,
+        "contacts": 1
+      },
+      "tables": {
+        "inbound_capture": 1
+      }
+    },
+    {
+      "workflow_name": "📬 GHL Delivery Status Handler",
+      "active": true,
+      "total_nodes": 16,
+      "ghl_nodes": 7,
+      "directions": {
+        "entry_from_ghl_or_external_webhook": 2,
+        "exit_to_ghl_api": 2,
+        "ghl_reference_or_transform": 3
+      },
+      "domains": {
+        "webhooks": 4,
+        "contacts": 2,
+        "conversations_messages": 5,
+        "users_locations": 2
+      },
+      "tables": {
+        "message_log": 2,
+        "message_send_errors": 1
+      }
+    },
+    {
+      "workflow_name": "🔍 GHL Send Status Checker",
+      "active": true,
+      "total_nodes": 14,
+      "ghl_nodes": 5,
+      "directions": {
+        "ghl_reference_or_transform": 2,
+        "read_from_ghl_api": 1,
+        "exit_to_ghl_api": 2
+      },
+      "domains": {
+        "webhooks": 4,
+        "conversations_messages": 4,
+        "contacts": 1,
+        "users_locations": 1
+      },
+      "tables": {
+        "message_log": 1,
+        "message_send_errors": 1
+      }
+    },
+    {
+      "workflow_name": "🔁 Inbound Replay",
+      "active": false,
+      "total_nodes": 7,
+      "ghl_nodes": 2,
+      "directions": {
+        "exit_to_ghl_api": 1,
+        "ghl_reference_or_transform": 1
+      },
+      "domains": {
+        "conversations_messages": 2,
+        "webhooks": 2
+      },
+      "tables": {
+        "inbound_capture": 1
+      }
+    },
+    {
+      "workflow_name": "📬 Newsletter Dispatch",
+      "active": true,
+      "total_nodes": 15,
+      "ghl_nodes": 2,
+      "directions": {
+        "exit_to_ghl_api": 1,
+        "ghl_reference_or_transform": 1
+      },
+      "domains": {
+        "contacts": 2,
+        "conversations_messages": 2,
+        "webhooks": 1,
+        "opportunities_pipelines": 1
+      },
+      "tables": {
+        "newsletter_deliveries": 1
+      }
+    },
+    {
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "active": false,
+      "total_nodes": 23,
+      "ghl_nodes": 10,
+      "directions": {
+        "read_from_ghl_api": 2,
+        "exit_to_ghl_api": 1,
+        "entry_from_ghl_or_external_webhook": 3,
+        "ghl_reference_or_transform": 4
+      },
+      "domains": {
+        "webhooks": 8,
+        "contacts": 2,
+        "conversations_messages": 3,
+        "calendars_appointments": 2,
+        "users_locations": 2
+      },
+      "tables": {
+        "onboarding_requests": 2
+      }
+    },
+    {
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "active": false,
+      "total_nodes": 23,
+      "ghl_nodes": 14,
+      "directions": {
+        "ghl_reference_or_transform": 6,
+        "exit_to_ghl_api": 5,
+        "entry_from_ghl_or_external_webhook": 2,
+        "read_from_ghl_api": 1
+      },
+      "domains": {
+        "opportunities_pipelines": 3,
+        "webhooks": 5,
+        "users_locations": 9,
+        "calendars_appointments": 2,
+        "contacts": 1,
+        "conversations_messages": 1
+      },
+      "tables": {
+        "agents": 2,
+        "onboarding_requests": 3,
+        "agent_rules": 1,
+        "appointments": 1,
+        "leads": 1
+      }
+    },
+    {
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "active": true,
+      "total_nodes": 174,
+      "ghl_nodes": 58,
+      "directions": {
+        "ghl_reference_or_transform": 31,
+        "entry_from_ghl_or_external_webhook": 2,
+        "exit_to_ghl_api": 23,
+        "read_from_ghl_api": 2
+      },
+      "domains": {
+        "webhooks": 30,
+        "contacts": 42,
+        "conversations_messages": 31,
+        "users_locations": 11,
+        "opportunities_pipelines": 7,
+        "calendars_appointments": 11
+      },
+      "tables": {
+        "leads": 6,
+        "message_log": 2,
+        "conversation_context": 5,
+        "agents": 1,
+        "appointments": 1,
+        "ai_output_errors": 1,
+        "inbound_capture": 1,
+        "message_send_errors": 1
+      }
+    }
+  ],
+  "node_records": [
+    {
+      "node_name": "Webhook",
+      "node_type": "n8n-nodes-base.webhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Webhook"
+        },
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.webhook"
+        }
+      ],
+      "parameters_excerpt": "{\"httpMethod\": \"POST\", \"path\": \"altos-image-test\", \"responseMode\": \"onReceived\", \"responseData\": \"noData\", \"authentication\": \"headerAuth\"}",
+      "workflow_name": "🧪 Altos Image Test",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Mark Reminder Sent",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "calendars_appointments"
+      ],
+      "tables": [
+        "appointments"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.tableId",
+          "excerpt": "appointments"
+        },
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('Determine Reminder Type').item.json.appointment_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"update\", \"tableId\": \"appointments\", \"filters\": {\"conditions\": [{\"keyName\": \"id\", \"condition\": \"eq\", \"keyValue\": \"={{ $('Determine Reminder Type').item.json.appointment_id }}\"}]}, \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"={{ $('Determine Reminder Type').item.json.sentAtColumn }}\", \"fieldValue\": \"={{ $now }}\"}]}}",
+      "workflow_name": "⏰ Appointment Reminders",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Sticky Note",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "calendars_appointments"
+      ],
+      "tables": [
+        "appointments",
+        "leads",
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## Appointment Reminders Sends SMS reminders at 3 intervals before scheduled appointments: - **24 hours** before - **5 hours** before - **1 hour** before **Safety guards:** - No reminders to DNC/opted-out leads - No reminders for cancelled appointments - No reminders if lead has no phone - Messages logged to message_log so Brain Engine has context …"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## Appointment Reminders\\n\\nSends SMS reminders at 3 intervals before scheduled appointments:\\n- **24 hours** before\\n- **5 hours** before \\n- **1 hour** before\\n\\n**Safety guards:**\\n- No reminders to DNC/opted-out leads\\n- No reminders for cancelled appointments\\n- No reminders if lead has no phone\\n- Messages logged to message_log so Brain Engine has context\\n- Reminder flags prevent duplicate sends\\n\\n**Schedule:** Every 30 minutes\", \"height\": 380, \"width\": 340}",
+      "workflow_name": "⏰ Appointment Reminders",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Log to message_log",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "calendars_appointments",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldValue",
+          "excerpt": "appointment_reminder"
+        }
+      ],
+      "parameters_excerpt": "{\"tableId\": \"message_log\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Determine Reminder Type').item.json.contact_id }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Determine Reminder Type').item.json.location_id }}\"}, {\"fieldId\": \"message_body\", \"fieldValue\": \"={{ $('Determine Reminder Type').item.json.message }}\"}, {\"fieldId\": \"direction\", \"fieldValue\": \"outbound\"}, {\"fieldId\": \"channel\", \"fieldValue\": \"sms\"}, {\"fieldId\": \"ai_processed\", \"fieldValue\": \"false\"}, {\"fieldId\": \"ai_intent\", \"fieldValue\": \"appointment_reminder\"}, {\"fieldId\": \"timestamp\", \"fieldValue\": \"={{ $now }}\"}]}}",
+      "workflow_name": "⏰ Appointment Reminders",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Send SMS via GHL1",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={ \"type\": \"SMS\", \"contactId\": \"{{ $json.contact_id }}\", \"message\": \"{{ $json.message }}\" }"
+        },
+        {
+          "path": "name",
+          "excerpt": "Send SMS via GHL1"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={\\n \\\"type\\\": \\\"SMS\\\",\\n \\\"contactId\\\": \\\"{{ $json.contact_id }}\\\",\\n \\\"message\\\": \\\"{{ $json.message }}\\\"\\n}\", \"options\": {}}",
+      "workflow_name": "⏰ Appointment Reminders",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Send Test SMS",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={ \"type\": \"SMS\", \"contactId\": \"{{ $json.target_contactId }}\", \"message\": \"{{ $json.test_message }}\" }"
+        },
+        {
+          "path": "notes",
+          "excerpt": "onError: continueErrorOutput — when GHL returns 4xx/5xx the response goes out main[1] for error logging."
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-04-15\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"type\\\": \\\"SMS\\\", \\\"contactId\\\": \\\"{{ $json.target_contactId }}\\\", \\\"message\\\": \\\"{{ $json.test_message }}\\\" }\", \"options\": {\"timeout\": 30000}, \"onError\": \"continueErrorOutput\", \"alwaysOutputData\": true}",
+      "workflow_name": "🎯 Cap Hit Empirical Test",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Log Success",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[0].fieldValue",
+          "excerpt": "={{ $('Throttle Loop').item.json.target_contactId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldId",
+          "excerpt": "ghl_message_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldValue",
+          "excerpt": "={{ $json.messageId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldId",
+          "excerpt": "ghl_conversation_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldValue",
+          "excerpt": "={{ $json.conversationId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[7].fieldId",
+          "excerpt": "ghl_accepted_at"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"create\", \"tableId\": \"message_log\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Throttle Loop').item.json.target_contactId }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Throttle Loop').item.json.location_id }}\"}, {\"fieldId\": \"direction\", \"fieldValue\": \"outbound\"}, {\"fieldId\": \"channel\", \"fieldValue\": \"sms\"}, {\"fieldId\": \"message_body\", \"fieldValue\": \"={{ $('Throttle Loop').item.json.test_message }}\"}, {\"fieldId\": \"ghl_message_id\", \"fieldValue\": \"={{ $json.messageId }}\"}, {\"fieldId\": \"ghl_conversation_id\", \"fieldValue\": \"={{ $json.conversationId }}\"}, {\"fieldId\": \"ghl_accepted_at\", \"fieldValue\": \"={{ $now.toUTC().toISO() }}\"}, {\"fieldId\": \"delivery_status\", \"fieldValue\": \"sent\"}, {\"fieldId\": \"ai_processed\", \"fieldValue\": \"false\"}, {\"fieldId\": \"timestamp\", \"fieldValue\": \"={{ $now.toUTC().toISO() }}\"}]}}",
+      "workflow_name": "🎯 Cap Hit Empirical Test",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Log Failure (CRITICAL)",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations"
+      ],
+      "tables": [
+        "message_send_errors"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[0].fieldValue",
+          "excerpt": "={{ $('Throttle Loop').item.json.target_contactId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[3].fieldId",
+          "excerpt": "ghl_error_code"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[4].fieldId",
+          "excerpt": "ghl_error_name"
+        },
+        {
+          "path": "notes",
+          "excerpt": "🎯 GOLDMINE — captures the FULL raw GHL response when the cap is hit. raw_response is jsonb so we can query it post-hoc."
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"create\", \"tableId\": \"message_send_errors\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Throttle Loop').item.json.target_contactId }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Throttle Loop').item.json.location_id }}\"}, {\"fieldId\": \"http_status\", \"fieldValue\": \"={{ $json.error?.httpCode || $json.statusCode || null }}\"}, {\"fieldId\": \"ghl_error_code\", \"fieldValue\": \"={{ $json.error?.code || $json.code || null }}\"}, {\"fieldId\": \"ghl_error_name\", \"fieldValue\": \"={{ $json.error?.name || $json.name || 'unknown' }}\"}, {\"fieldId\": \"raw_message\", \"fieldValue\": \"={{ $json.error?.message || $json.message || JSON.stringify($json) }}\"}, {\"fieldId\": \"raw_response\", \"fieldValue\": \"={{ $json }}\"}, {\"fieldId\": \"classification\", \"fieldValue\": \"cap_test_capture\"}]}}",
+      "workflow_name": "🎯 Cap Hit Empirical Test",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Note",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages"
+      ],
+      "tables": [
+        "leads",
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## 🎯 Cap Hit Empirical Test **Purpose:** Send up to 260 test SMS to ONLY 2 hardcoded contacts (Daddy Sayeed + Sayeed Hobaid — Hobaid's own numbers) until GHL returns a non-200 (cap hit). **Safety:** - Other leads are unreachable — no query to leads table - onError: continueErrorOutput so loop continues + logs each failure - 1.5s throttle between se…"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## 🎯 Cap Hit Empirical Test\\n\\n**Purpose:** Send up to 260 test SMS to ONLY 2 hardcoded contacts (Daddy Sayeed + Sayeed Hobaid — Hobaid's own numbers) until GHL returns a non-200 (cap hit).\\n\\n**Safety:**\\n- Other leads are unreachable — no query to leads table\\n- onError: continueErrorOutput so loop continues + logs each failure\\n- 1.5s throttle between sends\\n\\n**What it captures:**\\n- Success → row in message_log with delivery_status=sent, ghl_message_id\\n- Failure → FULL raw response in message_send_er…[TRUNCATED]\", \"height\": 280, \"width\": 540, \"color\": 6}",
+      "workflow_name": "🎯 Cap Hit Empirical Test",
+      "workflow_active": false
+    },
+    {
+      "node_name": "GHL Intake Webhook",
+      "node_type": "n8n-nodes-base.webhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "GHL Intake Webhook"
+        },
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.webhook"
+        }
+      ],
+      "parameters_excerpt": "{\"httpMethod\": \"POST\", \"path\": \"intake-lead\", \"authentication\": \"headerAuth\", \"options\": {}}",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Insert New Lead",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "opportunities_pipelines"
+      ],
+      "tables": [
+        "leads"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[19].fieldId",
+          "excerpt": "ghl_tags"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[19].fieldValue",
+          "excerpt": "={{ $json.ghl_tags }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[20].fieldId",
+          "excerpt": "ghl_source"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[20].fieldValue",
+          "excerpt": "={{ $json.ghl_source }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[21].fieldId",
+          "excerpt": "ghl_source_other"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[21].fieldValue",
+          "excerpt": "={{ $json.ghl_source_other }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[22].fieldId",
+          "excerpt": "ghl_notes"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[22].fieldValue",
+          "excerpt": "={{ $json.ghl_notes }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"create\", \"tableId\": \"leads\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $json.contact_id }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $json.location_id }}\"}, {\"fieldId\": \"first_name\", \"fieldValue\": \"={{ $json.first_name }}\"}, {\"fieldId\": \"last_name\", \"fieldValue\": \"={{ $json.last_name }}\"}, {\"fieldId\": \"email\", \"fieldValue\": \"={{ $json.email }}\"}, {\"fieldId\": \"phone\", \"fieldValue\": \"={{ $json.phone }}\"}, {\"fieldId\": \"city\", \"fieldValue\": \"={{ $json.city }}\"}, {\"fieldId\": \"state\", \"fieldValue\": \"={{ $json.state }}\"}, {\"fieldId\": \"address\", \"fieldValue\": \"={{ $json.address }}\"}, {\"fieldId\": \"postal_code\", \"fieldValue\": \"={{ $json.postal_code }}\"}, {\"fieldId\": \"lead_source\", \"fieldValue\": \"={{ $json.lead_source }}\"}, {\"fieldId\": \"channel\", \"fieldValue\": \"={{ $json.channel }}\"}, {\"fieldId\": \"pipeline_state\", \"fieldValue\": \"cold\"}, {\"fieldId\": \"pipeline_stage\", \"fieldValue\": \"MONTHLY\"}, {\"fieldId\": \"status\", \"fieldValue\": \"active_conversa…",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Send Intro SMS",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={ \"type\": \"SMS\", \"contactId\": \"{{ $json.contact_id }}\", \"locationId\": \"{{ $json.location_id }}\", \"message\": \"Hey {{ $json.first_name }}, my name is {{ $json.coordinator_name }} and I'm the newest member of {{ $json.agent_name }}'s real estate team. My job is to make sure everybody we work with is getting the attention they need.\\n\\nFeel free to re…"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"type\\\": \\\"SMS\\\", \\\"contactId\\\": \\\"{{ $json.contact_id }}\\\", \\\"locationId\\\": \\\"{{ $json.location_id }}\\\", \\\"message\\\": \\\"Hey {{ $json.first_name }}, my name is {{ $json.coordinator_name }} and I'm the newest member of {{ $json.agent_name }}'s real estate team. My job is to make sure everybody we work with is getting the attention they need.\\\\n\\\\nFeel free to reach out to {{ $json.agent_name.split(' ')[0] }} directly… But I'm here to help fill in the gaps.\\\\n\\\\nPlease don't hesitate to let me know if you need a…[TRUNCATED]\", \"options\": {}}",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Send Intro Email",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={ \"type\": \"Email\", \"contactId\": \"{{ $json.contact_id }}\", \"locationId\": \"{{ $json.location_id }}\", \"subject\": \"Quick intro from {{ $json.coordinator_name }} - {{ $json.agent_name }}'s team\", \"emailFrom\": \"{{ $json.coordinator_name }} <{{ $json.coordinator_email }}>\", \"html\": \"<p>Hi {{ $json.first_name }},</p><p>I'm {{ $json.coordinator_name }}, pa…"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"type\\\": \\\"Email\\\", \\\"contactId\\\": \\\"{{ $json.contact_id }}\\\", \\\"locationId\\\": \\\"{{ $json.location_id }}\\\", \\\"subject\\\": \\\"Quick intro from {{ $json.coordinator_name }} - {{ $json.agent_name }}'s team\\\", \\\"emailFrom\\\": \\\"{{ $json.coordinator_name }} <{{ $json.coordinator_email }}>\\\", \\\"html\\\": \\\"<p>Hi {{ $json.first_name }},</p><p>I'm {{ $json.coordinator_name }}, part of {{ $json.agent_name }}'s real estate team. {{ $json.agent_name }} and I want to make sure you have a direct line to someone on the team if anyth…[TRUNCATED]\", \"options\": {}}",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Tag: No Contact Method",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $json.contact_id }}/tags"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $json.contact_id }}/tags\", \"authentication\": \"[REDACTED]\", \"genericAuthType\": \"httpHeaderAuth\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"{ \\\"tags\\\": [\\\"No Contact Method\\\"] }\", \"options\": {}}",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Note: Trigger",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## Trigger Receives new contact webhooks from a GHL automation when a contact is created. Works for single contacts and bulk spreadsheet imports."
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## Trigger\\nReceives new contact webhooks from a GHL automation when a contact is created. Works for single contacts and bulk spreadsheet imports.\", \"height\": 338, \"width\": 280, \"color\": 5}",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Note: Prepare",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "opportunities_pipelines"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## Prepare Lead Data Normalises the GHL payload and determines the default channel: - Has email -> Email (intro always goes email first) - No email + has phone -> SMS fallback - Neither -> none Sets pipeline defaults: cold / MONTHLY."
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## Prepare Lead Data\\nNormalises the GHL payload and determines the default channel:\\n- Has email -> Email (intro always goes email first)\\n- No email + has phone -> SMS fallback\\n- Neither -> none\\n\\nSets pipeline defaults: cold / MONTHLY.\"}",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Note: Channel Routing",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages"
+      ],
+      "tables": [
+        "leads"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## Channel Routing and Send Routes the intro message for new leads only: - SMS (default) - sent if phone exists - Email (fallback) - sent if no phone - No Contact Method - tags lead in GHL and stops NOTE: SMS and Email nodes are placeholders. Add message content before activating."
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## Channel Routing and Send\\nRoutes the intro message for new leads only:\\n- SMS (default) - sent if phone exists\\n- Email (fallback) - sent if no phone\\n- No Contact Method - tags lead in GHL and stops\\n\\nNOTE: SMS and Email nodes are placeholders. Add message content before activating.\", \"height\": 696, \"width\": 916, \"color\": 4}",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Fetch Full GHL Contact",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Fetch Full GHL Contact"
+        },
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('Process Check Result').first().json.contact_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"GET\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('Process Check Result').first().json.contact_id }}\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Accept\", \"value\": \"application/json\"}]}, \"options\": {\"response\": {\"response\": {\"neverError\": true}}}}",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Fetch GHL Contact Notes",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Fetch GHL Contact Notes"
+        },
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('Process Check Result').first().json.contact_id }}/notes"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"GET\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('Process Check Result').first().json.contact_id }}/notes\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Accept\", \"value\": \"application/json\"}]}, \"options\": {\"response\": {\"response\": {\"neverError\": true}}}}",
+      "workflow_name": "☀️ Contact Created -> Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Send Intro SMS",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={ \"type\": \"SMS\", \"contactId\": \"{{ $('Parse Payload').item.json.payload.contact_id }}\", \"locationId\": \"{{ $('Parse Payload').item.json.payload.location_id }}\", \"message\": \"Hey {{ $('Parse Payload').item.json.payload.first_name }}, my name is {{ $('Parse Payload').item.json.payload.coordinator_name }} and I'm the newest member of {{ $('Parse Payload…"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"type\\\": \\\"SMS\\\", \\\"contactId\\\": \\\"{{ $('Parse Payload').item.json.payload.contact_id }}\\\", \\\"locationId\\\": \\\"{{ $('Parse Payload').item.json.payload.location_id }}\\\", \\\"message\\\": \\\"Hey {{ $('Parse Payload').item.json.payload.first_name }}, my name is {{ $('Parse Payload').item.json.payload.coordinator_name }} and I'm the newest member of {{ $('Parse Payload').item.json.payload.agent_name }}'s real estate team. My job is to make sure everybody we work with is getting the attention they need.\\\\n\\\\nFeel free …[TRUNCATED]\", \"options\": {}}",
+      "workflow_name": "⏱️ Contact Intake Queue Processor",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Send Intro Email",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={ \"type\": \"Email\", \"contactId\": \"{{ $('Parse Payload').item.json.payload.contact_id }}\", \"locationId\": \"{{ $('Parse Payload').item.json.payload.location_id }}\", \"subject\": \"Quick intro from {{ $('Parse Payload').item.json.payload.coordinator_name }} - {{ $('Parse Payload').item.json.payload.agent_name }}'s team\", \"emailFrom\": \"{{ $('Parse Payload'…"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"type\\\": \\\"Email\\\", \\\"contactId\\\": \\\"{{ $('Parse Payload').item.json.payload.contact_id }}\\\", \\\"locationId\\\": \\\"{{ $('Parse Payload').item.json.payload.location_id }}\\\", \\\"subject\\\": \\\"Quick intro from {{ $('Parse Payload').item.json.payload.coordinator_name }} - {{ $('Parse Payload').item.json.payload.agent_name }}'s team\\\", \\\"emailFrom\\\": \\\"{{ $('Parse Payload').item.json.payload.coordinator_name }} <{{ $('Parse Payload').item.json.payload.coordinator_email }}>\\\", \\\"html\\\": \\\"<p>Hi {{ $('Parse Payload').item.jso…[TRUNCATED]\", \"options\": {}}",
+      "workflow_name": "⏱️ Contact Intake Queue Processor",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Tag No Contact Method",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('Parse Payload').item.json.payload.contact_id }}/tags"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('Parse Payload').item.json.payload.contact_id }}/tags\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"tags\\\": [\\\"no-contact-method\\\"] }\", \"options\": {}}",
+      "workflow_name": "⏱️ Contact Intake Queue Processor",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Send SMS Follow-up",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={ \"type\": \"SMS\", \"contactId\": \"{{ $json.payload.contact_id }}\", \"locationId\": \"{{ $json.payload.location_id }}\", \"message\": \"Hey {{ $json.payload.first_name }}, this is {{ $json.payload.coordinator_name }} with {{ $json.payload.agent_name }}'s real estate team. Shot you an email just a few minutes ago, but wanted to follow up here in case you pref…"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"type\\\": \\\"SMS\\\", \\\"contactId\\\": \\\"{{ $json.payload.contact_id }}\\\", \\\"locationId\\\": \\\"{{ $json.payload.location_id }}\\\", \\\"message\\\": \\\"Hey {{ $json.payload.first_name }}, this is {{ $json.payload.coordinator_name }} with {{ $json.payload.agent_name }}'s real estate team. Shot you an email just a few minutes ago, but wanted to follow up here in case you prefer a text. Let me know if you need anything!\\\" }\", \"options\": {}}",
+      "workflow_name": "⏱️ Contact Intake Queue Processor",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Log Followup SMS Sent",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldId",
+          "excerpt": "ghl_message_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldValue",
+          "excerpt": "={{ $json.messageId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldId",
+          "excerpt": "ghl_conversation_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldValue",
+          "excerpt": "={{ $json.conversationId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[7].fieldId",
+          "excerpt": "ghl_accepted_at"
+        }
+      ],
+      "parameters_excerpt": "{\"tableId\": \"message_log\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Parse Payload').item.json.payload.contact_id }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Parse Payload').item.json.payload.location_id }}\"}, {\"fieldId\": \"direction\", \"fieldValue\": \"outbound\"}, {\"fieldId\": \"channel\", \"fieldValue\": \"sms\"}, {\"fieldId\": \"message_body\", \"fieldValue\": \"=Hey {{ $('Parse Payload').item.json.payload.first_name }}, this is {{ $('Parse Payload').item.json.payload.coordinator_name }} with {{ $('Parse Payload').item.json.payload.agent_name }}'s real estate team. Shot you an email just a few minutes ago, but wanted to follow up here in case you prefer a text. Let me know if you need anything!\"}, {\"fieldId\": \"ghl_message_id\", \"fieldValue\": \"={{ $json.messageId }}\"}, {\"fieldId\": \"ghl_conversation_id\", \"fieldValue\": \"={{ $json.conversationId }}\"}, {\"fieldId\": \"ghl_accepted_at\", \"fieldValue\": \"={{ $now.toUTC().toISO() }}\"}, {\"fieldId\": \"delivery_status\", \"f…",
+      "workflow_name": "⏱️ Contact Intake Queue Processor",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Log Intro SMS Sent",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldId",
+          "excerpt": "ghl_message_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldValue",
+          "excerpt": "={{ $json.messageId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldId",
+          "excerpt": "ghl_conversation_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldValue",
+          "excerpt": "={{ $json.conversationId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[7].fieldId",
+          "excerpt": "ghl_accepted_at"
+        }
+      ],
+      "parameters_excerpt": "{\"tableId\": \"message_log\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Parse Payload').item.json.payload.contact_id }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Parse Payload').item.json.payload.location_id }}\"}, {\"fieldId\": \"direction\", \"fieldValue\": \"outbound\"}, {\"fieldId\": \"channel\", \"fieldValue\": \"sms\"}, {\"fieldId\": \"message_body\", \"fieldValue\": \"=Hey {{ $('Parse Payload').item.json.payload.first_name }}, my name is {{ $('Parse Payload').item.json.payload.coordinator_name }} and I'm the newest member of {{ $('Parse Payload').item.json.payload.agent_name }}'s real estate team.\"}, {\"fieldId\": \"ghl_message_id\", \"fieldValue\": \"={{ $json.messageId }}\"}, {\"fieldId\": \"ghl_conversation_id\", \"fieldValue\": \"={{ $json.conversationId }}\"}, {\"fieldId\": \"ghl_accepted_at\", \"fieldValue\": \"={{ $now.toUTC().toISO() }}\"}, {\"fieldId\": \"delivery_status\", \"fieldValue\": \"sent\"}, {\"fieldId\": \"ai_processed\", \"fieldValue\": \"false\"}, {\"fieldId\": \"timestamp\", \"fieldV…",
+      "workflow_name": "⏱️ Contact Intake Queue Processor",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Log Intro Email Sent",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldId",
+          "excerpt": "ghl_message_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldValue",
+          "excerpt": "={{ $json.messageId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldId",
+          "excerpt": "ghl_conversation_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldValue",
+          "excerpt": "={{ $json.conversationId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[7].fieldId",
+          "excerpt": "ghl_accepted_at"
+        }
+      ],
+      "parameters_excerpt": "{\"tableId\": \"message_log\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Parse Payload').item.json.payload.contact_id }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Parse Payload').item.json.payload.location_id }}\"}, {\"fieldId\": \"direction\", \"fieldValue\": \"outbound\"}, {\"fieldId\": \"channel\", \"fieldValue\": \"email\"}, {\"fieldId\": \"message_body\", \"fieldValue\": \"=Intro email sent to {{ $('Parse Payload').item.json.payload.first_name }}\"}, {\"fieldId\": \"ghl_message_id\", \"fieldValue\": \"={{ $json.messageId }}\"}, {\"fieldId\": \"ghl_conversation_id\", \"fieldValue\": \"={{ $json.conversationId }}\"}, {\"fieldId\": \"ghl_accepted_at\", \"fieldValue\": \"={{ $now.toUTC().toISO() }}\"}, {\"fieldId\": \"delivery_status\", \"fieldValue\": \"sent\"}, {\"fieldId\": \"ai_processed\", \"fieldValue\": \"false\"}, {\"fieldId\": \"timestamp\", \"fieldValue\": \"={{ $now.toUTC().toISO() }}\"}]}}",
+      "workflow_name": "⏱️ Contact Intake Queue Processor",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Prepare Storage Data",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "conversations_messages",
+        "users_locations"
+      ],
+      "tables": [],
+      "urls": [
+        "https://kfoijgcbkjeizxxyiwxv.supabase.co/storage/v1/object/public/newsletter-images/${locationId}/${weekStart}.jpeg`\\ncon…[TRUNCATED]"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "const sourceData = $('Prep Data for AI').first().json; const newsletterContent = $('Generate Newsletter').first().json.message?.content || ''; const rawSplinters = $('Extract Splinters').first().json.message?.content?.trim() || '[]'; // Build permanent Supabase Storage URL const locationId = sourceData.location_id; const weekStart = sourceData.week…"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"const sourceData = $('Prep Data for AI').first().json;\\nconst newsletterContent = $('Generate Newsletter').first().json.message?.content || '';\\nconst rawSplinters = $('Extract Splinters').first().json.message?.content?.trim() || '[]';\\n\\n// Build permanent Supabase Storage URL\\nconst locationId = sourceData.location_id;\\nconst weekStart = sourceData.weekStartDate;\\nconst imageUrl = `https://kfoijgcbkjeizxxyiwxv.supabase.co/storage/v1/object/public/newsletter-images/${locationId}/${weekStart}.jpeg`\\ncon…[TRUNCATED]\"}",
+      "workflow_name": "📰 Data Source & Newsletter Creation",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Cleanup Trigger",
+      "node_type": "n8n-nodes-base.webhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.webhook"
+        }
+      ],
+      "parameters_excerpt": "{\"httpMethod\": \"POST\", \"path\": \"document-cleanup\", \"responseMode\": \"responseNode\", \"options\": {}, \"authentication\": \"headerAuth\"}",
+      "workflow_name": "📄 Document Ingestion",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Cleanup Response",
+      "node_type": "n8n-nodes-base.respondToWebhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [
+        "Documents"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.respondToWebhook"
+        }
+      ],
+      "parameters_excerpt": "{\"respondWith\": \"json\", \"responseBody\": \"={{ { \\\"success\\\": true, \\\"deleted_count\\\": $input.all().length, \\\"message\\\": \\\"Documents cleaned up successfully\\\" } }}\", \"options\": {}, \"authentication\": \"headerAuth\"}",
+      "workflow_name": "📄 Document Ingestion",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Sticky Note Cleanup",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## 🗑️ Document Cleanup (Offboarding) POST to /webhook/document-cleanup with: - file_id: Delete specific file - location_id: Delete all docs for a location - agent_name: Delete all docs for an agent"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## 🗑️ Document Cleanup (Offboarding)\\nPOST to /webhook/document-cleanup with:\\n- file_id: Delete specific file\\n- location_id: Delete all docs for a location\\n- agent_name: Delete all docs for an agent\", \"height\": 360, \"width\": 744, \"color\": 3}",
+      "workflow_name": "📄 Document Ingestion",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Search Conversations",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/search"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/conversations/search"
+        },
+        {
+          "path": "parameters.queryParameters.parameters[0].name",
+          "excerpt": "locationId"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"GET\", \"url\": \"=https://services.leadconnectorhq.com/conversations/search\", \"sendQuery\": true, \"queryParameters\": {\"parameters\": [{\"name\": \"locationId\", \"value\": \"={{ $('Set Backfill Window').first().json.location_id }}\"}, {\"name\": \"limit\", \"value\": \"100\"}, {\"name\": \"sortBy\", \"value\": \"last_message_date\"}, {\"name\": \"sort\", \"value\": \"desc\"}]}, \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-04-15\"}]}, \"options\": {\"timeout\": 30000}}",
+      "workflow_name": "🔍 GHL Conversation Backfill",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Extract Conversations",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "conversations_messages"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "// GHL response shape: {conversations: [...], total, traceId} const convs = $input.first().json.conversations || []; const startMs = $('Set Backfill Window').first().json.start_ms; const endMs = $('Set Backfill Window').first().json.end_ms; // Filter conversations whose lastMessageDate falls in the window const inWindow = convs.filter(c => { const …"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"// GHL response shape: {conversations: [...], total, traceId}\\nconst convs = $input.first().json.conversations || [];\\nconst startMs = $('Set Backfill Window').first().json.start_ms;\\nconst endMs = $('Set Backfill Window').first().json.end_ms;\\n\\n// Filter conversations whose lastMessageDate falls in the window\\nconst inWindow = convs.filter(c => {\\n const ts = c.lastMessageDate || c.dateUpdated;\\n if (!ts) return false;\\n const ms = typeof ts === 'number' ? ts : new Date(ts).getTime();\\n return ms >=…[TRUNCATED]\"}",
+      "workflow_name": "🔍 GHL Conversation Backfill",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Get Messages In Conv",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/conversations/{{ $json.conversationId }}/messages"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"GET\", \"url\": \"=https://services.leadconnectorhq.com/conversations/{{ $json.conversationId }}/messages\", \"sendQuery\": true, \"queryParameters\": {\"parameters\": [{\"name\": \"limit\", \"value\": \"20\"}]}, \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-04-15\"}]}, \"options\": {\"timeout\": 30000, \"batching\": {\"batch\": {\"batchSize\": 5, \"batchInterval\": 1000}}}}",
+      "workflow_name": "🔍 GHL Conversation Backfill",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Filter Inbound In Window",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "conversations_messages",
+        "users_locations"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "// Find inbound messages within window from each conv response const startMs = $('Set Backfill Window').first().json.start_ms; const endMs = $('Set Backfill Window').first().json.end_ms; const locationId = $('Set Backfill Window').first().json.location_id; const output = []; for (const item of $input.all()) { const messages = item.json.messages?.me…"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"// Find inbound messages within window from each conv response\\nconst startMs = $('Set Backfill Window').first().json.start_ms;\\nconst endMs = $('Set Backfill Window').first().json.end_ms;\\nconst locationId = $('Set Backfill Window').first().json.location_id;\\n\\nconst output = [];\\nfor (const item of $input.all()) {\\n const messages = item.json.messages?.messages || item.json.messages || [];\\n for (const m of messages) {\\n if (m.direction !== 'inbound') continue;\\n const ts = m.dateAdded || m.date…[TRUNCATED]\"}",
+      "workflow_name": "🔍 GHL Conversation Backfill",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Save To Inbound Capture",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations"
+      ],
+      "tables": [
+        "inbound_capture"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[0].fieldValue",
+          "excerpt": "ghl_backfill"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[2].fieldId",
+          "excerpt": "ghl_message_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[2].fieldValue",
+          "excerpt": "={{ $json.ghl_message_id }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[7].fieldValue",
+          "excerpt": "Backfilled from GHL during recovery"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"create\", \"tableId\": \"inbound_capture\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"source\", \"fieldValue\": \"ghl_backfill\"}, {\"fieldId\": \"payload\", \"fieldValue\": \"={{ $json.payload }}\"}, {\"fieldId\": \"ghl_message_id\", \"fieldValue\": \"={{ $json.ghl_message_id }}\"}, {\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $json.contact_id }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $json.location_id }}\"}, {\"fieldId\": \"captured_at\", \"fieldValue\": \"={{ $json.captured_at_iso }}\"}, {\"fieldId\": \"processed\", \"fieldValue\": \"false\"}, {\"fieldId\": \"notes\", \"fieldValue\": \"Backfilled from GHL during recovery\"}]}}",
+      "workflow_name": "🔍 GHL Conversation Backfill",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Webhook",
+      "node_type": "n8n-nodes-base.webhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Webhook"
+        },
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.webhook"
+        },
+        {
+          "path": "parameters.path",
+          "excerpt": "ghl-delivery-status"
+        }
+      ],
+      "parameters_excerpt": "{\"httpMethod\": \"POST\", \"path\": \"ghl-delivery-status\", \"responseMode\": \"responseNode\", \"options\": {}}",
+      "workflow_name": "📬 GHL Delivery Status Handler",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Immediate Response",
+      "node_type": "n8n-nodes-base.respondToWebhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.respondToWebhook"
+        }
+      ],
+      "parameters_excerpt": "{\"respondWith\": \"text\", \"responseBody\": \"ok\", \"options\": {\"responseCode\": 200}}",
+      "workflow_name": "📬 GHL Delivery Status Handler",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Parse Event",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "// Defensive parser. GHL OutboundMessage payload shape TBD until Phase 1.5 test. // Captures raw event for forensics regardless of shape. const input = $input.first().json; const body = input.body || input; const headers = input.headers || {}; return [{ json: { ghl_message_id: body.messageId || body.message_id || body.id, ghl_conversation_id: body.…"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"// Defensive parser. GHL OutboundMessage payload shape TBD until Phase 1.5 test.\\n// Captures raw event for forensics regardless of shape.\\nconst input = $input.first().json;\\nconst body = input.body || input;\\nconst headers = input.headers || {};\\n\\nreturn [{\\n json: {\\n ghl_message_id: body.messageId || body.message_id || body.id,\\n ghl_conversation_id: body.conversationId || body.conversation_id,\\n location_id: body.locationId || body.location_id,\\n contact_id: body.contactId || body.contac…[TRUNCATED]\"}",
+      "workflow_name": "📬 GHL Delivery Status Handler",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Has Message ID?",
+      "node_type": "n8n-nodes-base.if",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "conversations_messages"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.conditions.conditions[0].leftValue",
+          "excerpt": "={{ $json.ghl_message_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"conditions\": {\"options\": {\"caseSensitive\": true, \"typeValidation\": \"loose\", \"version\": 2}, \"conditions\": [{\"id\": \"has-id\", \"leftValue\": \"={{ $json.ghl_message_id }}\", \"rightValue\": \"\", \"operator\": {\"type\": \"string\", \"operation\": \"notEmpty\", \"singleValue\": true}}], \"combinator\": \"and\"}}",
+      "workflow_name": "📬 GHL Delivery Status Handler",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Update Message Log",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "conversations_messages"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyName",
+          "excerpt": "ghl_message_id"
+        },
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $json.ghl_message_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"update\", \"tableId\": \"message_log\", \"filters\": {\"conditions\": [{\"keyName\": \"ghl_message_id\", \"condition\": \"eq\", \"keyValue\": \"={{ $json.ghl_message_id }}\"}]}, \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"delivery_status\", \"fieldValue\": \"={{ $json.status }}\"}, {\"fieldId\": \"last_delivery_event_at\", \"fieldValue\": \"={{ $json.received_at }}\"}, {\"fieldId\": \"delivered_at\", \"fieldValue\": \"={{ $json.status === 'delivered' ? $json.received_at : null }}\"}, {\"fieldId\": \"failure_reason\", \"fieldValue\": \"={{ ['undelivered','failed','rejected'].includes($json.status) ? ($json.error_message || $json.status) : null }}\"}, {\"fieldId\": \"failure_carrier_code\", \"fieldValue\": \"={{ ['undelivered','failed','rejected'].includes($json.status) ? ($json.error_code || null) : null }}\"}]}}",
+      "workflow_name": "📬 GHL Delivery Status Handler",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Log Send Error",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations"
+      ],
+      "tables": [
+        "message_send_errors"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[2].fieldId",
+          "excerpt": "ghl_error_code"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[3].fieldId",
+          "excerpt": "ghl_error_name"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"create\", \"tableId\": \"message_send_errors\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $json.contact_id || 'unknown' }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $json.location_id || 'unknown' }}\"}, {\"fieldId\": \"ghl_error_code\", \"fieldValue\": \"={{ $json.error_code }}\"}, {\"fieldId\": \"ghl_error_name\", \"fieldValue\": \"={{ $json.status }}\"}, {\"fieldId\": \"raw_message\", \"fieldValue\": \"={{ $json.error_message }}\"}, {\"fieldId\": \"raw_response\", \"fieldValue\": \"={{ JSON.stringify($json.raw_event) }}\"}, {\"fieldId\": \"classification\", \"fieldValue\": \"={{ $json.status === 'undelivered' ? 'carrier_undelivered' : 'delivery_failed' }}\"}]}}",
+      "workflow_name": "📬 GHL Delivery Status Handler",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Note",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## 📬 GHL Delivery Status Handler Receives OutboundMessage events from GHL and updates message_log.delivery_status. **Subscribe in GHL:** App Marketplace → Webhooks → OutboundMessage → POST URL = this webhook's path. **Always returns 200 OK** — GHL only retries on 429. **Phase 1.5 capture:** payload shape TBD until empirical test. Parser is defensiv…"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## 📬 GHL Delivery Status Handler\\n\\nReceives OutboundMessage events from GHL and updates message_log.delivery_status.\\n\\n**Subscribe in GHL:** App Marketplace → Webhooks → OutboundMessage → POST URL = this webhook's path.\\n\\n**Always returns 200 OK** — GHL only retries on 429.\\n\\n**Phase 1.5 capture:** payload shape TBD until empirical test. Parser is defensive.\", \"height\": 200, \"width\": 380, \"color\": 5}",
+      "workflow_name": "📬 GHL Delivery Status Handler",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Wait 5s",
+      "node_type": "n8n-nodes-base.wait",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [],
+      "parameters_excerpt": "{}",
+      "workflow_name": "🔍 GHL Send Status Checker",
+      "workflow_active": true
+    },
+    {
+      "node_name": "GET Message Status",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/conversations/messages/{{ $('Execute Trigger').item.json.messageId }}"
+        }
+      ],
+      "parameters_excerpt": "{\"url\": \"=https://services.leadconnectorhq.com/conversations/messages/{{ $('Execute Trigger').item.json.messageId }}\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Accept\", \"value\": \"application/json\"}]}, \"options\": {\"response\": {\"response\": {\"neverError\": true, \"responseFormat\": \"json\"}}}}",
+      "workflow_name": "🔍 GHL Send Status Checker",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Parse Response",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "const trigger = $('Execute Trigger').first().json; const raw = $input.first().json || {}; // GHL message endpoint shape: { message: { id, status, error, body, ... }, traceId } const msg = raw.message || raw.data || raw; const status = String(msg.status || msg.deliveryStatus || '').toLowerCase(); const errorCode = String(msg.errorCode || msg.error_c…"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"const trigger = $('Execute Trigger').first().json;\\nconst raw = $input.first().json || {};\\n\\n// GHL message endpoint shape: { message: { id, status, error, body, ... }, traceId }\\nconst msg = raw.message || raw.data || raw;\\n\\nconst status = String(msg.status || msg.deliveryStatus || '').toLowerCase();\\nconst errorCode = String(msg.errorCode || msg.error_code || '');\\nconst errorMessage = String(msg.error || msg.errorMessage || msg.error_message || msg.errorMsg || '');\\nconst body = String(msg.body || m…[TRUNCATED]\"}",
+      "workflow_name": "🔍 GHL Send Status Checker",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Update Message Log",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "conversations_messages"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyName",
+          "excerpt": "ghl_message_id"
+        },
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $json.messageId }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"update\", \"tableId\": \"message_log\", \"filters\": {\"conditions\": [{\"keyName\": \"ghl_message_id\", \"condition\": \"eq\", \"keyValue\": \"={{ $json.messageId }}\"}]}, \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"delivery_status\", \"fieldValue\": \"={{ $json.status || ($json.is_failure ? 'failed' : 'sent') }}\"}, {\"fieldId\": \"last_delivery_event_at\", \"fieldValue\": \"={{ $json.checked_at }}\"}, {\"fieldId\": \"delivered_at\", \"fieldValue\": \"={{ $json.status === 'delivered' ? $json.checked_at : null }}\"}, {\"fieldId\": \"failure_reason\", \"fieldValue\": \"={{ $json.is_failure ? ($json.errorMessage || $json.status) : null }}\"}, {\"fieldId\": \"failure_carrier_code\", \"fieldValue\": \"={{ $json.is_failure ? ($json.errorCode || null) : null }}\"}]}}",
+      "workflow_name": "🔍 GHL Send Status Checker",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Log Send Error",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [
+        "message_send_errors"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[2].fieldId",
+          "excerpt": "ghl_error_code"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[3].fieldId",
+          "excerpt": "ghl_error_name"
+        }
+      ],
+      "parameters_excerpt": "{\"tableId\": \"message_send_errors\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Parse Response').item.json.contact_id }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Parse Response').item.json.location_id }}\"}, {\"fieldId\": \"ghl_error_code\", \"fieldValue\": \"={{ $('Parse Response').item.json.errorCode }}\"}, {\"fieldId\": \"ghl_error_name\", \"fieldValue\": \"={{ $('Parse Response').item.json.status }}\"}, {\"fieldId\": \"raw_message\", \"fieldValue\": \"={{ $('Parse Response').item.json.errorMessage || $('Parse Response').item.json.body_snippet }}\"}, {\"fieldId\": \"raw_response\", \"fieldValue\": \"={{ JSON.stringify($('Parse Response').item.json.raw_response) }}\"}, {\"fieldId\": \"classification\", \"fieldValue\": \"={{ $('Parse Response').item.json.is_cap_hit ? 'cap_hit' : ($('Parse Response').item.json.is_terminal_carrier ? 'terminal_carrier' : 'delivery_failed') }}\"}]}}",
+      "workflow_name": "🔍 GHL Send Status Checker",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Get Unprocessed Messages",
+      "node_type": "n8n-nodes-base.postgres",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [
+        "inbound_capture"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.query",
+          "excerpt": "SELECT id, payload, headers, ghl_message_id, captured_at, replay_count FROM inbound_capture WHERE processed = false ORDER BY captured_at ASC LIMIT 100"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"executeQuery\", \"query\": \"SELECT id, payload, headers, ghl_message_id, captured_at, replay_count FROM inbound_capture WHERE processed = false ORDER BY captured_at ASC LIMIT 100\", \"options\": {}}",
+      "workflow_name": "🔁 Inbound Replay",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Replay To Brain Engine",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://twodegreesnorth.tech/webhook/80ceecaf-7e88-403c-b229-0855030701b8"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://twodegreesnorth.tech/webhook/80ceecaf-7e88-403c-b229-0855030701b8"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://twodegreesnorth.tech/webhook/80ceecaf-7e88-403c-b229-0855030701b8\", \"authentication\": \"[REDACTED]\", \"genericAuthType\": \"httpHeaderAuth\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"Content-Type\", \"value\": \"application/json\"}, {\"name\": \"x-replay\", \"value\": \"1\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={{ $('Get Unprocessed Messages').item.json.payload }}\", \"options\": {\"timeout\": 60000}}",
+      "workflow_name": "🔁 Inbound Replay",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Send Email via GHL",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={ \"type\": \"Email\", \"contactId\": \"{{ $json.contact_id }}\", \"emailFrom\": \"{{ $json.coordinatorEmail }}\", \"html\": {{ JSON.stringify($json.html) }}, \"subject\": \"{{ $json.subject }}\" }"
+        },
+        {
+          "path": "name",
+          "excerpt": "Send Email via GHL"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={\\n \\\"type\\\": \\\"Email\\\",\\n \\\"contactId\\\": \\\"{{ $json.contact_id }}\\\",\\n \\\"emailFrom\\\": \\\"{{ $json.coordinatorEmail }}\\\",\\n \\\"html\\\": {{ JSON.stringify($json.html) }},\\n \\\"subject\\\": \\\"{{ $json.subject }}\\\"\\n}\", \"options\": {}}",
+      "workflow_name": "📬 Newsletter Dispatch",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Sticky Note - Send & Log",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "opportunities_pipelines"
+      ],
+      "tables": [
+        "newsletter_deliveries"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## 3. BUILD, SEND & LOG **Build HTML Email** wraps `full_content` in HTML template with unsubscribe footer (Reply STOP). **Send Email via GHL** sends as Email type via conversations/messages API. **Log Delivery** inserts into `newsletter_deliveries` with status=sent + lead_id. After logging, loops back to next agent. **To test:** Hit Test Workflow …"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## 3. BUILD, SEND & LOG\\n**Build HTML Email** wraps `full_content` in HTML template with unsubscribe footer (Reply STOP).\\n**Send Email via GHL** sends as Email type via conversations/messages API.\\n**Log Delivery** inserts into `newsletter_deliveries` with status=sent + lead_id.\\nAfter logging, loops back to next agent.\\n\\n**To test:** Hit Test Workflow in the editor. Your lead (Hobaid) is opted in with APPT_OFFERED stage = WEEKLY cadence.\", \"height\": 180, \"width\": 640}",
+      "workflow_name": "📬 Newsletter Dispatch",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Sticky Note: Main",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [
+        "onboarding_requests"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## 🎉 Onboarding — Part 1: DB Enrichment Handles all safe, reversible onboarding work: 1. Validates all required fields (stops here if missing) 2. Fetches personality chunks and assembles personality prompt 3. Creates Google Drive KB folder 4. Creates FAQ Google Doc 5. Saves everything to the onboarding_requests staging table 6. Triggers Part 2 (GHL…"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## 🎉 Onboarding — Part 1: DB Enrichment\\n\\nHandles all safe, reversible onboarding work:\\n1. Validates all required fields (stops here if missing)\\n2. Fetches personality chunks and assembles personality prompt\\n3. Creates Google Drive KB folder\\n4. Creates FAQ Google Doc\\n5. Saves everything to the onboarding_requests staging table\\n6. Triggers Part 2 (GHL Setup) only if ALL fields are complete\\n\\n**Nothing irreversible happens in this workflow.**\", \"height\": 1100, \"width\": 3200, \"color\": 7}",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Sticky Note: DB Staging Section",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [
+        "onboarding_requests"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## Database Staging Saves all enriched onboarding data to the onboarding_requests table. This is the handoff point — the staging record ID is passed to Part 2 (GHL Setup). If GHL setup fails, re-trigger Part 2 via POST /onboarding-ghl-setup with the onboarding_request_id."
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## Database Staging\\nSaves all enriched onboarding data to the onboarding_requests table.\\n\\nThis is the handoff point — the staging record ID is passed to Part 2 (GHL Setup).\\n\\nIf GHL setup fails, re-trigger Part 2 via POST /onboarding-ghl-setup with the onboarding_request_id.\", \"height\": 320, \"width\": 480, \"color\": 5}",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Note: Onboarding Call Checklist",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "calendars_appointments",
+        "users_locations"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## Onboarding Call Checklist Collect all of the following before or during the onboarding call. ### Agent Info - Full name - Business name - Email address - Phone number - Timezone - City and state - Target ZIP codes (service area) ### GHL Sub-Account - Sub-account Location ID (Agency -> Locations -> click location -> Settings -> grab ID from URL) …"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## Onboarding Call Checklist\\nCollect all of the following before or during the onboarding call.\\n\\n### Agent Info\\n- Full name\\n- Business name\\n- Email address\\n- Phone number\\n- Timezone\\n- City and state\\n- Target ZIP codes (service area)\\n\\n### GHL Sub-Account\\n- Sub-account Location ID\\n (Agency -> Locations -> click location -> Settings -> grab ID from URL)\\n- Buyer calendar ID\\n (GHL -> Calendars -> click calendar -> grab ID from URL)\\n- Seller calendar ID\\n- GHL user ID\\n (GHL -> Settings -> My Profile…[TRUNCATED]\", \"height\": 776, \"width\": 532, \"color\": 5}",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Onboarding Form Webhook",
+      "node_type": "n8n-nodes-base.webhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Onboarding Form Webhook"
+        },
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.webhook"
+        }
+      ],
+      "parameters_excerpt": "{\"httpMethod\": \"POST\", \"path\": \"agent-onboarding\", \"responseMode\": \"responseNode\", \"options\": {}, \"authentication\": \"headerAuth\"}",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Extract Agent Data",
+      "node_type": "n8n-nodes-base.set",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "calendars_appointments",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.assignments.assignments[6].name",
+          "excerpt": "calendar_link"
+        },
+        {
+          "path": "parameters.assignments.assignments[6].value",
+          "excerpt": "={{ $json.body.calendar_link }}"
+        }
+      ],
+      "parameters_excerpt": "{\"assignments\": {\"assignments\": [{\"name\": \"agent_name\", \"value\": \"={{ $json.body.agent_name }}\", \"type\": \"string\"}, {\"name\": \"agent_email\", \"value\": \"={{ $json.body.agent_email }}\", \"type\": \"string\"}, {\"name\": \"agent_phone\", \"value\": \"={{ $json.body.agent_phone }}\", \"type\": \"string\"}, {\"name\": \"business_name\", \"value\": \"={{ $json.body.business_name }}\", \"type\": \"string\"}, {\"name\": \"market_area\", \"value\": \"={{ $json.body.market_area }}\", \"type\": \"string\"}, {\"name\": \"brand_voice\", \"value\": \"={{ $json.body.brand_voice }}\", \"type\": \"string\"}, {\"name\": \"calendar_link\", \"value\": \"={{ $json.body.calendar_link }}\", \"type\": \"string\"}, {\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\", \"type\": \"string\"}, {\"name\": \"personality_tone\", \"value\": \"={{ $json.body.personality_tone }}\", \"type\": \"string\"}, {\"name\": \"personality_style\", \"value\": \"={{ $json.body.personality_style }}\", \"type\": \"string\"}, {\"name\": \"personality_communication\", \"value\": \"={{ $json.body.personality_communication }}\", \"type\": \"string…",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Error Response",
+      "node_type": "n8n-nodes-base.respondToWebhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.respondToWebhook"
+        }
+      ],
+      "parameters_excerpt": "{\"respondWith\": \"json\", \"responseCode\": 400, \"responseBody\": \"[REDACTED]\", \"options\": {}}",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Prepare GHL Handoff",
+      "node_type": "n8n-nodes-base.set",
+      "direction": "ghl_reference_or_transform",
+      "domains": [],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "id",
+          "excerpt": "prepare-ghl-handoff"
+        },
+        {
+          "path": "name",
+          "excerpt": "Prepare GHL Handoff"
+        }
+      ],
+      "parameters_excerpt": "{\"assignments\": {\"assignments\": [{\"name\": \"onboarding_request_id\", \"value\": \"={{ $json.id }}\", \"type\": \"string\"}, {\"name\": \"agent_name\", \"value\": \"={{ $('Extract Agent Data').first().json.agent_name }}\", \"type\": \"string\"}]}, \"options\": {}}",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Trigger GHL Setup",
+      "node_type": "n8n-nodes-base.executeWorkflow",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "id",
+          "excerpt": "trigger-ghl-setup"
+        },
+        {
+          "path": "name",
+          "excerpt": "Trigger GHL Setup"
+        }
+      ],
+      "parameters_excerpt": "{\"source\": \"database\", \"workflowId\": {\"__rl\": true, \"value\": \"iMG9ggquVeLbmKuv\", \"mode\": \"id\"}, \"options\": {\"waitForSubWorkflow\": false}}",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Success Response",
+      "node_type": "n8n-nodes-base.respondToWebhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.respondToWebhook"
+        },
+        {
+          "path": "parameters.responseBody",
+          "excerpt": "={\"success\": true, \"message\": \"Agent {{ $('Extract Agent Data').first().json.agent_name }} onboarding started. GHL setup triggered.\", \"onboarding_request_id\": \"{{ $('Prepare GHL Handoff').first().json.onboarding_request_id }}\"}"
+        }
+      ],
+      "parameters_excerpt": "{\"respondWith\": \"json\", \"responseCode\": 200, \"responseBody\": \"={\\\"success\\\": true, \\\"message\\\": \\\"Agent {{ $('Extract Agent Data').first().json.agent_name }} onboarding started. GHL setup triggered.\\\", \\\"onboarding_request_id\\\": \\\"{{ $('Prepare GHL Handoff').first().json.onboarding_request_id }}\\\"}\", \"options\": {}}",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Build Bio Paragraphs",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "const body = $('Onboarding Form Webhook').first().json.body || {}; const location_id = body.agent_info?.location_id; if (!location_id) { throw new Error('location_id missing — expected at body.agent_info.location_id'); } const paragraphs = body.bio_template?.paragraphs || {}; const topics = ['areas_served', 'specialties', 'style', 'background', 'fa…"
+        }
+      ],
+      "parameters_excerpt": "{\"mode\": \"runOnceForAllItems\", \"language\": \"javaScript\", \"jsCode\": \"const body = $('Onboarding Form Webhook').first().json.body || {};\\nconst location_id = body.agent_info?.location_id;\\n\\nif (!location_id) {\\n throw new Error('location_id missing — expected at body.agent_info.location_id');\\n}\\n\\nconst paragraphs = body.bio_template?.paragraphs || {};\\nconst topics = ['areas_served', 'specialties', 'style', 'background', 'faq'];\\n\\nconst items = [];\\nfor (const topic of topics) {\\n const content = (paragraphs[topic] || '').trim();\\n if (!content) continue;\\n items.push({…[TRUNCATED]\"}",
+      "workflow_name": "🎉 Onboarding — Part 1: DB Enrichment",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Sticky Note - Main",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "opportunities_pipelines",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## 🏗️ Onboarding — Part 2: GHL Setup Triggered by Part 1 (DB Enrichment) ONLY when all required fields are validated. Receives an `onboarding_request_id` → loads the staged record → creates GHL sub-account → applies snapshot → saves full agent config to Supabase. **Safety gate:** If GHL creation fails, the workflow stops immediately. No partial sta…"
+        }
+      ],
+      "parameters_excerpt": "{\"width\": 760, \"height\": 220, \"color\": 4, \"content\": \"## 🏗️ Onboarding — Part 2: GHL Setup\\n\\nTriggered by Part 1 (DB Enrichment) ONLY when all required fields are validated.\\n\\nReceives an `onboarding_request_id` → loads the staged record → creates GHL sub-account → applies snapshot → saves full agent config to Supabase.\\n\\n**Safety gate:** If GHL creation fails, the workflow stops immediately. No partial state is created.\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Sticky Note - GHL",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "id",
+          "excerpt": "sticky-ghl"
+        },
+        {
+          "path": "name",
+          "excerpt": "Sticky Note - GHL"
+        },
+        {
+          "path": "parameters.content",
+          "excerpt": "## GHL Sub-Account Creation Create new sub-account and apply SMRT snapshot. **SNAPSHOT_ID** must be set as an n8n variable (`$vars.SNAPSHOT_ID`) or hardcoded here. GHL Created? gate stops the flow if creation fails."
+        }
+      ],
+      "parameters_excerpt": "{\"width\": 500, \"height\": 220, \"color\": 4, \"content\": \"## GHL Sub-Account Creation\\nCreate new sub-account and apply SMRT snapshot.\\n\\n**SNAPSHOT_ID** must be set as an n8n variable (`$vars.SNAPSHOT_ID`) or hardcoded here.\\n\\nGHL Created? gate stops the flow if creation fails.\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Sticky Note - DB Config",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "users_locations"
+      ],
+      "tables": [
+        "agents",
+        "onboarding_requests"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## Database Configuration Inserts full agent config into Supabase agents table using location_id returned by GHL. Data sourced from onboarding_requests staging record."
+        }
+      ],
+      "parameters_excerpt": "{\"width\": 460, \"height\": 220, \"color\": 5, \"content\": \"## Database Configuration\\nInserts full agent config into Supabase agents table using location_id returned by GHL.\\n\\nData sourced from onboarding_requests staging record.\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Sticky Note - Calendar Setup",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "calendars_appointments",
+        "users_locations"
+      ],
+      "tables": [
+        "agents"
+      ],
+      "urls": [
+        "https://services.leadconnectorhq.com/calendars/?[REDACTED_QUERY]\\n2."
+      ],
+      "evidence": [
+        {
+          "path": "id",
+          "excerpt": "sticky-calendar"
+        },
+        {
+          "path": "name",
+          "excerpt": "Sticky Note - Calendar Setup"
+        },
+        {
+          "path": "parameters.content",
+          "excerpt": "## Calendar Setup (Post-Snapshot) After GHL snapshot is applied, the agent's calendar ID needs to be stored in Supabase. ### agents table field - buyer_calendar_id — stores the agent's single calendar ID ### To do after W2 is live 1. HTTP GET https://services.leadconnectorhq.com/calendars/?[REDACTED_QUERY] 2. Find the correct calendar by name 3. UP…"
+        }
+      ],
+      "parameters_excerpt": "{\"width\": 500, \"height\": 380, \"color\": 2, \"content\": \"## Calendar Setup (Post-Snapshot)\\n\\nAfter GHL snapshot is applied, the agent's calendar ID needs to be stored in Supabase.\\n\\n### agents table field\\n- buyer_calendar_id — stores the agent's single calendar ID\\n\\n### To do after W2 is live\\n1. HTTP GET https://services.leadconnectorhq.com/calendars/?[REDACTED_QUERY]\\n2. Find the correct calendar by name\\n3. UPDATE agents SET buyer_calendar_id = ... WHERE location_id = ...\\n\\n### Collect during onboarding call\\n- Calendar name (for auto-pull matching)\\n- ghl_…[TRUNCATED]\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Webhook - Manual Rerun",
+      "node_type": "n8n-nodes-base.webhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Webhook - Manual Rerun"
+        },
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.webhook"
+        },
+        {
+          "path": "parameters.path",
+          "excerpt": "onboarding-ghl-setup"
+        }
+      ],
+      "parameters_excerpt": "{\"httpMethod\": \"POST\", \"path\": \"onboarding-ghl-setup\", \"responseMode\": \"lastNode\", \"options\": {}, \"authentication\": \"headerAuth\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Normalize Webhook Input",
+      "node_type": "n8n-nodes-base.set",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Normalize Webhook Input"
+        }
+      ],
+      "parameters_excerpt": "{\"assignments\": {\"assignments\": [{\"id\": \"norm-1\", \"name\": \"onboarding_request_id\", \"value\": \"={{ $json.body.onboarding_request_id }}\", \"type\": \"string\"}]}}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Load Onboarding Request",
+      "node_type": "n8n-nodes-base.postgres",
+      "direction": "exit_to_ghl_api",
+      "domains": [],
+      "tables": [
+        "onboarding_requests"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.query",
+          "excerpt": "SELECT * FROM onboarding_requests WHERE id = '{{ $json.onboarding_request_id }}'::uuid AND status = 'pending_ghl' LIMIT 1;"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"executeQuery\", \"query\": \"SELECT * FROM onboarding_requests WHERE id = '{{ $json.onboarding_request_id }}'::uuid AND status = 'pending_ghl' LIMIT 1;\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Create GHL Sub-Account",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/locations/"
+      ],
+      "evidence": [
+        {
+          "path": "id",
+          "excerpt": "ghl-create"
+        },
+        {
+          "path": "name",
+          "excerpt": "Create GHL Sub-Account"
+        },
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/locations/"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/locations/\", \"authentication\": \"[REDACTED]\", \"nodeCredentialType\": \"[REDACTED]\", \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={\\n \\\"name\\\": \\\"{{ $('Load Onboarding Request').first().json.business_name }}\\\",\\n \\\"email\\\": \\\"{{ $('Load Onboarding Request').first().json.agent_email }}\\\",\\n \\\"phone\\\": \\\"{{ $('Load Onboarding Request').first().json.agent_phone }}\\\",\\n \\\"address\\\": \\\"{{ $('Load Onboarding Request').first().json.market_area }}\\\"\\n}\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "GHL Created?",
+      "node_type": "n8n-nodes-base.if",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "users_locations"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "id",
+          "excerpt": "ghl-check"
+        },
+        {
+          "path": "name",
+          "excerpt": "GHL Created?"
+        }
+      ],
+      "parameters_excerpt": "{\"conditions\": {\"options\": {\"caseSensitive\": true, \"leftValue\": \"\", \"typeValidation\": \"strict\"}, \"conditions\": [{\"id\": \"cond-1\", \"leftValue\": \"={{ $json.location.id }}\", \"rightValue\": \"\", \"operator\": {\"type\": \"string\", \"operation\": \"notEmpty\"}}], \"combinator\": \"and\"}}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Apply GHL Snapshot",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "users_locations"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/snapshots/jLXUgLpYQvN7XrqscvLv/locations/{{"
+      ],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Apply GHL Snapshot"
+        },
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/snapshots/jLXUgLpYQvN7XrqscvLv/locations/{{ $json.location_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/snapshots/jLXUgLpYQvN7XrqscvLv/locations/{{ $json.location_id }}\", \"authentication\": \"[REDACTED]\", \"nodeCredentialType\": \"[REDACTED]\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Insert Default Agent Rules",
+      "node_type": "n8n-nodes-base.postgres",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "calendars_appointments",
+        "users_locations"
+      ],
+      "tables": [
+        "agent_rules",
+        "appointments",
+        "leads"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.query",
+          "excerpt": "INSERT INTO agent_rules (location_id, rule_type, rule_content, priority) VALUES ('{{ $('Extract Location ID').first().json.location_id }}', 'greeting', 'Always greet leads warmly and professionally', 1), ('{{ $('Extract Location ID').first().json.location_id }}', 'scheduling', 'Push for appointments when lead shows interest', 2), ('{{ $('Extract Lo…"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"executeQuery\", \"query\": \"INSERT INTO agent_rules (location_id, rule_type, rule_content, priority) VALUES \\n ('{{ $('Extract Location ID').first().json.location_id }}', 'greeting', 'Always greet leads warmly and professionally', 1),\\n ('{{ $('Extract Location ID').first().json.location_id }}', 'scheduling', 'Push for appointments when lead shows interest', 2),\\n ('{{ $('Extract Location ID').first().json.location_id }}', 'escalation', 'Transfer to human if lead asks for specific agent or becomes frustrated', 3);\", \"options\": {}}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "GET GHL Pipelines",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "users_locations",
+        "opportunities_pipelines",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/opportunities/pipelines?[REDACTED_QUERY]"
+      ],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "GET GHL Pipelines"
+        },
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/opportunities/pipelines?[REDACTED_QUERY] $(''Extract Location ID'').first().json.location_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"GET\", \"url\": \"=https://services.leadconnectorhq.com/opportunities/pipelines?[REDACTED_QUERY] $(''Extract Location ID'').first().json.location_id }}\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Build Pipeline Config",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "users_locations",
+        "opportunities_pipelines"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "// n8n 2.x safe: uses $input only — no $() calls const { pipelines: pipelinesRaw, location_id: locationId } = $input.first().json; const pipelines = Array.isArray(pipelinesRaw) ? pipelinesRaw : []; function findPipeline(list, keywords) { return list.find(p => keywords.some(k => p.name.toLowerCase().includes(k.toLowerCase()))); } function buildStage…"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"// n8n 2.x safe: uses $input only — no $() calls\\nconst { pipelines: pipelinesRaw, location_id: locationId } = $input.first().json;\\nconst pipelines = Array.isArray(pipelinesRaw) ? pipelinesRaw : [];\\n\\nfunction findPipeline(list, keywords) {\\n return list.find(p => keywords.some(k => p.name.toLowerCase().includes(k.toLowerCase())));\\n}\\n\\nfunction buildStageMap(stages) {\\n const map = {};\\n if (!stages) return map;\\n for (const s of stages) {\\n const name = s.name.toUpperCase().replace(/[^A-Z0-9_]/g…[TRUNCATED]\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Complete Onboarding Request",
+      "node_type": "n8n-nodes-base.postgres",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "users_locations"
+      ],
+      "tables": [
+        "onboarding_requests"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.query",
+          "excerpt": "UPDATE onboarding_requests SET status = 'ghl_complete', location_id = '{{ $(''Extract Location ID'').first().json.location_id }}', updated_at = NOW() WHERE id = '{{ $(''Load Onboarding Request'').first().json.id }}'::uuid;"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"executeQuery\", \"query\": \"UPDATE onboarding_requests SET status = 'ghl_complete', location_id = '{{ $(''Extract Location ID'').first().json.location_id }}', updated_at = NOW() WHERE id = '{{ $(''Load Onboarding Request'').first().json.id }}'::uuid;\"}",
+      "workflow_name": "🏗️ Onboarding — Part 2: GHL Setup",
+      "workflow_active": false
+    },
+    {
+      "node_name": "Sticky Note1",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## Webhook"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## Webhook\\n\", \"height\": 240, \"width\": 224}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Sticky Note3",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## AI Model (RAG System) Dynamic context gathering → Prompt assembly → AI response → GHL send"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## AI Model (RAG System)\\n\\nDynamic context gathering → Prompt assembly → AI response → GHL send\", \"height\": 1016, \"width\": 1888, \"color\": 6}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Webhook",
+      "node_type": "n8n-nodes-base.webhook",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "type",
+          "excerpt": "n8n-nodes-base.webhook"
+        },
+        {
+          "path": "name",
+          "excerpt": "Webhook"
+        }
+      ],
+      "parameters_excerpt": "{\"httpMethod\": \"POST\", \"path\": \"80ceecaf-7e88-403c-b229-0855030701b8\", \"authentication\": \"headerAuth\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "searchLeads",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [
+        "leads"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('Webhook').item.json.body.contact_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"get\", \"tableId\": \"leads\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"keyValue\": \"={{ $('Webhook').item.json.body.contact_id }}\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "carryContactID",
+      "node_type": "n8n-nodes-base.set",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "carryContactID"
+        }
+      ],
+      "parameters_excerpt": "{\"assignments\": {\"assignments\": [{\"id\": \"33086fd4-2348-46a1-be47-da628a4d5ecd\", \"name\": \"contact_ID\", \"value\": \"={{ $json.contact_id }}\", \"type\": \"string\"}]}, \"includeOtherFields\": true, \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Log Outbound Message",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[0].fieldValue",
+          "excerpt": "={{ $('Assemble System Prompt').item.json.contactId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[1].fieldValue",
+          "excerpt": "={{ $('Assemble System Prompt').item.json.locationId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[7].fieldId",
+          "excerpt": "ghl_message_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[7].fieldValue",
+          "excerpt": "={{ $json.messageId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[8].fieldId",
+          "excerpt": "ghl_conversation_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[8].fieldValue",
+          "excerpt": "={{ $json.conversationId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[9].fieldId",
+          "excerpt": "ghl_accepted_at"
+        }
+      ],
+      "parameters_excerpt": "{\"tableId\": \"message_log\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Assemble System Prompt').item.json.contactId }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Assemble System Prompt').item.json.locationId }}\"}, {\"fieldId\": \"direction\", \"fieldValue\": \"outbound\"}, {\"fieldId\": \"message_body\", \"fieldValue\": \"={{ $('Silence Gate').first().json.responseText || $('AI Agent').item.json.output }}\"}, {\"fieldId\": \"channel\", \"fieldValue\": \"={{ $('Assemble System Prompt').item.json.channelType }}\"}, {\"fieldId\": \"ai_processed\", \"fieldValue\": \"true\"}, {\"fieldId\": \"timestamp\", \"fieldValue\": \"={{ $now }}\"}, {\"fieldId\": \"ghl_message_id\", \"fieldValue\": \"={{ $json.messageId }}\"}, {\"fieldId\": \"ghl_conversation_id\", \"fieldValue\": \"={{ $json.conversationId }}\"}, {\"fieldId\": \"ghl_accepted_at\", \"fieldValue\": \"={{ $now.toUTC().toISO() }}\"}, {\"fieldId\": \"delivery_status\", \"fieldValue\": \"queued\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Prepare Sentiment Context",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "opportunities_pipelines"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "const d = $input.first().json; return [{ json: { ...d, currentMessage: d.currentMessage || '', historyText: d.messageHistory || 'No previous messages', conversationSummary: d.conversationSummary || 'No summary', lastIntent: 'none', agentName: d.agentName || 'Luke Gilbert', contactId: d.contactId || '', locationId: d.locationId || '', firstName: d.f…"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"const d = $input.first().json;\\n\\nreturn [{\\n json: {\\n ...d,\\n currentMessage: d.currentMessage || '',\\n historyText: d.messageHistory || 'No previous messages',\\n conversationSummary: d.conversationSummary || 'No summary',\\n lastIntent: 'none',\\n agentName: d.agentName || 'Luke Gilbert',\\n contactId: d.contactId || '',\\n locationId: d.locationId || '',\\n firstName: d.firstName || 'Contact',\\n pipelineStage: d.pipelineStage || 'MONTHLY',\\n pipelineState: d.pipelineState || '…[TRUNCATED]\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Add GHL Tag - Needs Review",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags"
+        },
+        {
+          "path": "name",
+          "excerpt": "Add GHL Tag - Needs Review"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"tags\\\": [\\\"Needs Human Review\\\"] }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Move GHL Pipeline Stage",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "opportunities_pipelines",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/opportunities/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/opportunities/{{ $json.opportunity_id }}"
+        },
+        {
+          "path": "name",
+          "excerpt": "Move GHL Pipeline Stage"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"PUT\", \"url\": \"=https://services.leadconnectorhq.com/opportunities/{{ $json.opportunity_id }}\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={\\n \\\"pipelineId\\\": \\\"PLACEHOLDER_PIPELINE_ID\\\",\\n \\\"pipelineStageId\\\": \\\"PLACEHOLDER_STAGE_ID\\\"\\n}\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Analyze Conversation",
+      "node_type": "@n8n/n8n-nodes-langchain.openAi",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "conversations_messages",
+        "calendars_appointments"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.messages.values[0].content",
+          "excerpt": "You analyze real estate AI conversation exchanges and extract structured signals. Return ONLY a valid JSON object (no markdown, no explanation): { \"summary\": \"250-350 word accumulative summary\", \"lead_intent\": \"buy|sell|both|unknown\", \"lead_timeline\": \"now|3_months|6_months|1_year|unknown\", \"appointment_discussed\": true or false, \"appointment_outco…"
+        }
+      ],
+      "parameters_excerpt": "{\"modelId\": {\"__rl\": true, \"mode\": \"list\", \"value\": \"gpt-4o-mini\"}, \"messages\": {\"values\": [{\"content\": \"You analyze real estate AI conversation exchanges and extract structured signals.\\n\\nReturn ONLY a valid JSON object (no markdown, no explanation):\\n{\\n \\\"summary\\\": \\\"250-350 word accumulative summary\\\",\\n \\\"lead_intent\\\": \\\"buy|sell|both|unknown\\\",\\n \\\"lead_timeline\\\": \\\"now|3_months|6_months|1_year|unknown\\\",\\n \\\"appointment_discussed\\\": true or false,\\n \\\"appointment_outcome\\\": \\\"offered|accepted|rejected|rescheduled|null\\\",\\n \\\"newsletter_discussed\\\": true or false,\\n \\\"newsletter_declined\\\": true or false,\\n \\\"news…[TRUNCATED]\", \"role\": \"system\"}, {\"content\": \"=Previous Summary: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary } catch(e) { try { return $('Get Conversation Summary').first().json.conversation_summary } catch(e2) { return 'None' } } })() }}\\nPrevious Intent: {{ (() => { try { return $('Get Outbound Conversation Sum…",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Update Conversation Context",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "calendars_appointments"
+      ],
+      "tables": [
+        "conversation_context"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('Assemble System Prompt').first().json.contactId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldId",
+          "excerpt": "appointment_offered"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldValue",
+          "excerpt": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && (parsed.appointment_outcome === 'offered' || parsed.appointment_outcome === 'accepted'); } catch(e) { return false; } })() }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldId",
+          "excerpt": "appointment_booked"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[6].fieldValue",
+          "excerpt": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && parsed.appointment_outcome === 'accepted'; } catch(e) { return false; } })() }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"update\", \"tableId\": \"conversation_context\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"condition\": \"eq\", \"keyValue\": \"={{ $('Assemble System Prompt').first().json.contactId }}\"}]}, \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"conversation_summary\", \"fieldValue\": \"={{ (() => { const turnCounter = (() => { try { return parseInt($('searchLeads').first().json.turn_counter) || 0 } catch(e) { try { return parseInt($('Get Lead Memory').first().json.turn_counter) || 0 } catch(e2) { try { return parseInt($('Get Outbound Lead Memory').first().json.turn_counter) || 0 } catch(e3) { return 0 } } } })(); const shouldRegen = (turnCounter <= 2 || turnCounter % 10 === 0); if (shouldRegen) { try { const content = $('Analyze Conversation').f…[TRUNCATED]\"}, {\"fieldId\": \"last_intent\", \"fieldValue\": \"={{ (() => { try { return $('Parse Sentiment').first().json.sentiment_analysis ? $('Parse Sentiment').first().json.sentiment_analysis.action : 'continue'; } catch(e) { return 'continue'; …",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Send SMS",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={{ JSON.stringify({ type: 'SMS', contactId: $('Assemble System Prompt').first().json.contactId, message: $json.responseText || $('AI Agent').first().json.output }) }}"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={{ JSON.stringify({ type: 'SMS', contactId: $('Assemble System Prompt').first().json.contactId, message: $json.responseText || $('AI Agent').first().json.output }) }}\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Send Email",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/conversations/messages"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "https://services.leadconnectorhq.com/conversations/messages"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={{ (() => { const raw = $json.responseText || $('AI Agent').first().json.output; const contactId = $('Assemble System Prompt').first().json.contactId; const coordinatorEmail = (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_email } catch(e) { return $('Get Agent Config').first().json.coordinator_email } })(); const co…"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"https://services.leadconnectorhq.com/conversations/messages\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={{ (() => { const raw = $json.responseText || $('AI Agent').first().json.output; const contactId = $('Assemble System Prompt').first().json.contactId; const coordinatorEmail = (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_email } catch(e) { return $('Get Agent Config').first().json.coordinator_email } })(); const coordinatorName = (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_name } catch(e) { try { return $('Get Agent Config').fir…[TRUNCATED]\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Pause SMS 30 Days (Tier 2)",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "opportunities_pipelines"
+      ],
+      "tables": [
+        "leads"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('carryContactID').first().json.contact_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"update\", \"tableId\": \"leads\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"condition\": \"eq\", \"keyValue\": \"={{ $('carryContactID').first().json.contact_id }}\"}]}, \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"sms_paused_until\", \"fieldValue\": \"={{ $now.plus({days: 30}).toISO() }}\"}, {\"fieldId\": \"pipeline_state\", \"fieldValue\": \"cold\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Tag Tier 2 in GHL",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $json.contact_id }}/tags"
+        },
+        {
+          "path": "name",
+          "excerpt": "Tag Tier 2 in GHL"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $json.contact_id }}/tags\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={\\\"tags\\\": [\\\"SMRT-Tier-2-Hostile\\\", \\\"SMS-Paused-30-Days\\\"]}\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "searchPastMessages",
+      "node_type": "n8n-nodes-base.supabaseTool",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages"
+      ],
+      "tables": [
+        "message_log"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('Assemble System Prompt').first().json.contactId }}"
+        }
+      ],
+      "parameters_excerpt": "{\"descriptionType\": \"manual\", \"toolDescription\": \"Search this lead's past message log beyond the 15 most recent messages already in your context.\\n\\nWHEN TO USE:\\n- Lead references something old (\\\"I told you\\\", \\\"I mentioned before\\\", \\\"remember when\\\", \\\"weeks ago\\\")\\n- You need to verify a claim about a past conversation\\n- You need to recall a commitment, date, or topic from earlier in the relationship\\n\\nWHEN NOT TO USE:\\n- For general knowledge or company info (use KB Tool)\\n- For information already visible in RECENT MESSAGES (your 15-turn window)\\n\\nINPUT…[TRUNCATED]\", \"operation\": \"getAll\", \"tableId\": \"message_log\", \"limit\": 20, \"matchType\": \"allFilters\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"condition\": \"eq\", \"keyValue\": \"={{ $('Assemble System Prompt').first().json.contactId }}\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Sticky Note16",
+      "node_type": "n8n-nodes-base.stickyNote",
+      "direction": "ghl_reference_or_transform",
+      "domains": [],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.content",
+          "excerpt": "## Gohighlevel Tools"
+        }
+      ],
+      "parameters_excerpt": "{\"content\": \"## Gohighlevel Tools\\n\\n\\n\", \"height\": 608, \"width\": 1136, \"color\": 4}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "getContact",
+      "node_type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.toolDescription",
+          "excerpt": "Fetch the full contact profile for the current lead from GoHighLevel, including custom fields, tags, lead source, and all contact details. WHEN TO USE: - When you need lead details NOT available in the conversation (email, address, tags, lead source) - When the lead asks you to confirm their contact information - When you need CRM context about the…"
+        },
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}"
+        }
+      ],
+      "parameters_excerpt": "{\"toolDescription\": \"Fetch the full contact profile for the current lead from GoHighLevel, including custom fields, tags, lead source, and all contact details.\\n\\nWHEN TO USE:\\n- When you need lead details NOT available in the conversation (email, address, tags, lead source)\\n- When the lead asks you to confirm their contact information\\n- When you need CRM context about the lead's history or status\\n\\nINPUT: No input needed. Automatically looks up the current lead.\\n\\nOUTPUT: Full contact record with name, email, phone, tag…[TRUNCATED]\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}\", \"sendHeaders\": true, \"parametersHeaders\": {\"values\": [{\"name\": \"[REDACTED]\", \"valueProvider\": \"fieldValue\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"valueProvider\": \"fieldValue\", \"value\": \"2021-07-28\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "getNotes",
+      "node_type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [
+        "agents"
+      ],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.toolDescription",
+          "excerpt": "Fetch all notes recorded on this lead's GoHighLevel contact by agents or the AI system. WHEN TO USE: - When the lead references a previous conversation or commitment (\"someone told me...\", \"I was promised...\") - When you need historical context about what has been discussed or agreed with this lead - Before escalating, to check if there are existin…"
+        },
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/notes"
+        }
+      ],
+      "parameters_excerpt": "{\"toolDescription\": \"Fetch all notes recorded on this lead's GoHighLevel contact by agents or the AI system.\\n\\nWHEN TO USE:\\n- When the lead references a previous conversation or commitment (\\\"someone told me...\\\", \\\"I was promised...\\\")\\n- When you need historical context about what has been discussed or agreed with this lead\\n- Before escalating, to check if there are existing agent notes\\n\\nINPUT: No input needed. Automatically looks up the current lead.\\n\\nOUTPUT: List of notes with timestamps and content.\\n\\nRULES:\\n- Use to …[TRUNCATED]\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/notes\", \"sendHeaders\": true, \"parametersHeaders\": {\"values\": [{\"name\": \"[REDACTED]\", \"valueProvider\": \"fieldValue\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"valueProvider\": \"fieldValue\", \"value\": \"2021-07-28\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "getAppointments",
+      "node_type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "calendars_appointments",
+        "webhooks"
+      ],
+      "tables": [
+        "appointments"
+      ],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.toolDescription",
+          "excerpt": "Fetch all appointments (past and upcoming) for the current lead from GoHighLevel. WHEN TO USE: - When the lead asks about existing appointments (\"when is my appointment?\", \"do I have anything scheduled?\") - When the lead wants to cancel or reschedule (you need the event_id from here) - When you need to check if the lead already has a booking before…"
+        },
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/appointments"
+        },
+        {
+          "path": "name",
+          "excerpt": "getAppointments"
+        }
+      ],
+      "parameters_excerpt": "{\"toolDescription\": \"Fetch all appointments (past and upcoming) for the current lead from GoHighLevel.\\n\\nWHEN TO USE:\\n- When the lead asks about existing appointments (\\\"when is my appointment?\\\", \\\"do I have anything scheduled?\\\")\\n- When the lead wants to cancel or reschedule (you need the event_id from here)\\n- When you need to check if the lead already has a booking before offering to schedule\\n\\nINPUT: No input needed. Automatically looks up the current lead.\\n\\nOUTPUT: List of appointment objects with event IDs, dates, t…[TRUNCATED]\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/appointments\", \"sendHeaders\": true, \"parametersHeaders\": {\"values\": [{\"name\": \"[REDACTED]\", \"valueProvider\": \"fieldValue\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"valueProvider\": \"fieldValue\", \"value\": \"2021-07-28\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "deleteAppointment",
+      "node_type": "@n8n/n8n-nodes-langchain.toolCode",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "calendars_appointments"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.name",
+          "excerpt": "deleteAppointment"
+        },
+        {
+          "path": "name",
+          "excerpt": "deleteAppointment"
+        }
+      ],
+      "parameters_excerpt": "{\"name\": \"deleteAppointment\", \"description\": \"[REDACTED]\", \"jsCode\": \"[REDACTED]\", \"specifyInputSchema\": true, \"jsonSchemaExample\": \"{\\\"event_id\\\":\\\"abc123\\\"}\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "bookAppointment",
+      "node_type": "@n8n/n8n-nodes-langchain.toolCode",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "calendars_appointments"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.name",
+          "excerpt": "bookAppointment"
+        },
+        {
+          "path": "name",
+          "excerpt": "bookAppointment"
+        }
+      ],
+      "parameters_excerpt": "{\"name\": \"bookAppointment\", \"description\": \"[REDACTED]\", \"jsCode\": \"[REDACTED]\", \"specifyInputSchema\": true, \"jsonSchemaExample\": \"{\\\"selected_slot\\\":\\\"2026-04-10T09:00:00-06:00\\\"}\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Insert Conversation Context",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "calendars_appointments",
+        "users_locations"
+      ],
+      "tables": [
+        "conversation_context"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[0].fieldValue",
+          "excerpt": "={{ $('Assemble System Prompt').first().json.contactId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[1].fieldValue",
+          "excerpt": "={{ $('Assemble System Prompt').first().json.locationId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[8].fieldId",
+          "excerpt": "appointment_offered"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[8].fieldValue",
+          "excerpt": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && (parsed.appointment_outcome === 'offered' || parsed.appointment_outcome === 'accepted'); } catch(e) { return false; } })() }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[9].fieldId",
+          "excerpt": "appointment_booked"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[9].fieldValue",
+          "excerpt": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && parsed.appointment_outcome === 'accepted'; } catch(e) { return false; } })() }}"
+        }
+      ],
+      "parameters_excerpt": "{\"tableId\": \"conversation_context\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Assemble System Prompt').first().json.contactId }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Assemble System Prompt').first().json.locationId }}\"}, {\"fieldId\": \"conversation_summary\", \"fieldValue\": \"={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.summary || content; } catch(e) { return $('Analyze Conversation').first().json.message?.content || ''; } })() }}\"}, {\"fieldId\": \"last_intent\", \"fieldValue\": \"={{ (() => { try { return $('Parse Sentiment').first().json.sentiment_analysis ? $('Parse Sentiment').first().json.sentiment_analysis.action : 'continue'; } catch(e) { return 'continue'; } })() }}\"}, {\"fieldId\": \"lead_intent\", \"fieldValue\": \"={{ (() => { try { const content = $('Analyze Conversation').first().json.message…",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "addAppointmentNotes",
+      "node_type": "@n8n/n8n-nodes-langchain.toolCode",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "conversations_messages",
+        "calendars_appointments"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.name",
+          "excerpt": "addAppointmentNotes"
+        },
+        {
+          "path": "parameters.jsonSchemaExample",
+          "excerpt": "{\"appointment_time\":\"2026-04-10T09:00\",\"qualifying_summary\":\"Buyer, 500k, pre-approved\",\"conversation_summary\":\"Lead relocating\"}"
+        },
+        {
+          "path": "name",
+          "excerpt": "addAppointmentNotes"
+        }
+      ],
+      "parameters_excerpt": "{\"name\": \"addAppointmentNotes\", \"description\": \"[REDACTED]\", \"jsCode\": \"[REDACTED]\", \"specifyInputSchema\": true, \"jsonSchemaExample\": \"{\\\"appointment_time\\\":\\\"2026-04-10T09:00\\\",\\\"qualifying_summary\\\":\\\"Buyer, 500k, pre-approved\\\",\\\"conversation_summary\\\":\\\"Lead relocating\\\"}\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "checkQualificationStatus",
+      "node_type": "n8n-nodes-base.supabaseTool",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "calendars_appointments"
+      ],
+      "tables": [
+        "conversation_context"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.toolDescription",
+          "excerpt": "Check how many of the 3 qualifying questions this lead has answered so far. WHEN TO USE: - BEFORE calling saveQualifyingAnswer, to get the current qualifying_answers object - When the lead says they want to book an appointment, to verify they are qualified - When you are unsure which qualifying questions have already been answered INPUT: No input n…"
+        }
+      ],
+      "parameters_excerpt": "{\"descriptionType\": \"manual\", \"toolDescription\": \"Check how many of the 3 qualifying questions this lead has answered so far.\\n\\nWHEN TO USE:\\n- BEFORE calling saveQualifyingAnswer, to get the current qualifying_answers object\\n- When the lead says they want to book an appointment, to verify they are qualified\\n- When you are unsure which qualifying questions have already been answered\\n\\nINPUT: No input needed. Automatically looks up this lead's conversation_context record.\\n\\nOUTPUT: Returns the qualifying_answers JSONB object with keys q1, q2, q3.\\n- …[TRUNCATED]\", \"operation\": \"getAll\", \"tableId\": \"conversation_context\", \"limit\": 1, \"matchType\": \"allFilters\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"condition\": \"eq\", \"keyValue\": \"={{ (() => { try { return $('Set Outbound Context').first().json.contact_id } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "rescheduleAppointment",
+      "node_type": "@n8n/n8n-nodes-langchain.toolCode",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "calendars_appointments"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "rescheduleAppointment"
+        }
+      ],
+      "parameters_excerpt": "{\"description\": \"[REDACTED]\", \"jsCode\": \"[REDACTED]\", \"specifyInputSchema\": true, \"jsonSchemaExample\": \"{\\\"event_id\\\":\\\"abc\\\",\\\"start_time\\\":\\\"2026-04-10T10:00:00-06:00\\\"}\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Get Lead Memory (After)",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts"
+      ],
+      "tables": [
+        "leads"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('Assemble System Prompt').first().json.contactId }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"get\", \"tableId\": \"leads\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"keyValue\": \"={{ $('Assemble System Prompt').first().json.contactId }}\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Sync Fields to GHL",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('Build GHL Sync Body').first().json.contactId }}"
+        },
+        {
+          "path": "parameters.jsonBody",
+          "excerpt": "={{ JSON.stringify(Object.assign({}, $('Build GHL Sync Body').first().json.coreFields, { customFields: $('Build GHL Sync Body').first().json.customFields })) }}"
+        },
+        {
+          "path": "name",
+          "excerpt": "Sync Fields to GHL"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"PUT\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('Build GHL Sync Body').first().json.contactId }}\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Content-Type\", \"value\": \"application/json\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={{ JSON.stringify(Object.assign({}, $('Build GHL Sync Body').first().json.coreFields, { customFields: $('Build GHL Sync Body').first().json.customFields })) }}\", \"options\": {\"timeout\": 10000}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Post Memory Note to GHL",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "exit_to_ghl_api",
+      "domains": [],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Post Memory Note to GHL"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"[REDACTED]\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Get GHL Contact",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "contacts",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/locations/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/locations/{{ $('Get Lead Memory (After)').first().json.location_id }}/customFields"
+        },
+        {
+          "path": "name",
+          "excerpt": "Get GHL Contact"
+        }
+      ],
+      "parameters_excerpt": "{\"url\": \"=https://services.leadconnectorhq.com/locations/{{ $('Get Lead Memory (After)').first().json.location_id }}/customFields\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"options\": {\"timeout\": 10000}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Build GHL Sync Body",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "// Get GHL custom field definitions from input (Get GHL Contact) const ghlFields = $input.first().json.customFields || []; // Get memory + enrichment values from Compare Memory const mem = $('Compare Memory').first().json; // === CORE FIELDS (standard GHL contact fields) === const coreFields = {}; if (mem.first_name) coreFields.firstName = mem.firs…"
+        },
+        {
+          "path": "name",
+          "excerpt": "Build GHL Sync Body"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"// Get GHL custom field definitions from input (Get GHL Contact)\\nconst ghlFields = $input.first().json.customFields || [];\\n\\n// Get memory + enrichment values from Compare Memory\\nconst mem = $('Compare Memory').first().json;\\n\\n// === CORE FIELDS (standard GHL contact fields) ===\\nconst coreFields = {};\\nif (mem.first_name) coreFields.firstName = mem.first_name;\\nif (mem.last_name) coreFields.lastName = mem.last_name;\\nif (mem.email) coreFields.email = mem.email;\\nif (mem.phone) coreFields.phone = mem.p…[TRUNCATED]\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Update Inbound Timestamps",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "opportunities_pipelines"
+      ],
+      "tables": [
+        "leads"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('carryContactID').first().json.contact_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"update\", \"tableId\": \"leads\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"condition\": \"eq\", \"keyValue\": \"={{ $('carryContactID').first().json.contact_id }}\"}]}, \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"last_customer_message_at\", \"fieldValue\": \"={{ $now }}\"}, {\"fieldId\": \"next_touch_at\", \"fieldValue\": \"={{ $now }}\"}, {\"fieldId\": \"turn_counter\", \"fieldValue\": \"={{ ($('searchLeads').first().json.turn_counter || 0) + 1 }}\"}, {\"fieldId\": \"channel\", \"fieldValue\": \"={{ $('LeadDetails').first().json.channel.toLowerCase().includes('sms') ? 'sms' : $('LeadDetails').first().json.channel.toLowerCase().includes('email') ? 'email' : $('LeadDetails').first().json.channel.toLowerCase().includes('ig') ? 'instagram' : 'sms' }}\"}, {\"fieldId\": \"next_outbound_due_at\", \"fieldValue\": \"={{ (() => { const stage = $('searchLeads').first().json.pipeline_stage || 'MONTHLY'; const days = stage === 'MONTHLY' ? 28 : stage === 'BIWEEKLY' ? 14 : 7; return new Date(Date.now() + days * 24 * 60 *…",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Update Pipeline in DB",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "opportunities_pipelines"
+      ],
+      "tables": [
+        "leads"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('Evaluate Pipeline Stage').first().json.contactId }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"update\", \"tableId\": \"leads\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"condition\": \"eq\", \"keyValue\": \"={{ $('Evaluate Pipeline Stage').first().json.contactId }}\"}]}, \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"pipeline_stage\", \"fieldValue\": \"={{ $('Evaluate Pipeline Stage').first().json.targetStage }}\"}, {\"fieldId\": \"current_pipeline_stage\", \"fieldValue\": \"={{ $('Evaluate Pipeline Stage').first().json.targetStage }}\"}, {\"fieldId\": \"last_pipeline_update\", \"fieldValue\": \"={{ new Date().toISOString() }}\"}, {\"fieldId\": \"next_outbound_due_at\", \"fieldValue\": \"={{ (() => { const stage = $('Evaluate Pipeline Stage').first().json.targetStage || 'MONTHLY'; const days = stage === 'MONTHLY' ? 28 : stage === 'BIWEEKLY' ? 14 : 7; return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString(); })() }}\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Move Lead in GHL",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "ghl_reference_or_transform",
+      "domains": [],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "name",
+          "excerpt": "Move Lead in GHL"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"[REDACTED]\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Notify Agent",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "const input = $input.first().json; const agentEmail = input.agent_email || null; const agentPhone = input.agent_phone || null; const agentName = input.agent_name || input.agentName || 'Agent'; const firstName = input.first_name || input.firstName || 'A lead'; const message = input.message || input.message_body || ''; const responseText = input.resp…"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"const input = $input.first().json;\\n\\nconst agentEmail = input.agent_email || null;\\nconst agentPhone = input.agent_phone || null;\\nconst agentName = input.agent_name || input.agentName || 'Agent';\\nconst firstName = input.first_name || input.firstName || 'A lead';\\nconst message = input.message || input.message_body || '';\\nconst responseText = input.responseText || input.output || '';\\nconst contactId = input.contact_id || input.contactId || '';\\n\\nconst summary = firstName + ' needs ' + agentName + \\\"\\\\'…[TRUNCATED]\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Newsletter Offer Needed?",
+      "node_type": "n8n-nodes-base.if",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "conversations_messages",
+        "calendars_appointments"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.conditions.conditions[0].leftValue",
+          "excerpt": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed === true && parsed.appointment_outcome === 'rejected'; } catch(e) { return false; } })() }}"
+        }
+      ],
+      "parameters_excerpt": "{\"conditions\": {\"options\": {\"version\": 2, \"leftValue\": \"\", \"caseSensitive\": true, \"typeValidation\": \"loose\"}, \"conditions\": [{\"id\": \"newsletter-check-appt-rejected\", \"leftValue\": \"={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed === true && parsed.appointment_outcome === 'rejected'; } catch(e) { return false; } })() }}\", \"rightValue\": \"\", \"operator\": {\"type\": \"boolean\", \"operation\": \"true\", \"singleValue\": true}}, {\"id\": \"newsletter-check-not-opted-in\", \"leftValue\": \"={{ (() => { try { return $('Get Lead Memory').first().json.newsletter_opted_in } catch(e) { try { return $('Get Outbound Lead Memory').first().json.newsletter_opted_in } catch(e2) { return false } } })() }}\", \"rightValue\": \"\", \"operator\": {\"type\": \"boolean\", \"operation\": \"false\", \"singleValue\": true}}, {\"id\": \"newsletter-check-not-declined\", \"leftValue\": \"={{ (() => { try { return $('Get Conversation S…",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Set Newsletter Pending",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages"
+      ],
+      "tables": [
+        "conversation_context"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('Assemble System Prompt').first().json.contactId }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"update\", \"tableId\": \"conversation_context\", \"matchType\": \"allFilters\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"condition\": \"eq\", \"keyValue\": \"={{ $('Assemble System Prompt').first().json.contactId }}\"}]}, \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"newsletter_offer_pending\", \"fieldValue\": \"true\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Clear Newsletter Flags",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages"
+      ],
+      "tables": [
+        "conversation_context"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.filters.conditions[0].keyValue",
+          "excerpt": "={{ $('Assemble System Prompt').first().json.contactId }}"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"update\", \"tableId\": \"conversation_context\", \"matchType\": \"allFilters\", \"filters\": {\"conditions\": [{\"keyName\": \"contact_id\", \"condition\": \"eq\", \"keyValue\": \"={{ $('Assemble System Prompt').first().json.contactId }}\"}]}, \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"newsletter_offer_pending\", \"fieldValue\": \"false\"}, {\"fieldId\": \"newsletter_offer_declined\", \"fieldValue\": \"={{ (() => { try { const leadMemory = $('Get Lead Memory (After)').first()?.json || $('Get Outbound Lead Memory').first()?.json || {}; if (leadMemory.newsletter_opted_in === true) return false; const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.newsletter_declined === true; } catch(e) { return false; } })() }}\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "subscribeToNewsletter",
+      "node_type": "@n8n/n8n-nodes-langchain.toolCode",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts"
+      ],
+      "tables": [
+        "leads"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.description",
+          "excerpt": "Subscribe the current lead to the weekly market newsletter. Updates leads.newsletter_opted_in = true, tags the contact in GHL, and clears pending flags. INPUT (required JSON): - contact_id: string - the CONTACT_ID from the context header (always required) CALL THIS TOOL when the lead signals they want market updates, want to stay in the loop, accep…"
+        }
+      ],
+      "parameters_excerpt": "{\"name\": \"subscribeToNewsletter\", \"description\": \"Subscribe the current lead to the weekly market newsletter. Updates leads.newsletter_opted_in = true, tags the contact in GHL, and clears pending flags.\\n\\nINPUT (required JSON):\\n- contact_id: string - the CONTACT_ID from the context header (always required)\\n\\nCALL THIS TOOL when the lead signals they want market updates, want to stay in the loop, accept the newsletter offer, or agree to receive periodic info. Call it BEFORE you write your response acknowledging the subscription — never acknowledge…[TRUNCATED]\", \"jsCode\": \"[REDACTED]\", \"specifyInputSchema\": true, \"jsonSchemaExample\": \"{\\\"contact_id\\\": \\\"abc123\\\"}\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Gather Prompt Data",
+      "node_type": "n8n-nodes-base.set",
+      "direction": "read_from_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "calendars_appointments",
+        "users_locations",
+        "opportunities_pipelines",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://kfoijgcbkjeizxxyiwxv.supabase.co"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.assignments.assignments[7].name",
+          "excerpt": "contactId"
+        },
+        {
+          "path": "parameters.assignments.assignments[8].name",
+          "excerpt": "locationId"
+        },
+        {
+          "path": "parameters.assignments.assignments[29].name",
+          "excerpt": "calendarId"
+        },
+        {
+          "path": "parameters.assignments.assignments[29].value",
+          "excerpt": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.calendar_id; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.calendar_id; } catch(e2) { return ''; } } })() }}"
+        },
+        {
+          "path": "parameters.assignments.assignments[30].name",
+          "excerpt": "ghlUserId"
+        },
+        {
+          "path": "parameters.assignments.assignments[30].value",
+          "excerpt": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.ghl_user_id; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.ghl_user_id; } catch(e2) { return ''; } } })() }}"
+        }
+      ],
+      "parameters_excerpt": "{\"duplicateItem\": true, \"assignments\": {\"assignments\": [{\"id\": \"g1\", \"name\": \"agentName\", \"value\": \"={{ (() => { try { return $('Get Outbound Agent Config').first().json.agent_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.agent_name; } catch(e2) { return 'the agent'; } } })() }}\", \"type\": \"string\"}, {\"id\": \"g2\", \"name\": \"coordinatorName\", \"value\": \"={{ (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.coordinator_name; } catch(e2) { return 'Jon'; } } })() }}\", \"type\": \"string\"}, {\"id\": \"g3\", \"name\": \"marketName\", \"value\": \"={{ (() => { try { return $('Get Outbound Agent Config').first().json.market_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.market_name; } catch(e2) { return ''; } } })() }}\", \"type\": \"string\"}, {\"id\": \"g4\", \"name\": \"timezone\", \"value\": \"={{ (() => { try { return $('Get Outbound Agent Config').first().json.timezone;…",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Gather Sentiment Data1",
+      "node_type": "n8n-nodes-base.set",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "opportunities_pipelines",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.assignments.assignments[1].name",
+          "excerpt": "contactId"
+        },
+        {
+          "path": "parameters.assignments.assignments[2].name",
+          "excerpt": "locationId"
+        }
+      ],
+      "parameters_excerpt": "{\"assignments\": {\"assignments\": [{\"id\": \"s1\", \"name\": \"currentMessage\", \"value\": \"={{ (() => { try { const b = $('Check Batch Leader').first().json.batchedMessageBody; if (b) return b; } catch(e) {} try { return $('LeadDetails').first().json.message; } catch(e) { try { return $('Set Outbound Context').first().json.message; } catch(e2) { return ''; } } })() }}\", \"type\": \"string\"}, {\"id\": \"s2\", \"name\": \"contactId\", \"value\": \"={{ (() => { try { return $('LeadDetails').first().json.contact_id; } catch(e) { try { return $('Set Outbound Context').first().json.contact_id; } catch(e2) { return ''; } } })() }}\", \"type\": \"string\"}, {\"id\": \"s3\", \"name\": \"locationId\", \"value\": \"={{ (() => { try { return $('LeadDetails').first().json.location_id; } catch(e) { try { return $('Set Outbound Context').first().json.location_id; } catch(e2) { return ''; } } })() }}\", \"type\": \"string\"}, {\"id\": \"s4\", \"name\": \"firstName\", \"value\": \"={{ (() => { try { return $('LeadDetails').first().json.first_name; } catch(…",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Wait 90s",
+      "node_type": "n8n-nodes-base.wait",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.amount",
+          "excerpt": "={{ $('Webhook').first().json.body.test_mode === true ? 0 : 90 }}"
+        }
+      ],
+      "parameters_excerpt": "{\"amount\": \"={{ $('Webhook').first().json.body.test_mode === true ? 0 : 90 }}\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Turnaround: Disable DND",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"PUT\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"{ \\\"dnd\\\": false, \\\"dndSettings\\\": { \\\"Call\\\": { \\\"status\\\": \\\"inactive\\\" }, \\\"Email\\\": { \\\"status\\\": \\\"inactive\\\" }, \\\"SMS\\\": { \\\"status\\\": \\\"inactive\\\" }, \\\"WhatsApp\\\": { \\\"status\\\": \\\"inactive\\\" }, \\\"GMB\\\": { \\\"status\\\": \\\"inactive\\\" }, \\\"FB\\\": { \\\"status\\\": \\\"inactive\\\" } } }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Turnaround: Remove L1 Tag",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"DELETE\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Content-Type\", \"value\": \"application/json\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"{ \\\"tags\\\": [\\\"SMRT-OptOut-L1\\\"] }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Turnaround: Post Note",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/notes"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/notes\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Content-Type\", \"value\": \"application/json\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"body\\\": \\\"SMRT Turnaround Detected - Lead re-engaged warmly. Prior opt-out was on {{ $('searchLeads').first().json.opted_out_at }}. State cleared, flows resumed.\\\" }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Apply L1: Enable DND",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"PUT\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"{ \\\"dnd\\\": true, \\\"dndSettings\\\": { \\\"Call\\\": { \\\"status\\\": \\\"active\\\" }, \\\"Email\\\": { \\\"status\\\": \\\"active\\\" }, \\\"SMS\\\": { \\\"status\\\": \\\"active\\\" }, \\\"WhatsApp\\\": { \\\"status\\\": \\\"active\\\" }, \\\"GMB\\\": { \\\"status\\\": \\\"active\\\" }, \\\"FB\\\": { \\\"status\\\": \\\"active\\\" } } }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Apply L1: Add L1 Tag",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Content-Type\", \"value\": \"application/json\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"{ \\\"tags\\\": [\\\"SMRT-OptOut-L1\\\"] }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Apply L1: Post Note",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/notes"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/notes\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Content-Type\", \"value\": \"application/json\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"body\\\": \\\"SMRT Auto Opt-Out (Level 1 - Soft/Reversible). Reason: {{ $('Parse Sentiment').first().json.reason }}\\\" }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Apply L2: Enable DND",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"PUT\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"{ \\\"dnd\\\": true, \\\"dndSettings\\\": { \\\"Call\\\": { \\\"status\\\": \\\"active\\\" }, \\\"Email\\\": { \\\"status\\\": \\\"active\\\" }, \\\"SMS\\\": { \\\"status\\\": \\\"active\\\" }, \\\"WhatsApp\\\": { \\\"status\\\": \\\"active\\\" }, \\\"GMB\\\": { \\\"status\\\": \\\"active\\\" }, \\\"FB\\\": { \\\"status\\\": \\\"active\\\" } } }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Apply L2: Add L2 Tag",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Content-Type\", \"value\": \"application/json\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"{ \\\"tags\\\": [\\\"SMRT-OptOut-L2-Blocked\\\"] }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Apply L2: Post Note",
+      "node_type": "n8n-nodes-base.httpRequest",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [
+        "https://services.leadconnectorhq.com/contacts/{{"
+      ],
+      "evidence": [
+        {
+          "path": "parameters.url",
+          "excerpt": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/notes"
+        }
+      ],
+      "parameters_excerpt": "{\"method\": \"POST\", \"url\": \"=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/notes\", \"sendHeaders\": true, \"headerParameters\": {\"parameters\": [{\"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\"}, {\"name\": \"Version\", \"value\": \"2021-07-28\"}, {\"name\": \"Content-Type\", \"value\": \"application/json\"}]}, \"sendBody\": true, \"specifyBody\": \"json\", \"jsonBody\": \"={ \\\"body\\\": \\\"SMRT Auto Block (Level 2 - Hard/Incoming Blocked). Reason: {{ $('Parse Sentiment').first().json.reason }}\\\" }\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Newsletter Guard",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "// Always guarantee 1 item with a stable contact_id so Clear Newsletter Flags never receives 0 items const ctx = $('Assemble System Prompt').first().json; return [{ json: { contactId: ctx.contactId } }];"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"// Always guarantee 1 item with a stable contact_id so Clear Newsletter Flags never receives 0 items\\nconst ctx = $('Assemble System Prompt').first().json;\\nreturn [{ json: { contactId: ctx.contactId } }];\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Log AI Leak",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations"
+      ],
+      "tables": [
+        "ai_output_errors"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[0].fieldValue",
+          "excerpt": "={{ $('Assemble System Prompt').first().json.contactId }}"
+        }
+      ],
+      "parameters_excerpt": "{\"tableId\": \"ai_output_errors\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Assemble System Prompt').first().json.contactId }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ (() => { try { return $('Get Agent Config').first().json.location_id } catch(e) { try { return $('Get Outbound Agent Config').first().json.location_id } catch(e2) { return '' } } })() }}\"}, {\"fieldId\": \"execution_id\", \"fieldValue\": \"={{ $execution.id }}\"}, {\"fieldId\": \"channel\", \"fieldValue\": \"={{ $('Assemble System Prompt').first().json.channelType || '' }}\"}, {\"fieldId\": \"direction\", \"fieldValue\": \"outbound\"}, {\"fieldId\": \"raw_output\", \"fieldValue\": \"={{ $('AI Agent').first().json.output }}\"}, {\"fieldId\": \"markers_hit\", \"fieldValue\": \"={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.leak_phrase || ''; } catch(e) { return 'parse_error…",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Save Inbound Capture",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations",
+        "webhooks"
+      ],
+      "tables": [
+        "inbound_capture"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[0].fieldValue",
+          "excerpt": "={{ $json.headers && $json.headers['x-replay'] === '1' ? 'replay' : 'webhook' }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[3].fieldId",
+          "excerpt": "ghl_message_id"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[3].fieldValue",
+          "excerpt": "={{ $json.body?.messageId || $json.body?.message?.id || $json.body?.message_id || null }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[4].fieldValue",
+          "excerpt": "={{ $json.body?.contact_id || $json.body?.contactId || $json.body?.contact?.id || null }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[5].fieldValue",
+          "excerpt": "={{ $json.body?.location?.id || $json.body?.locationId || $json.body?.location_id || null }}"
+        }
+      ],
+      "parameters_excerpt": "{\"tableId\": \"inbound_capture\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"source\", \"fieldValue\": \"={{ $json.headers && $json.headers['x-replay'] === '1' ? 'replay' : 'webhook' }}\"}, {\"fieldId\": \"payload\", \"fieldValue\": \"={{ $json.body }}\"}, {\"fieldId\": \"headers\", \"fieldValue\": \"={{ $json.headers || {} }}\"}, {\"fieldId\": \"ghl_message_id\", \"fieldValue\": \"={{ $json.body?.messageId || $json.body?.message?.id || $json.body?.message_id || null }}\"}, {\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $json.body?.contact_id || $json.body?.contactId || $json.body?.contact?.id || null }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $json.body?.location?.id || $json.body?.locationId || $json.body?.location_id || null }}\"}, {\"fieldId\": \"processed\", \"fieldValue\": \"={{ ($json.headers && $json.headers['x-replay'] === '1') ? true : false }}\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Restore Webhook Context",
+      "node_type": "n8n-nodes-base.code",
+      "direction": "entry_from_ghl_or_external_webhook",
+      "domains": [
+        "conversations_messages",
+        "webhooks"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.jsCode",
+          "excerpt": "// Re-emit the original Webhook output so downstream nodes see body/headers as before // (Save Inbound Capture + Check Capture Mode replaced $json with their own outputs) return $('Webhook').all();"
+        },
+        {
+          "path": "name",
+          "excerpt": "Restore Webhook Context"
+        }
+      ],
+      "parameters_excerpt": "{\"jsCode\": \"// Re-emit the original Webhook output so downstream nodes see body/headers as before\\n// (Save Inbound Capture + Check Capture Mode replaced $json with their own outputs)\\nreturn $('Webhook').all();\"}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Prep Status Check Input",
+      "node_type": "n8n-nodes-base.set",
+      "direction": "exit_to_ghl_api",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.assignments.assignments[0].name",
+          "excerpt": "messageId"
+        },
+        {
+          "path": "parameters.assignments.assignments[0].value",
+          "excerpt": "={{ $json.ghl_message_id }}"
+        },
+        {
+          "path": "parameters.assignments.assignments[2].value",
+          "excerpt": "={{ $('Assemble System Prompt').item.json.contactId }}"
+        },
+        {
+          "path": "parameters.assignments.assignments[3].value",
+          "excerpt": "={{ $('Assemble System Prompt').item.json.locationId }}"
+        }
+      ],
+      "parameters_excerpt": "{\"assignments\": {\"assignments\": [{\"id\": \"f1\", \"name\": \"messageId\", \"value\": \"={{ $json.ghl_message_id }}\", \"type\": \"string\"}, {\"id\": \"f2\", \"name\": \"[REDACTED]\", \"value\": \"[REDACTED]\", \"type\": \"string\"}, {\"id\": \"f3\", \"name\": \"contact_id\", \"value\": \"={{ $('Assemble System Prompt').item.json.contactId }}\", \"type\": \"string\"}, {\"id\": \"f4\", \"name\": \"location_id\", \"value\": \"={{ $('Assemble System Prompt').item.json.locationId }}\", \"type\": \"string\"}]}, \"options\": {\"includeOtherFields\": false}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Cap Lock Check",
+      "node_type": "n8n-nodes-base.postgres",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "users_locations"
+      ],
+      "tables": [],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.query",
+          "excerpt": "=SELECT can_send, current_level, daily_cap, sent_today, remaining, reset_at, block_reason FROM check_sending_quota('{{ $('Assemble System Prompt').item.json.locationId }}'::text);"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"executeQuery\", \"query\": \"=SELECT can_send, current_level, daily_cap, sent_today, remaining, reset_at, block_reason FROM check_sending_quota('{{ $('Assemble System Prompt').item.json.locationId }}'::text);\", \"options\": {}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    },
+    {
+      "node_name": "Log Cap Suppression",
+      "node_type": "n8n-nodes-base.supabase",
+      "direction": "ghl_reference_or_transform",
+      "domains": [
+        "contacts",
+        "conversations_messages",
+        "users_locations"
+      ],
+      "tables": [
+        "message_send_errors"
+      ],
+      "urls": [],
+      "evidence": [
+        {
+          "path": "parameters.fieldsUi.fieldValues[0].fieldValue",
+          "excerpt": "={{ $('Assemble System Prompt').item.json.contactId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[1].fieldValue",
+          "excerpt": "={{ $('Assemble System Prompt').item.json.locationId }}"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[2].fieldId",
+          "excerpt": "ghl_error_code"
+        },
+        {
+          "path": "parameters.fieldsUi.fieldValues[3].fieldId",
+          "excerpt": "ghl_error_name"
+        }
+      ],
+      "parameters_excerpt": "{\"operation\": \"create\", \"tableId\": \"message_send_errors\", \"fieldsUi\": {\"fieldValues\": [{\"fieldId\": \"contact_id\", \"fieldValue\": \"={{ $('Assemble System Prompt').item.json.contactId }}\"}, {\"fieldId\": \"location_id\", \"fieldValue\": \"={{ $('Assemble System Prompt').item.json.locationId }}\"}, {\"fieldId\": \"ghl_error_code\", \"fieldValue\": \"LOCAL_LOCK\"}, {\"fieldId\": \"ghl_error_name\", \"fieldValue\": \"cap_locked_suppressed\"}, {\"fieldId\": \"raw_message\", \"fieldValue\": \"=Send suppressed by Brain Engine Cap Lock Check. block_reason: {{ $('Cap Lock Check').item.json.block_reason }}, reset_at: {{ $('Cap Lock Check').item.json.reset_at }}\"}, {\"fieldId\": \"classification\", \"fieldValue\": \"cap_locked_suppressed\"}]}}",
+      "workflow_name": "🧠 SMRT Brain Engine",
+      "workflow_active": true
+    }
+  ]
+}

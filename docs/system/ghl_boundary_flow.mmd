@@ -1,0 +1,57 @@
+flowchart LR
+    subgraph GHL["GoHighLevel / LeadConnector boundary"]
+        GHLContacts["Contacts / Leads\ncontactId, locationId"]
+        GHLConv["Conversations + Messages\nSMS/email threads, messageId, conversationId"]
+        GHLCal["Calendars + Appointments\neventId, calendarId, assignedUserId"]
+        GHLWebhooks["Webhook Events\ncontact, delivery, inbound, document triggers"]
+    end
+
+    subgraph N8N["n8n orchestration layer"]
+        ContactCreated["Contact Created -> Brain Engine"]
+        Brain["SMRT Brain Engine\nagent prompt, tools, routing"]
+        Delivery["GHL Delivery Status Handler"]
+        Status["GHL Send Status Checker"]
+        Reminders["Appointment Reminders"]
+        Backfill["GHL Conversation Backfill\ncurrently inactive"]
+        Onboarding["Onboarding / GHL Setup\ncurrently inactive"]
+    end
+
+    subgraph SB["Supabase operational mirror"]
+        Agents["agents\nGHL credentials + config"]
+        Leads["leads\ncontact/location identity"]
+        Context["conversation_context\nqualification + appointment flags"]
+        Messages["message_log\noutbound/inbound delivery ledger"]
+        Errors["message_send_errors"]
+        Inbound["inbound_capture"]
+        Appts["appointments\nlocal booking ledger"]
+    end
+
+    GHLWebhooks --> ContactCreated
+    GHLWebhooks --> Delivery
+    GHLWebhooks --> Backfill
+    GHLWebhooks --> Onboarding
+    ContactCreated --> Brain
+    Agents --> Brain
+    Leads --> Brain
+    Context <--> Brain
+    Brain -->|"POST /conversations/messages"| GHLConv
+    Brain -->|"GET /contacts/:contactId/appointments"| GHLCal
+    Brain -->|"POST /calendars/events/appointments"| GHLCal
+    Brain -. "best-effort local insert after GHL success" .-> Appts
+    Brain --> Messages
+    Brain --> Errors
+    Delivery --> Messages
+    Status --> Messages
+    Status --> Errors
+    Reminders --> Appts
+    Reminders --> GHLConv
+    Backfill -. "would recover conversation history if active" .-> Inbound
+    Onboarding -. "would configure / persist calendar IDs if active" .-> Agents
+    Onboarding -. "would seed rules and appointment structures" .-> Appts
+
+    Appts:::risk
+    Backfill:::inactive
+    Onboarding:::inactive
+
+    classDef risk fill:#ffe7e7,stroke:#b91c1c,stroke-width:2px,color:#111;
+    classDef inactive fill:#f3f4f6,stroke:#6b7280,stroke-dasharray:5 5,color:#111;
