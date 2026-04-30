@@ -1,0 +1,4415 @@
+[
+  {
+    "file": "/home/ubuntu/SMRT-Agent-Ai/workflows/active/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json",
+    "workflow_name": "📰 Data Source & Newsletter Creation",
+    "workflow_id": "gI097yamrw7gDU6C",
+    "active": true,
+    "node_count": 37,
+    "edge_count": 38,
+    "type_counts": {
+      "n8n-nodes-base.scheduleTrigger": 1,
+      "n8n-nodes-base.supabase": 10,
+      "n8n-nodes-base.splitInBatches": 1,
+      "n8n-nodes-base.code": 8,
+      "@n8n/n8n-nodes-langchain.openAi": 2,
+      "n8n-nodes-base.noOp": 1,
+      "n8n-nodes-base.stickyNote": 4,
+      "n8n-nodes-base.googleDrive": 1,
+      "n8n-nodes-base.httpRequest": 5,
+      "n8n-nodes-base.if": 2,
+      "n8n-nodes-base.editImage": 1,
+      "n8n-nodes-base.set": 1
+    },
+    "table_refs": {
+      "agents": 1,
+      "newsletters": 5,
+      "content_splinters": 2,
+      "altos_weekly_stats": 3,
+      "documents": 2
+    },
+    "api_refs": {
+      "perplexity": 2,
+      "grok": 2,
+      "api.x.ai": 1,
+      "openai": 1,
+      "altos.re/api/v2": 2
+    },
+    "topo_order": [
+      "Weekly Schedule",
+      "Get Newsletter Agents",
+      "Altos Get Stats",
+      "Back to Agent Loop",
+      "Check Newsletter For Week",
+      "Check Week Stats Exist",
+      "Condense Altos Data",
+      "Create Newsletter Doc",
+      "Crop Share Image",
+      "Delete Old Splinters",
+      "Extract Splinters",
+      "Fetch Altos Share",
+      "Generate Embedding",
+      "Generate Newsletter",
+      "Get Altos Hash",
+      "Get Last Week Stats",
+      "Get Previous Newsletters",
+      "Grok National Context",
+      "Loop Agents",
+      "Newsletter Exists For Week?",
+      "Pass Location ID",
+      "Prep Data for AI",
+      "Prepare Agent Data",
+      "Prepare Storage Data",
+      "Remove Old Market Docs",
+      "Set File Content",
+      "Store Embedded Doc",
+      "Store Newsletter",
+      "Store Splinter",
+      "Store Weekly Stats",
+      "Upload to Google Drive",
+      "Upload to Supabase Storage",
+      "Week Already Processed?"
+    ],
+    "relevant_nodes": [
+      {
+        "name": "Get Newsletter Agents",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Altos Get Stats",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Generate Newsletter",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "messages.values[0].content",
+            "value": "=## Agent Context\n\nYou are writing on behalf of **{{ $('Prepare Agent Data').first().json.agent.agent_name }}**{{ $('Prepare Agent Data').first().json.agent.business_name ? ', ' + $('Prepare Agent Data').first().json.agent.business_name : '' }}, serving the **{{ $json.market_name }}** real estate market.\n\n---\n\n## Who You Are\n\nYou are a trusted local advisor writing to real people -- buyers, sellers, homeowners, and curious neighbors. You are NOT a research analyst writing a market report. Your t…[TRUNCATED]"
+          },
+          {
+            "path": "messages.values[1].content",
+            "value": "=Generate a weekly market newsletter for **{{ $json.market_name }}**.\n\n## Local Market Data (Altos Research)\n{{ JSON.stringify($json.altos_data, null, 2) }}\n\n## National/Global Context & Local Impact\n{{ JSON.stringify($json.perplexity_data, null, 2) }}\n\n## Previous Newsletters (last 2 weeks -- for continuity and week-over-week context)\n{{ $json.previous_newsletters && $json.previous_newsletters.length > 0 ? JSON.stringify($json.previous_newsletters, null, 2) : 'No previous newsletters available …[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Extract Splinters",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "messages.values[0].content",
+            "value": "SMRT NEWSLETTER SPLINTER LAYER - CANONICAL RECORD GENERATOR\n\nYou are a post-newsletter processing layer inside the SMRT system. Your job is to take a completed weekly real estate market newsletter and convert it into a small set of structured market splinter records.\n\nPRIMARY OBJECTIVE: Convert one completed newsletter into 3 to 5 canonical market splinter records.\n\nEach splinter record should:\n1. capture one distinct market shift, tension, or behavioral insight\n2. be semantically rich enough fo…[TRUNCATED]"
+          },
+          {
+            "path": "messages.values[1].content",
+            "value": "=newsletter_id: pending\nmarket: {{ $('Prep Data for AI').first().json.market_name }}\nnewsletter_date: {{ $('Prep Data for AI').first().json.weekStartDate }}\n\nWeek-over-week market data:\n{{ $('Condense Altos Data').first().json.altosTextSummary }}\n\nRaw WoW changes:\n{{ JSON.stringify($('Condense Altos Data').first().json.wowChanges) }}\n\nFull newsletter text:\n{{ $('Generate Newsletter').first().json.message.content }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Prepare Storage Data",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "const sourceData = $('Prep Data for AI').first().json;\nconst newsletterContent = $('Generate Newsletter').first().json.message?.content || '';\nconst rawSplinters = $('Extract Splinters').first().json.message?.content?.trim() || '[]';\n\n// Build permanent Supabase Storage URL\nconst locationId = sourceData.location_id;\nconst weekStart = sourceData.weekStartDate;\nconst imageUrl = `https://kfoijgcbkjeizxxyiwxv.supabase.co/storage/v1/object/public/newsletter-images/${locationId}/${weekStart}.jpeg`\ncon…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Store Newsletter",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "newsletters"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldValue",
+            "value": "={{ $json.newsletter.agent_id }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[1].fieldValue",
+            "value": "={{ $json.newsletter.location_id }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[2].fieldValue",
+            "value": "={{ $json.newsletter.week_start_date }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[3].fieldValue",
+            "value": "={{ $json.newsletter.full_content }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[4].fieldValue",
+            "value": "={{ $json.newsletter.subject_line }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[5].fieldId",
+            "value": "raw_altos_data"
+          },
+          {
+            "path": "fieldsUi.fieldValues[5].fieldValue",
+            "value": "={{ JSON.stringify($json.newsletter.raw_altos_data) }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[6].fieldId",
+            "value": "raw_perplexity_data"
+          },
+          {
+            "path": "fieldsUi.fieldValues[6].fieldValue",
+            "value": "={{ JSON.stringify($json.newsletter.raw_perplexity_data) }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[7].fieldValue",
+            "value": "={{ $json.newsletter.image_url }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Store Splinter",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "content_splinters"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldValue",
+            "value": "={{ $json.splinter.location_id }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[1].fieldValue",
+            "value": "={{ $json.splinter.content }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[2].fieldValue",
+            "value": "={{ $json.splinter.topic }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[3].fieldValue",
+            "value": "={{ $json.splinter.data_point }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[5].fieldValue",
+            "value": "={{ $json.splinter.priority }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[6].fieldValue",
+            "value": "={{ $json.splinter.week_start_date }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[7].fieldId",
+            "value": "splinter_title"
+          },
+          {
+            "path": "fieldsUi.fieldValues[7].fieldValue",
+            "value": "={{ $json.splinter.splinter_title }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[8].fieldValue",
+            "value": "={{ $json.splinter.dominant_theme }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[9].fieldValue",
+            "value": "={{ $json.splinter.signal_type }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[10].fieldValue",
+            "value": "={{ $json.splinter.insight_core }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[11].fieldValue",
+            "value": "={{ $json.splinter.interpretation }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[12].fieldValue",
+            "value": "={{ $json.splinter.behavioral_implication }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[13].fieldValue",
+            "value": "={{ $json.splinter.audience_fit }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[14].fieldValue",
+            "value": "={{ $json.splinter.stage_fit }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[15].fieldValue",
+            "value": "={{ $json.splinter.relevance_tags }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[16].fieldValue",
+            "value": "={{ $json.splinter.send_eligibility_note }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[17].fieldValue",
+            "value": "={{ $json.splinter.rationale }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[18].fieldValue",
+            "value": "={{ $json.splinter.source_excerpt }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[19].fieldValue",
+            "value": "={{ $json.splinter.embedding_text }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[20].fieldValue",
+            "value": "={{ JSON.stringify($json.splinter.delivery_variants) }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Splinter Info",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## Content Splinters\n\n1-2 sentence micro-insights for conversational AI.\nUsed in SMS/email outbound touches.\n\nTopics:\n- inventory\n- pricing\n- construction\n- rates\n- seller_behavior\n- national_context"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Create Newsletter Doc",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "const prepData = $('Prep Data for AI').first().json;\nconst storageData = $('Prepare Storage Data').first().json;\nconst newsletterContent = storageData.newsletter.full_content;\n\nconst weekStart = new Date(prepData.weekStartDate);\nconst dateStr = weekStart.toISOString().split('T')[0];\nconst weekNum = Math.ceil((weekStart - new Date(weekStart.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));\nconst year = weekStart.getFullYear();\n\nconst agentName = prepData.agent_name || 'Agent';\nconst marketName …[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Condense Altos Data",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Get Last Week Stats",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "altos_weekly_stats"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Prep Data for AI",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "const condensedData = $('Condense Altos Data').first().json;\nconst grokResponse = $('Grok National Context').first().json;\n\nlet nationalContext = '';\nif (grokResponse.choices && grokResponse.choices[0]?.message?.content) {\n  nationalContext = grokResponse.choices[0].message.content;\n} else if (grokResponse.message?.content) {\n  nationalContext = grokResponse.message.content;\n} else if (grokResponse.content) {\n  nationalContext = grokResponse.content;\n}\n\n// Previous newsletters for week-over-week…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Grok National Context",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Store Weekly Stats",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "altos_weekly_stats"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.location_id }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[1].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.weekStartDate }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[2].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.zipsProcessed }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[3].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.totalZips }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[4].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.price_median?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[5].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.count?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[6].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.per_sqft_median?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[7].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.dom_median?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[8].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.absorbed_price_median?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[9].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.absorbed_dom_median?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[10].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.median_ppsqft_of_listings_absorbed?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[11].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.new_price_median?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[12].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.price_decreased_percent?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[13].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.price_increased_percent?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[14].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.price_mean?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[15].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.dom_mean?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[16].fieldValue",
+            "value": "={{ $('Condense Altos Data').first().json.altosSummary.mai?.current }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[17].fieldValue",
+            "value": "={{ JSON.stringify($('Condense Altos Data').first().json.altosSummary) }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Check Week Stats Exist",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "altos_weekly_stats"
+          },
+          {
+            "path": "filterString",
+            "value": "=location_id=eq.{{ $('Condense Altos Data').first().json.location_id }}&week_start_date=eq.{{ $('Condense Altos Data').first().json.weekStartDate }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Check Newsletter For Week",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "newsletters"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Newsletter Exists For Week?",
+        "type": "n8n-nodes-base.if",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "conditions.conditions[0].id",
+            "value": "early-newsletter-check"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Delete Old Splinters",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "content_splinters"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note1",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## Change AI to grok, work out the image get api key\n "
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Remove Old Market Docs",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "documents"
+          },
+          {
+            "path": "filterString",
+            "value": "location_id=eq.{{ $json.location_id }}&document_type=eq.market_weekly"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Generate Embedding",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsonBody",
+            "value": "={{ JSON.stringify({ model: 'text-embedding-3-small', input: $json.market_doc.content }) }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Store Embedded Doc",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "https://kfoijgcbkjeizxxyiwxv.supabase.co/rest/v1/documents"
+          },
+          {
+            "path": "jsonBody",
+            "value": "={{ (() => { const doc = $('Prepare Storage Data').item.json.market_doc; const emb = $json.data[0].embedding; return JSON.stringify({ content: doc.content, metadata: doc.metadata, embedding: '[' + emb.join(',') + ']', location_id: doc.location_id, document_type: 'market_weekly', week_start_date: doc.week_start_date }); })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Upload to Supabase Storage",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://kfoijgcbkjeizxxyiwxv.supabase.co/storage/v1/object/newsletter-images/{{ $('Condense Altos Data').first().json.location_id }}/{{ $('Condense Altos Data').first().json.weekStartDate }}.jpeg"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Fetch Altos Share",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://altos.re/api/v2/[REDACTED_QUERY] $json.hash }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Get Altos Hash",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "const agentData = $('Prepare Agent Data').first().json;\nconst countyFips = agentData.county_fips || '16001';\nconst pai = agentData.pai || '690acaf9';\nconst resp = await globalThis.fetch('https://altos.re/api/v2/[REDACTED_QUERY]' + countyFips + '&pai=' + pai);\nconst data = await resp.json();\nif (!data.id) throw new Error('No hash from Altos: ' + JSON.stringify(data));\nreturn [{ json: { hash: data.id } }];"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Get Previous Newsletters",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "newsletters"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      }
+    ],
+    "prompt_nodes": [
+      {
+        "name": "Generate Newsletter",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "messages.values[0].content",
+            "value": "=## Agent Context\n\nYou are writing on behalf of **{{ $('Prepare Agent Data').first().json.agent.agent_name }}**{{ $('Prepare Agent Data').first().json.agent.business_name ? ', ' + $('Prepare Agent Data').first().json.agent.business_name : '' }}, serving the **{{ $json.market_name }}** real estate market.\n\n---\n\n## Who You Are\n\nYou are a trusted local advisor writing to real people -- buyers, sellers, homeowners, and curious neighbors. You are NOT a research analyst writing a market report. Your t…[TRUNCATED]"
+          },
+          {
+            "path": "messages.values[1].content",
+            "value": "=Generate a weekly market newsletter for **{{ $json.market_name }}**.\n\n## Local Market Data (Altos Research)\n{{ JSON.stringify($json.altos_data, null, 2) }}\n\n## National/Global Context & Local Impact\n{{ JSON.stringify($json.perplexity_data, null, 2) }}\n\n## Previous Newsletters (last 2 weeks -- for continuity and week-over-week context)\n{{ $json.previous_newsletters && $json.previous_newsletters.length > 0 ? JSON.stringify($json.previous_newsletters, null, 2) : 'No previous newsletters available …[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Extract Splinters",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "messages.values[0].content",
+            "value": "SMRT NEWSLETTER SPLINTER LAYER - CANONICAL RECORD GENERATOR\n\nYou are a post-newsletter processing layer inside the SMRT system. Your job is to take a completed weekly real estate market newsletter and convert it into a small set of structured market splinter records.\n\nPRIMARY OBJECTIVE: Convert one completed newsletter into 3 to 5 canonical market splinter records.\n\nEach splinter record should:\n1. capture one distinct market shift, tension, or behavioral insight\n2. be semantically rich enough fo…[TRUNCATED]"
+          },
+          {
+            "path": "messages.values[1].content",
+            "value": "=newsletter_id: pending\nmarket: {{ $('Prep Data for AI').first().json.market_name }}\nnewsletter_date: {{ $('Prep Data for AI').first().json.weekStartDate }}\n\nWeek-over-week market data:\n{{ $('Condense Altos Data').first().json.altosTextSummary }}\n\nRaw WoW changes:\n{{ JSON.stringify($('Condense Altos Data').first().json.wowChanges) }}\n\nFull newsletter text:\n{{ $('Generate Newsletter').first().json.message.content }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      }
+    ],
+    "edges": [
+      {
+        "source": "Weekly Schedule",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Newsletter Agents",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Newsletter Agents",
+        "output_index": 0,
+        "type": "main",
+        "target": "Loop Agents",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Last Week Stats",
+        "output_index": 0,
+        "type": "main",
+        "target": "Altos Get Stats",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Altos Get Stats",
+        "output_index": 0,
+        "type": "main",
+        "target": "Condense Altos Data",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prep Data for AI",
+        "output_index": 0,
+        "type": "main",
+        "target": "Generate Newsletter",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Extract Splinters",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prepare Storage Data",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Store Newsletter",
+        "output_index": 0,
+        "type": "main",
+        "target": "Create Newsletter Doc",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Create Newsletter Doc",
+        "output_index": 0,
+        "type": "main",
+        "target": "Set File Content",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Set File Content",
+        "output_index": 0,
+        "type": "main",
+        "target": "Upload to Google Drive",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Upload to Google Drive",
+        "output_index": 0,
+        "type": "main",
+        "target": "Back to Agent Loop",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Store Splinter",
+        "output_index": 0,
+        "type": "main",
+        "target": "Back to Agent Loop",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Back to Agent Loop",
+        "output_index": 0,
+        "type": "main",
+        "target": "Loop Agents",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Condense Altos Data",
+        "output_index": 0,
+        "type": "main",
+        "target": "Check Week Stats Exist",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Check Week Stats Exist",
+        "output_index": 0,
+        "type": "main",
+        "target": "Week Already Processed?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Week Already Processed?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Grok National Context",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Week Already Processed?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Store Weekly Stats",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Store Weekly Stats",
+        "output_index": 0,
+        "type": "main",
+        "target": "Grok National Context",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prepare Agent Data",
+        "output_index": 0,
+        "type": "main",
+        "target": "Check Newsletter For Week",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Check Newsletter For Week",
+        "output_index": 0,
+        "type": "main",
+        "target": "Newsletter Exists For Week?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Newsletter Exists For Week?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Loop Agents",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Newsletter Exists For Week?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Pass Location ID",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prepare Storage Data",
+        "output_index": 0,
+        "type": "main",
+        "target": "Store Newsletter",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prepare Storage Data",
+        "output_index": 0,
+        "type": "main",
+        "target": "Delete Old Splinters",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prepare Storage Data",
+        "output_index": 0,
+        "type": "main",
+        "target": "Remove Old Market Docs",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prepare Storage Data",
+        "output_index": 0,
+        "type": "main",
+        "target": "Store Splinter",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prepare Storage Data",
+        "output_index": 0,
+        "type": "main",
+        "target": "Generate Embedding",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Loop Agents",
+        "output_index": 1,
+        "type": "main",
+        "target": "Prepare Agent Data",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Remove Old Market Docs",
+        "output_index": 0,
+        "type": "main",
+        "target": "Generate Embedding",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Generate Embedding",
+        "output_index": 0,
+        "type": "main",
+        "target": "Store Embedded Doc",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Store Embedded Doc",
+        "output_index": 0,
+        "type": "main",
+        "target": "Back to Agent Loop",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Upload to Supabase Storage",
+        "output_index": 0,
+        "type": "main",
+        "target": "Extract Splinters",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Fetch Altos Share",
+        "output_index": 0,
+        "type": "main",
+        "target": "Crop Share Image",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Crop Share Image",
+        "output_index": 0,
+        "type": "main",
+        "target": "Upload to Supabase Storage",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Generate Newsletter",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Altos Hash",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Altos Hash",
+        "output_index": 0,
+        "type": "main",
+        "target": "Fetch Altos Share",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Grok National Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Previous Newsletters",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Previous Newsletters",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prep Data for AI",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Pass Location ID",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Last Week Stats",
+        "target_type": "main",
+        "target_index": 0
+      }
+    ]
+  },
+  {
+    "file": "/home/ubuntu/SMRT-Agent-Ai/workflows/active/Newsletter_Dispatch__XDcom3gft8yqwa5O.json",
+    "workflow_name": "📬 Newsletter Dispatch",
+    "workflow_id": "XDcom3gft8yqwa5O",
+    "active": true,
+    "node_count": 15,
+    "edge_count": 14,
+    "type_counts": {
+      "n8n-nodes-base.scheduleTrigger": 1,
+      "n8n-nodes-base.supabase": 2,
+      "n8n-nodes-base.splitInBatches": 1,
+      "n8n-nodes-base.code": 4,
+      "n8n-nodes-base.if": 2,
+      "n8n-nodes-base.httpRequest": 1,
+      "n8n-nodes-base.stickyNote": 3,
+      "n8n-nodes-base.set": 1
+    },
+    "table_refs": {
+      "agents": 2,
+      "newsletter_deliveries": 3,
+      "leads": 1
+    },
+    "api_refs": {
+      "leadconnectorhq.com/conversations/messages": 1
+    },
+    "topo_order": [
+      "Weekly Schedule",
+      "Fetch Active Agents",
+      "Stamp Supabase Key",
+      "Build HTML Email",
+      "Fetch Eligible Leads",
+      "Get Newest Newsletter",
+      "Has Eligible Leads?",
+      "Log Delivery",
+      "Loop Agents",
+      "Newsletter Found?",
+      "Send Email via GHL",
+      "Update Send Counts"
+    ],
+    "relevant_nodes": [
+      {
+        "name": "Fetch Active Agents",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "filters.conditions[0].keyName",
+            "value": "newsletter_enabled"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Get Newest Newsletter",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Newsletter Found?",
+        "type": "n8n-nodes-base.if",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Build HTML Email",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Send Email via GHL",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "https://services.leadconnectorhq.com/conversations/messages"
+          },
+          {
+            "path": "jsonBody",
+            "value": "={\n  \"type\": \"Email\",\n  \"contactId\": \"{{ $json.contact_id }}\",\n  \"emailFrom\": \"{{ $json.coordinatorEmail }}\",\n  \"html\": {{ JSON.stringify($json.html) }},\n  \"subject\": \"{{ $json.subject }}\"\n}"
+          }
+        ],
+        "on_error": "continueRegularOutput",
+        "retry_on_fail": null
+      },
+      {
+        "name": "Log Delivery",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "newsletter_deliveries"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldId",
+            "value": "newsletter_id"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldValue",
+            "value": "={{ $('Build HTML Email').first().json.newsletterId }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[1].fieldValue",
+            "value": "={{ $('Build HTML Email').first().json.id }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[2].fieldValue",
+            "value": "={{ $('Build HTML Email').first().json.contact_id }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[3].fieldValue",
+            "value": "={{ $('Get Newest Newsletter').first().json.location_id }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[4].fieldValue",
+            "value": "={{ $('Build HTML Email').first().json.subject }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note - Trigger",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## 1. TRIGGER & AGENT FETCH\n**Weekly Schedule** fires every Monday at 10 AM (America/Denver).\n**Fetch Active Agents** pulls all agents where `newsletter_enabled = true`.\nLoop iterates one agent at a time."
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note - Newsletter + Cadence",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## 2. NEWSLETTER + CADENCE FILTERING\n**Get Newest Newsletter** fetches latest by `week_start_date DESC` for this agent's location.\n**Fetch Eligible Leads** pulls opted-in leads, then filters by cadence:\n- WEEKLY/APPT_SET/APPT_OFFERED: every week\n- BIWEEKLY: every 2 weeks\n- MONTHLY/cold: every 4 weeks\nChecks `newsletter_deliveries` for last send date per lead."
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note - Send & Log",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## 3. BUILD, SEND & LOG\n**Build HTML Email** wraps `full_content` in HTML template with unsubscribe footer (Reply STOP).\n**Send Email via GHL** sends as Email type via conversations/messages API.\n**Log Delivery** inserts into `newsletter_deliveries` with status=sent + lead_id.\nAfter logging, loops back to next agent.\n\n**To test:** Hit Test Workflow in the editor. Your lead (Hobaid) is opted in with APPT_OFFERED stage = WEEKLY cadence."
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      }
+    ],
+    "prompt_nodes": [
+      {
+        "name": "Send Email via GHL",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "https://services.leadconnectorhq.com/conversations/messages"
+          },
+          {
+            "path": "jsonBody",
+            "value": "={\n  \"type\": \"Email\",\n  \"contactId\": \"{{ $json.contact_id }}\",\n  \"emailFrom\": \"{{ $json.coordinatorEmail }}\",\n  \"html\": {{ JSON.stringify($json.html) }},\n  \"subject\": \"{{ $json.subject }}\"\n}"
+          }
+        ],
+        "on_error": "continueRegularOutput",
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note - Send & Log",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## 3. BUILD, SEND & LOG\n**Build HTML Email** wraps `full_content` in HTML template with unsubscribe footer (Reply STOP).\n**Send Email via GHL** sends as Email type via conversations/messages API.\n**Log Delivery** inserts into `newsletter_deliveries` with status=sent + lead_id.\nAfter logging, loops back to next agent.\n\n**To test:** Hit Test Workflow in the editor. Your lead (Hobaid) is opted in with APPT_OFFERED stage = WEEKLY cadence."
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      }
+    ],
+    "edges": [
+      {
+        "source": "Weekly Schedule",
+        "output_index": 0,
+        "type": "main",
+        "target": "Fetch Active Agents",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Loop Agents",
+        "output_index": 1,
+        "type": "main",
+        "target": "Get Newest Newsletter",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Newest Newsletter",
+        "output_index": 0,
+        "type": "main",
+        "target": "Newsletter Found?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Newsletter Found?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Fetch Eligible Leads",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Newsletter Found?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Loop Agents",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Fetch Eligible Leads",
+        "output_index": 0,
+        "type": "main",
+        "target": "Has Eligible Leads?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Has Eligible Leads?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Build HTML Email",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Has Eligible Leads?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Loop Agents",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Build HTML Email",
+        "output_index": 0,
+        "type": "main",
+        "target": "Send Email via GHL",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Send Email via GHL",
+        "output_index": 0,
+        "type": "main",
+        "target": "Log Delivery",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Log Delivery",
+        "output_index": 0,
+        "type": "main",
+        "target": "Update Send Counts",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Update Send Counts",
+        "output_index": 0,
+        "type": "main",
+        "target": "Loop Agents",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Fetch Active Agents",
+        "output_index": 0,
+        "type": "main",
+        "target": "Stamp Supabase Key",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Stamp Supabase Key",
+        "output_index": 0,
+        "type": "main",
+        "target": "Loop Agents",
+        "target_type": "main",
+        "target_index": 0
+      }
+    ]
+  },
+  {
+    "file": "/home/ubuntu/SMRT-Agent-Ai/workflows/active/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json",
+    "workflow_name": "🧠 SMRT Brain Engine",
+    "workflow_id": "mlR5dZuzXxP_JYGaqrqpu",
+    "active": true,
+    "node_count": 174,
+    "edge_count": 178,
+    "type_counts": {
+      "n8n-nodes-base.stickyNote": 21,
+      "n8n-nodes-base.webhook": 1,
+      "n8n-nodes-base.set": 9,
+      "n8n-nodes-base.supabase": 32,
+      "n8n-nodes-base.if": 25,
+      "n8n-nodes-base.switch": 4,
+      "n8n-nodes-base.scheduleTrigger": 1,
+      "n8n-nodes-base.postgres": 10,
+      "n8n-nodes-base.code": 21,
+      "@n8n/n8n-nodes-langchain.anthropic": 1,
+      "@n8n/n8n-nodes-langchain.agent": 1,
+      "@n8n/n8n-nodes-langchain.toolVectorStore": 1,
+      "@n8n/n8n-nodes-langchain.vectorStoreSupabase": 1,
+      "@n8n/n8n-nodes-langchain.embeddingsOpenAi": 1,
+      "@n8n/n8n-nodes-langchain.lmChatOpenAi": 1,
+      "n8n-nodes-base.httpRequest": 16,
+      "@n8n/n8n-nodes-langchain.openAi": 1,
+      "n8n-nodes-base.merge": 3,
+      "n8n-nodes-base.supabaseTool": 3,
+      "@n8n/n8n-nodes-langchain.toolHttpRequest": 3,
+      "@n8n/n8n-nodes-langchain.toolCode": 8,
+      "@n8n/n8n-nodes-langchain.lmChatAnthropic": 1,
+      "n8n-nodes-base.wait": 1,
+      "n8n-nodes-base.noOp": 7,
+      "n8n-nodes-base.executeWorkflow": 1
+    },
+    "table_refs": {
+      "leads": 16,
+      "message_log": 8,
+      "agents": 4,
+      "documents": 1,
+      "splinter_usage": 1,
+      "message_send_errors": 1
+    },
+    "api_refs": {
+      "leadconnectorhq.com/conversations/messages": 2
+    },
+    "topo_order": [
+      "Anthropic Chat Model",
+      "Embeddings",
+      "RAG LLM",
+      "Schedule Outbound Check",
+      "Webhook",
+      "addAppointmentNotes",
+      "bookAppointment",
+      "checkQualificationStatus",
+      "deleteAppointment",
+      "getAppointments",
+      "getAvailableSlots",
+      "getContact",
+      "getNotes",
+      "rescheduleAppointment",
+      "saveQualifyingAnswer",
+      "searchPastMessages",
+      "subscribeToNewsletter",
+      "switchChannel",
+      "updateContactMemory",
+      "Docs Store",
+      "Business Hours Check",
+      "Save Inbound Capture",
+      "KB Tool",
+      "Apply Time Decay",
+      "Check Capture Mode",
+      "Fetch Outbound Candidates",
+      "Capture Mode On?",
+      "Set Outbound Context",
+      "End Captured",
+      "Restore Webhook Context",
+      "Get Outbound Agent Config",
+      "Get Outbound Message History",
+      "Get Outbound Conversation Summary",
+      "Get Outbound Lead Memory",
+      "Set Direction: Inbound",
+      "Merge Outbound Context",
+      "LeadDetails",
+      "Get Agent Config",
+      "inboundTrue?",
+      "whichChannel?",
+      "errorLogMessageType",
+      "setChannelSMS",
+      "setChannelEmail",
+      "setChannelInstagram",
+      "searchLeads",
+      "leadExists?",
+      "addLead",
+      "carryContactID",
+      "L2 Hard Block Gate",
+      "L2 Silent Drop",
+      "logMessageLeads",
+      "Update Inbound Timestamps",
+      "Stamp Batch Key",
+      "Wait 90s",
+      "Check Batch Leader",
+      "Am I Batch Leader?",
+      "Set Direction: Inbound2",
+      "Get Agent Config (RAG)",
+      "Get Message History",
+      "Get Conversation Summary",
+      "Get Lead Memory",
+      "Merge Context",
+      "Extract Keywords",
+      "Check Keyword Search",
+      "Search Relevant Messages",
+      "Merge Messages",
+      "Merge & Deduplicate Messages",
+      "Gather Sentiment Data1",
+      "Prepare Sentiment Context",
+      "AI Sentiment Analysis",
+      "Parse Sentiment",
+      "Turnaround Gate",
+      "Turnaround: Clear State",
+      "L1 Drop Gate",
+      "Turnaround: Disable DND",
+      "Route Intent",
+      "Turnaround: Remove L1 Tag",
+      "Tier Sub-Router1",
+      "Block Level Router",
+      "Check Escalation State",
+      "Check Qualification Gate",
+      "Turnaround: Post Note",
+      "Pause SMS 30 Days (Tier 2)",
+      "Apply L2: Mark Lead",
+      "Apply L1: Mark Lead",
+      "Already Escalated?",
+      "Is Qualified?",
+      "Tag Tier 2 in GHL",
+      "Apply L2: Enable DND",
+      "Apply L1: Add L1 Tag",
+      "Update Lead Escalation",
+      "Log Already Escalated",
+      "Fetch Slots",
+      "Apply L2: Add L2 Tag",
+      "Apply L1: Post Note",
+      "Add GHL Tag - Needs Review",
+      "Apply L2: Post Note",
+      "Send Farewell?",
+      "Move GHL Pipeline Stage",
+      "L2 Post-Block Silent",
+      "Prepare Tier Response",
+      "Get Prompt Blocks (SMRT)",
+      "Has Custom Personality?",
+      "Get Default Personality",
+      "Get Static Prompt Sections",
+      "Gather Prompt Data",
+      "Assemble System Prompt",
+      "AI Agent",
+      "Analyze Conversation",
+      "Summary Exists?",
+      "Leak Detected?",
+      "Update Conversation Context",
+      "Insert Conversation Context",
+      "Log AI Leak",
+      "Determine Action",
+      "Outbound Bypass?",
+      "Silence Gate",
+      "Should Respond?",
+      "Route by Channel1",
+      "Cap Lock Check",
+      "Send Email",
+      "Quota OK?",
+      "Send SMS",
+      "Log Cap Suppression",
+      "Log Outbound Message",
+      "Post-Farewell DND Gate",
+      "Cap Locked Silent",
+      "Update Last Agent Message",
+      "Get Lead Memory (After)",
+      "Has Splinter Data?",
+      "Prep Status Check Input",
+      "Apply L1: Enable DND",
+      "No DND Needed",
+      "Escalation Check?",
+      "Newsletter Offer Needed?",
+      "Compare Memory",
+      "Record Splinter Usage",
+      "Trigger Status Check",
+      "L1 Silent Drop",
+      "Notify Agent",
+      "Set Newsletter Pending",
+      "Newsletter Guard",
+      "Memory Changed?",
+      "Evaluate Pipeline Stage",
+      "Clear Newsletter Flags",
+      "Get GHL Contact",
+      "Pipeline Changed?",
+      "Build GHL Sync Body",
+      "Move Lead in GHL",
+      "Pipeline No Change",
+      "Sync Fields to GHL",
+      "Update Pipeline in DB",
+      "Post Memory Note to GHL"
+    ],
+    "relevant_nodes": [
+      {
+        "name": "Sticky Note3",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## AI Model (RAG System)\n\nDynamic context gathering → Prompt assembly → AI response → GHL send"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "LeadDetails",
+        "type": "n8n-nodes-base.set",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "assignments.assignments[6].name",
+            "value": "email"
+          },
+          {
+            "path": "assignments.assignments[6].value",
+            "value": "={{ $json.body.email }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "addLead",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "fieldsUi.fieldValues[3].fieldId",
+            "value": "email"
+          },
+          {
+            "path": "fieldsUi.fieldValues[3].fieldValue",
+            "value": "={{ $('LeadDetails').item.json.email }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[11].fieldValue",
+            "value": "={{ (() => { try { return $('setChannelSMS').item.json.channel; } catch(e) { try { return $('setChannelEmail').item.json.channel; } catch(e2) { return $('LeadDetails').item.json.channel; } } })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "whichChannel?",
+        "type": "n8n-nodes-base.switch",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "rules.values[0].conditions.conditions[0].rightValue",
+            "value": "SMS"
+          },
+          {
+            "path": "rules.values[0].outputKey",
+            "value": "SMS"
+          },
+          {
+            "path": "rules.values[1].conditions.conditions[0].rightValue",
+            "value": "Email"
+          },
+          {
+            "path": "rules.values[1].outputKey",
+            "value": "EMAIL"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Get Conversation Summary",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "conversation_context"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Log Outbound Message",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "fieldsUi.fieldValues[7].fieldId",
+            "value": "ghl_message_id"
+          },
+          {
+            "path": "fieldsUi.fieldValues[8].fieldId",
+            "value": "ghl_conversation_id"
+          },
+          {
+            "path": "fieldsUi.fieldValues[8].fieldValue",
+            "value": "={{ $json.conversationId }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[9].fieldId",
+            "value": "ghl_accepted_at"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "AI Sentiment Analysis",
+        "type": "@n8n/n8n-nodes-langchain.anthropic",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "messages.values[0].content",
+            "value": "=CONVERSATION CONTEXT (read first — context frames the current message):\n\nConversation Summary: {{ $json.conversationSummary }}\n\nRecent Messages (newest last):\n{{ $json.historyText }}\n\nLead State:\n- First Name: {{ $json.firstName }}\n- Agent: {{ $json.agentName }}\n- Pipeline Stage: {{ $json.pipelineStage }}\n- Pipeline State: {{ $json.pipelineState }}\n\n=== CURRENT MESSAGE (classify using STEP 1 → 4 from system prompt) ===\n{{ $json.currentMessage }}\n\nReturn ONLY valid JSON. No markdown fences. No e…[TRUNCATED]"
+          },
+          {
+            "path": "options.system",
+            "value": "You are a sentiment classifier for SMRT Bot. You analyze inbound messages and classify them into behavioral tiers to route the Brain Engine correctly.\n\nCRITICAL: Your reasoning field is used INTERNALLY by downstream nodes ONLY. It is NEVER shown to the lead. The Brain Engine AI Agent uses its own prompt to write the actual SMS/email reply. Be thorough in your reasoning - it helps downstream routing, it never leaks to the customer.\n\n=== CLASSIFICATION PRIORITY ORDER ===\n\nFollow these steps IN ORD…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Docs Store",
+        "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableName.value",
+            "value": "documents"
+          },
+          {
+            "path": "tableName.cachedResultName",
+            "value": "documents"
+          },
+          {
+            "path": "options.queryName",
+            "value": "match_documents"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Apply Time Decay",
+        "type": "n8n-nodes-base.postgres",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "query",
+            "value": "UPDATE leads\nSET\n  pipeline_state = CASE\n    WHEN pipeline_state = 'hot'  AND last_customer_message_at < NOW() - INTERVAL '14 days' THEN 'warm'\n    WHEN pipeline_state = 'warm' AND last_customer_message_at < NOW() - INTERVAL '42 days' THEN 'cold'\n    ELSE pipeline_state\n  END\nWHERE status = 'active_conversation'\n  AND pipeline_state IN ('hot', 'warm')\n  AND last_customer_message_at IS NOT NULL\n  AND location_id = '{{ $json.location_id }}'\n  AND (\n    (pipeline_state = 'hot'  AND last_customer_me…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Fetch Outbound Candidates",
+        "type": "n8n-nodes-base.postgres",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "query",
+            "value": "WITH eligible_splinter AS (\n  SELECT\n    cs.id AS splinter_id,\n    cs.location_id,\n    cs.content AS splinter_content,\n    cs.topic AS splinter_topic,\n    cs.data_point AS splinter_data_point,\n    cs.splinter_title,\n    cs.dominant_theme,\n    cs.signal_type,\n    cs.insight_core,\n    cs.interpretation,\n    cs.behavioral_implication,\n    cs.audience_fit,\n    cs.stage_fit,\n    cs.embedding_text,\n    cs.delivery_variants,\n    cs.priority,\n    cs.week_start_date,\n    cs.created_at\n  FROM content_spli…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Prepare Sentiment Context",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "const d = $input.first().json;\n\nreturn [{\n  json: {\n    ...d,\n    currentMessage: d.currentMessage || '',\n    historyText: d.messageHistory || 'No previous messages',\n    conversationSummary: d.conversationSummary || 'No summary',\n    lastIntent: 'none',\n    agentName: d.agentName || 'Luke Gilbert',\n    contactId: d.contactId || '',\n    locationId: d.locationId || '',\n    firstName: d.firstName || 'Contact',\n    pipelineStage: d.pipelineStage || 'MONTHLY',\n    pipelineState: d.pipelineState || '…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note13",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## Pull Memory\n\n1. Message Logs\n2. Conversation_summary/context\n\n"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Add GHL Tag - Needs Review",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Move GHL Pipeline Stage",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": true,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/opportunities/{{ $json.opportunity_id }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Analyze Conversation",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "messages.values[0].content",
+            "value": "You analyze real estate AI conversation exchanges and extract structured signals.\n\nReturn ONLY a valid JSON object (no markdown, no explanation):\n{\n  \"summary\": \"250-350 word accumulative summary\",\n  \"lead_intent\": \"buy|sell|both|unknown\",\n  \"lead_timeline\": \"now|3_months|6_months|1_year|unknown\",\n  \"appointment_discussed\": true or false,\n  \"appointment_outcome\": \"offered|accepted|rejected|rescheduled|null\",\n  \"newsletter_discussed\": true or false,\n  \"newsletter_declined\": true or false,\n  \"news…[TRUNCATED]"
+          },
+          {
+            "path": "messages.values[1].content",
+            "value": "=Previous Summary: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary } catch(e) { try { return $('Get Conversation Summary').first().json.conversation_summary } catch(e2) { return 'None' } } })() }}\nPrevious Intent: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.lead_intent } catch(e) { try { return $('Get Conversation Summary').first().json.lead_intent } catch(e2) { return 'unknown' } } })() }}\nPrevious Timeline: {{ (…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Update Conversation Context",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "conversation_context"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldId",
+            "value": "conversation_summary"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldValue",
+            "value": "={{ (() => {  const turnCounter = (() => {   try { return parseInt($('searchLeads').first().json.turn_counter) || 0 }   catch(e) {    try { return parseInt($('Get Lead Memory').first().json.turn_counter) || 0 }    catch(e2) {     try { return parseInt($('Get Outbound Lead Memory').first().json.turn_counter) || 0 }     catch(e3) { return 0 }    }   }  })();  const shouldRegen = (turnCounter <= 2 || turnCounter % 10 === 0);  if (shouldRegen) {   try {    const content = $('Analyze Conversation').f…[TRUNCATED]"
+          },
+          {
+            "path": "fieldsUi.fieldValues[3].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.lead_intent || 'unknown'; } catch(e) { return 'unknown'; } })() }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[4].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.lead_timeline || 'unknown'; } catch(e) { return 'unknown'; } })() }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[5].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && (parsed.appointment_outcome === 'offered' || parsed.appointment_outcome === 'accepted'); } catch(e) { return false; } })() }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[6].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && parsed.appointment_outcome === 'accepted'; } catch(e) { return false; } })() }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[7].fieldValue",
+            "value": "={{ (() => {  const turnCounter = (() => {   try { return parseInt($('searchLeads').first().json.turn_counter) || 0 }   catch(e) {    try { return parseInt($('Get Lead Memory').first().json.turn_counter) || 0 }    catch(e2) { return 0 }   }  })();  const shouldRegen = (turnCounter <= 2 || turnCounter % 10 === 0);  if (shouldRegen) {   return new Date().toISOString();  } else {   try { return $('Get Outbound Conversation Summary').first().json.last_summarized_at || null }   catch(e) { try { retur…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Route by Channel1",
+        "type": "n8n-nodes-base.switch",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "rules.values[0].conditions.conditions[0].id",
+            "value": "route-sms"
+          },
+          {
+            "path": "rules.values[0].conditions.conditions[0].leftValue",
+            "value": "=={{ (() => { const ctx = $('Assemble System Prompt').first().json; if (ctx.direction === 'inbound') return ctx.channel || 'sms'; try { const pref = $('Get Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} try { const pref = $('Get Outbound Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} return ctx.channel || 'sms'; })() }}"
+          },
+          {
+            "path": "rules.values[0].conditions.conditions[0].rightValue",
+            "value": "SMS"
+          },
+          {
+            "path": "rules.values[0].outputKey",
+            "value": "SMS"
+          },
+          {
+            "path": "rules.values[1].conditions.conditions[0].id",
+            "value": "route-email"
+          },
+          {
+            "path": "rules.values[1].conditions.conditions[0].leftValue",
+            "value": "=={{ (() => { const ctx = $('Assemble System Prompt').first().json; if (ctx.direction === 'inbound') return ctx.channel || 'sms'; try { const pref = $('Get Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} try { const pref = $('Get Outbound Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} return ctx.channel || 'sms'; })() }}"
+          },
+          {
+            "path": "rules.values[1].conditions.conditions[0].rightValue",
+            "value": "Email"
+          },
+          {
+            "path": "rules.values[1].outputKey",
+            "value": "Email"
+          },
+          {
+            "path": "rules.values[2].conditions.conditions[0].leftValue",
+            "value": "=={{ (() => { const ctx = $('Assemble System Prompt').first().json; if (ctx.direction === 'inbound') return ctx.channel || 'sms'; try { const pref = $('Get Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} try { const pref = $('Get Outbound Lead Memory').first().json.contact_preference; if (pref && pref !== 'unknown') return pref; } catch(e) {} return ctx.channel || 'sms'; })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Send SMS",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "https://services.leadconnectorhq.com/conversations/messages"
+          },
+          {
+            "path": "jsonBody",
+            "value": "={{ JSON.stringify({ type: 'SMS', contactId: $('Assemble System Prompt').first().json.contactId, message: $json.responseText || $('AI Agent').first().json.output }) }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Send Email",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "https://services.leadconnectorhq.com/conversations/messages"
+          },
+          {
+            "path": "jsonBody",
+            "value": "={{ (() => { const raw = $json.responseText || $('AI Agent').first().json.output; const contactId = $('Assemble System Prompt').first().json.contactId; const coordinatorEmail = (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_email } catch(e) { return $('Get Agent Config').first().json.coordinator_email } })(); const coordinatorName = (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_name } catch(e) { try { return $('Get Agent Config').fir…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Prepare Tier Response",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "// Prepare tier-specific response instructions for the AI Agent\n// Pull tier/sentiment/sms_action from Parse Sentiment directly — input $json may be from Apply L1: Mark Lead (no tier)\nconst ps = (() => { try { return $('Parse Sentiment').first().json; } catch(e) { return {}; } })();\nconst tier = ps.tier || $json.tier || 'normal';\nconst sentiment = ps.sentiment || $json.sentiment || 'neutral';\nconst smsAction = ps.sms_action || $json.sms_action || 'none';\n\nconst tierInstructions = {\n  tier_1_conf…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Pause SMS 30 Days (Tier 2)",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "fieldsUi.fieldValues[0].fieldId",
+            "value": "sms_paused_until"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Tag Tier 2 in GHL",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $json.contact_id }}/tags"
+          },
+          {
+            "path": "jsonBody",
+            "value": "={\"tags\": [\"SMRT-Tier-2-Hostile\", \"SMS-Paused-30-Days\"]}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Search Relevant Messages",
+        "type": "n8n-nodes-base.postgres",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Merge Messages",
+        "type": "n8n-nodes-base.merge",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Merge & Deduplicate Messages",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "// Merge recent messages + keyword-matched messages, deduplicate by id\nconst allMessages = $input.all().map(item => item.json);\n\n// Deduplicate by id (not message_id)\nconst seen = new Set();\nconst uniqueMessages = [];\n\nfor (const msg of allMessages) {\n  const msgId = msg.id || msg.message_id; // Support both field names\n  if (!seen.has(msgId)) {\n    seen.add(msgId);\n    uniqueMessages.push(msg);\n  }\n}\n\n// Sort by timestamp (newest first)\nuniqueMessages.sort((a, b) => {\n  const timeA = new Date(a…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Summary Exists?",
+        "type": "n8n-nodes-base.if",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "conditions.conditions[0].leftValue",
+            "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.id } catch(e) { try { return $('Get Conversation Summary').first().json.id } catch(e2) { return undefined } } })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "searchPastMessages",
+        "type": "n8n-nodes-base.supabaseTool",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "toolDescription",
+            "value": "Search this lead's past message log beyond the 15 most recent messages already in your context.\n\nWHEN TO USE:\n- Lead references something old (\"I told you\", \"I mentioned before\", \"remember when\", \"weeks ago\")\n- You need to verify a claim about a past conversation\n- You need to recall a commitment, date, or topic from earlier in the relationship\n\nWHEN NOT TO USE:\n- For general knowledge or company info (use KB Tool)\n- For information already visible in RECENT MESSAGES (your 15-turn window)\n\nINPUT…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Set Outbound Context",
+        "type": "n8n-nodes-base.set",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "assignments.assignments[1].value",
+            "value": "={{ $json.channel || 'sms' }}"
+          },
+          {
+            "path": "assignments.assignments[6].value",
+            "value": "={{ (() => { const stage = ($json.pipeline_stage || 'MONTHLY').toLowerCase(); const dv = $json.delivery_variants || {}; const touchpoint = dv[stage + '_touchpoint'] || $json.splinter_content || ''; const firstName = $json.first_name || 'them'; const coordinatorName = $json.coordinator_name || 'a teammate'; const agentName = $json.agent_name || 'the team'; const marketName = $json.market_name || 'the local market'; const pref = ($json.contact_preference || '').toLowerCase(); const channel = (pref…[TRUNCATED]"
+          },
+          {
+            "path": "assignments.assignments[7].name",
+            "value": "splinter_id"
+          },
+          {
+            "path": "assignments.assignments[7].value",
+            "value": "={{ $json.splinter_id }}"
+          },
+          {
+            "path": "assignments.assignments[8].name",
+            "value": "splinter_topic"
+          },
+          {
+            "path": "assignments.assignments[8].value",
+            "value": "={{ $json.splinter_topic }}"
+          },
+          {
+            "path": "assignments.assignments[9].name",
+            "value": "splinter_data_point"
+          },
+          {
+            "path": "assignments.assignments[9].value",
+            "value": "={{ $json.splinter_data_point }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Get Outbound Conversation Summary",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "conversation_context"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note15",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## Pull Memory\n\n1. Message Logs\n2. Conversation_summary/context\n\n"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Fetch Outbound Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## Fetch Outbound Candidates\n\n**What it pulls:**\n- contact_id, location_id, first_name, channel\n- pipeline_state (hot / warm / cold)\n- agent_name, market_name\n- Most recent active splinter per agent (splinter_id, splinter_content, splinter_topic, splinter_data_point)\n\n**Conditions:**\n- status = 'active_conversation'\n- pipeline_stage != 'DNC'\n- agent_dormant = false\n- sms_paused_until IS NULL or has expired\n- next_outbound_due_at IS NULL or has passed\n\n**Ordered by:** next_outbound_due_at ASC (ol…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note16",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## Gohighlevel Tools\n\n\n"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "getContact",
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "toolDescription",
+            "value": "Fetch the full contact profile for the current lead from GoHighLevel, including custom fields, tags, lead source, and all contact details.\n\nWHEN TO USE:\n- When you need lead details NOT available in the conversation (email, address, tags, lead source)\n- When the lead asks you to confirm their contact information\n- When you need CRM context about the lead's history or status\n\nINPUT: No input needed. Automatically looks up the current lead.\n\nOUTPUT: Full contact record with name, email, phone, tag…[TRUNCATED]"
+          },
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "getNotes",
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "toolDescription",
+            "value": "Fetch all notes recorded on this lead's GoHighLevel contact by agents or the AI system.\n\nWHEN TO USE:\n- When the lead references a previous conversation or commitment (\"someone told me...\", \"I was promised...\")\n- When you need historical context about what has been discussed or agreed with this lead\n- Before escalating, to check if there are existing agent notes\n\nINPUT: No input needed. Automatically looks up the current lead.\n\nOUTPUT: List of notes with timestamps and content.\n\nRULES:\n- Use to …[TRUNCATED]"
+          },
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/notes"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "getAppointments",
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "toolDescription",
+            "value": "Fetch all appointments (past and upcoming) for the current lead from GoHighLevel.\n\nWHEN TO USE:\n- When the lead asks about existing appointments (\"when is my appointment?\", \"do I have anything scheduled?\")\n- When the lead wants to cancel or reschedule (you need the event_id from here)\n- When you need to check if the lead already has a booking before offering to schedule\n\nINPUT: No input needed. Automatically looks up the current lead.\n\nOUTPUT: List of appointment objects with event IDs, dates, t…[TRUNCATED]"
+          },
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/appointments"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Insert Conversation Context",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "conversation_context"
+          },
+          {
+            "path": "fieldsUi.fieldValues[2].fieldId",
+            "value": "conversation_summary"
+          },
+          {
+            "path": "fieldsUi.fieldValues[2].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.summary || content; } catch(e) { return $('Analyze Conversation').first().json.message?.content || ''; } })() }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[4].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.lead_intent || 'unknown'; } catch(e) { return 'unknown'; } })() }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[5].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.lead_timeline || 'unknown'; } catch(e) { return 'unknown'; } })() }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[8].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && (parsed.appointment_outcome === 'offered' || parsed.appointment_outcome === 'accepted'); } catch(e) { return false; } })() }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[9].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed && parsed.appointment_outcome === 'accepted'; } catch(e) { return false; } })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "addAppointmentNotes",
+        "type": "@n8n/n8n-nodes-langchain.toolCode",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsonSchemaExample",
+            "value": "{\"appointment_time\":\"2026-04-10T09:00\",\"qualifying_summary\":\"Buyer, 500k, pre-approved\",\"conversation_summary\":\"Lead relocating\"}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Form Section4",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": true,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "##  Booking Agent Routing\n#### Book Intent in conversation\n"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "checkQualificationStatus",
+        "type": "n8n-nodes-base.supabaseTool",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "toolDescription",
+            "value": "Check how many of the 3 qualifying questions this lead has answered so far.\n\nWHEN TO USE:\n- BEFORE calling saveQualifyingAnswer, to get the current qualifying_answers object\n- When the lead says they want to book an appointment, to verify they are qualified\n- When you are unsure which qualifying questions have already been answered\n\nINPUT: No input needed. Automatically looks up this lead's conversation_context record.\n\nOUTPUT: Returns the qualifying_answers JSONB object with keys q1, q2, q3.\n- …[TRUNCATED]"
+          },
+          {
+            "path": "tableId",
+            "value": "conversation_context"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "saveQualifyingAnswer",
+        "type": "n8n-nodes-base.supabaseTool",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "toolDescription",
+            "value": "MANDATORY TOOL - Save a qualifying answer to the database after the lead answers one of the 3 qualifying questions.\n\nWHEN TO USE: You MUST call this tool IMMEDIATELY every time the lead provides information that answers Q1, Q2, or Q3. Do NOT wait until all questions are answered. Save each answer the moment you receive it.\n\nThe tool updates the qualifying_answers JSONB column in conversation_context for this lead.\n\nINPUT: You must provide a JSON object with the field 'qualifying_answers' contain…[TRUNCATED]"
+          },
+          {
+            "path": "tableId",
+            "value": "conversation_context"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Check Qualification Gate",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "conversation_context"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sync Fields to GHL",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('Build GHL Sync Body').first().json.contactId }}"
+          },
+          {
+            "path": "jsonBody",
+            "value": "={{ JSON.stringify(Object.assign({}, $('Build GHL Sync Body').first().json.coreFields, { customFields: $('Build GHL Sync Body').first().json.customFields })) }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Post Memory Note to GHL",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Get GHL Contact",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/locations/{{ $('Get Lead Memory (After)').first().json.location_id }}/customFields"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Build GHL Sync Body",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "// Get GHL custom field definitions from input (Get GHL Contact)\nconst ghlFields = $input.first().json.customFields || [];\n\n// Get memory + enrichment values from Compare Memory\nconst mem = $('Compare Memory').first().json;\n\n// === CORE FIELDS (standard GHL contact fields) ===\nconst coreFields = {};\nif (mem.first_name) coreFields.firstName = mem.first_name;\nif (mem.last_name) coreFields.lastName = mem.last_name;\nif (mem.email) coreFields.email = mem.email;\nif (mem.phone) coreFields.phone = mem.p…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Update Inbound Timestamps",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "fieldsUi.fieldValues[3].fieldValue",
+            "value": "={{ $('LeadDetails').first().json.channel.toLowerCase().includes('sms') ? 'sms' : $('LeadDetails').first().json.channel.toLowerCase().includes('email') ? 'email' : $('LeadDetails').first().json.channel.toLowerCase().includes('ig') ? 'instagram' : 'sms' }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Move Lead in GHL",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "updateContactMemory",
+        "type": "@n8n/n8n-nodes-langchain.toolCode",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "description",
+            "value": "Update the contact's memory and enrichment fields. Call this when you detect ANY of the signals below. Include ALL detected fields in a single call — never make multiple calls.\n\nINPUT (required JSON):\n- contact_id: string - CONTACT_ID from context (always required)\n- Plus any fields below that you detected:\n\nFIELD TRIGGERS — scan every message for these:\n\nIDENTITY / CONTACT INFO\n- Lead says their name → first_name, last_name\n- Lead gives their email address → email\n- Lead gives their phone numbe…[TRUNCATED]"
+          },
+          {
+            "path": "jsonSchemaExample",
+            "value": "{\"contact_id\":\"abc123\",\"first_name\":\"Mike\",\"last_name\":\"Johnson\",\"email\":\"mike@test.com\",\"phone\":\"208-555-1234\",\"address\":\"123 Oak St\",\"city\":\"Eagle\",\"state\":\"Idaho\",\"postal_code\":\"83616\",\"market_role\":\"buyer\",\"intent_topic\":\"buying\",\"intent_level\":\"active\",\"contact_preference\":\"sms\",\"relationship_type\":\"sphere\",\"open_loop\":\"needs to sell CA house before buying, target June\",\"handoff_reason\":\"wants legal advice on lease\",\"needs_human_review\":true,\"review_reason\":\"recent bereavement, pause outrea…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Notify Agent",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "const input = $input.first().json;\n\nconst agentEmail = input.agent_email || null;\nconst agentPhone = input.agent_phone || null;\nconst agentName = input.agent_name || input.agentName || 'Agent';\nconst firstName = input.first_name || input.firstName || 'A lead';\nconst message = input.message || input.message_body || '';\nconst responseText = input.responseText || input.output || '';\nconst contactId = input.contact_id || input.contactId || '';\n\nconst summary = firstName + ' needs ' + agentName + \"\\'…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "setChannelSMS",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "const items = $input.all();\nreturn items.map(item => ({\n  json: { ...item.json, channel: 'SMS' }\n}));"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "setChannelEmail",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "const items = $input.all();\nreturn items.map(item => ({\n  json: { ...item.json, channel: 'Email' }\n}));"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Newsletter Offer Needed?",
+        "type": "n8n-nodes-base.if",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "conditions.conditions[0].id",
+            "value": "newsletter-check-appt-rejected"
+          },
+          {
+            "path": "conditions.conditions[0].leftValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || '{}'; const parsed = JSON.parse(content); return parsed.appointment_discussed === true && parsed.appointment_outcome === 'rejected'; } catch(e) { return false; } })() }}"
+          },
+          {
+            "path": "conditions.conditions[1].id",
+            "value": "newsletter-check-not-opted-in"
+          },
+          {
+            "path": "conditions.conditions[1].leftValue",
+            "value": "={{ (() => { try { return $('Get Lead Memory').first().json.newsletter_opted_in } catch(e) { try { return $('Get Outbound Lead Memory').first().json.newsletter_opted_in } catch(e2) { return false } } })() }}"
+          },
+          {
+            "path": "conditions.conditions[2].id",
+            "value": "newsletter-check-not-declined"
+          },
+          {
+            "path": "conditions.conditions[2].leftValue",
+            "value": "={{ (() => { try { return $('Get Conversation Summary').first().json.newsletter_offer_declined } catch(e) { try { return $('Get Outbound Conversation Summary').first().json.newsletter_offer_declined } catch(e2) { return false } } })() }}"
+          },
+          {
+            "path": "conditions.conditions[3].id",
+            "value": "newsletter-check-not-outbound"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Set Newsletter Pending",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "conversation_context"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldId",
+            "value": "newsletter_offer_pending"
+          }
+        ],
+        "on_error": "continueRegularOutput",
+        "retry_on_fail": null
+      },
+      {
+        "name": "Clear Newsletter Flags",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "conversation_context"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldId",
+            "value": "newsletter_offer_pending"
+          },
+          {
+            "path": "fieldsUi.fieldValues[1].fieldId",
+            "value": "newsletter_offer_declined"
+          },
+          {
+            "path": "fieldsUi.fieldValues[1].fieldValue",
+            "value": "={{ (() => { try { const leadMemory = $('Get Lead Memory (After)').first()?.json || $('Get Outbound Lead Memory').first()?.json || {}; if (leadMemory.newsletter_opted_in === true) return false; const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.newsletter_declined === true; } catch(e) { return false; } })() }}"
+          }
+        ],
+        "on_error": "continueRegularOutput",
+        "retry_on_fail": null
+      },
+      {
+        "name": "subscribeToNewsletter",
+        "type": "@n8n/n8n-nodes-langchain.toolCode",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "name",
+            "value": "subscribeToNewsletter"
+          },
+          {
+            "path": "description",
+            "value": "Subscribe the current lead to the weekly market newsletter. Updates leads.newsletter_opted_in = true, tags the contact in GHL, and clears pending flags.\n\nINPUT (required JSON):\n- contact_id: string - the CONTACT_ID from the context header (always required)\n\nCALL THIS TOOL when the lead signals they want market updates, want to stay in the loop, accept the newsletter offer, or agree to receive periodic info. Call it BEFORE you write your response acknowledging the subscription — never acknowledge…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Record Splinter Usage",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "tableId",
+            "value": "splinter_usage"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldId",
+            "value": "splinter_id"
+          },
+          {
+            "path": "fieldsUi.fieldValues[0].fieldValue",
+            "value": "={{ $json.splinter_id }}"
+          },
+          {
+            "path": "fieldsUi.fieldValues[2].fieldValue",
+            "value": "={{ $json.channel || 'sms' }}"
+          }
+        ],
+        "on_error": "continueRegularOutput",
+        "retry_on_fail": null
+      },
+      {
+        "name": "Gather Prompt Data",
+        "type": "n8n-nodes-base.set",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "assignments.assignments[2].name",
+            "value": "marketName"
+          },
+          {
+            "path": "assignments.assignments[2].value",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.market_name; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.market_name; } catch(e2) { return ''; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[5].value",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.channel; } catch(e) { try { return $('LeadDetails').first().json.channel; } catch(e2) { return 'sms'; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[13].name",
+            "value": "conversationSummary"
+          },
+          {
+            "path": "assignments.assignments[13].value",
+            "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary; } catch(e) { try { return $('Get Conversation Summary').first().json.conversation_summary; } catch(e2) { return ''; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[15].name",
+            "value": "marketRole"
+          },
+          {
+            "path": "assignments.assignments[15].value",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.market_role; } catch(e) { try { return $('Get Lead Memory').first().json.market_role; } catch(e2) { return 'unknown'; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[20].name",
+            "value": "newsletterPending"
+          },
+          {
+            "path": "assignments.assignments[20].value",
+            "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.newsletter_offer_pending || false; } catch(e) { try { return $('Get Conversation Summary').first().json.newsletter_offer_pending || false; } catch(e2) { return false; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[21].name",
+            "value": "newsletterOptedIn"
+          },
+          {
+            "path": "assignments.assignments[21].value",
+            "value": "={{ (() => { try { return $('Get Outbound Lead Memory').first().json.newsletter_opted_in || false; } catch(e) { try { return $('Get Lead Memory').first().json.newsletter_opted_in || false; } catch(e2) { return false; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[22].name",
+            "value": "newsletterDeclined"
+          },
+          {
+            "path": "assignments.assignments[22].value",
+            "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.newsletter_offer_declined || false; } catch(e) { try { return $('Get Conversation Summary').first().json.newsletter_offer_declined || false; } catch(e2) { return false; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[23].name",
+            "value": "splinterContent"
+          },
+          {
+            "path": "assignments.assignments[23].value",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_content || ''; } catch(e) { return ''; } })() }}"
+          },
+          {
+            "path": "assignments.assignments[24].name",
+            "value": "splinterTopic"
+          },
+          {
+            "path": "assignments.assignments[24].value",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_topic || ''; } catch(e) { return ''; } })() }}"
+          },
+          {
+            "path": "assignments.assignments[25].name",
+            "value": "splinterDataPoint"
+          },
+          {
+            "path": "assignments.assignments[25].value",
+            "value": "={{ (() => { try { return $('Set Outbound Context').first().json.splinter_data_point || ''; } catch(e) { return ''; } })() }}"
+          },
+          {
+            "path": "assignments.assignments[27].value",
+            "value": "={{ (() => { try { return $('Get Outbound Conversation Summary').first().json.lead_intent; } catch(e) { try { return $('Get Conversation Summary').first().json.lead_intent; } catch(e2) { return 'unknown'; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[30].name",
+            "value": "ghlUserId"
+          },
+          {
+            "path": "assignments.assignments[30].value",
+            "value": "={{ (() => { try { return $('Get Outbound Agent Config').first().json.ghl_user_id; } catch(e) { try { return $('Get Agent Config (RAG)').first().json.ghl_user_id; } catch(e2) { return ''; } } })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Gather Sentiment Data1",
+        "type": "n8n-nodes-base.set",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "assignments.assignments[4].name",
+            "value": "conversationSummary"
+          },
+          {
+            "path": "assignments.assignments[4].value",
+            "value": "={{ (() => { try { return $('Get Conversation Summary').first().json.conversation_summary || ''; } catch(e) { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary || ''; } catch(e2) { return ''; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[6].value",
+            "value": "={{ (() => { try { const msgs = $('Get Message History').all(); return msgs.slice(0, 15).map(m => (m.json.direction === 'inbound' ? '[lead] ' : '[bot] ') + m.json.message_body).join('\\n'); } catch(e) { return 'No previous messages'; } })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Has Splinter Data?",
+        "type": "n8n-nodes-base.if",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "conditions.conditions[0].id",
+            "value": "splinter-check"
+          },
+          {
+            "path": "conditions.conditions[0].leftValue",
+            "value": "={{ $json.splinter_id }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "switchChannel",
+        "type": "@n8n/n8n-nodes-langchain.toolCode",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "description",
+            "value": "Switch the lead's communication channel and send a hardcoded bridge message on the new channel. Call this ONLY when the lead explicitly asks to move to a different channel (e.g. \"just email me\", \"text me instead\").\n\nSUPPORTED DESTINATIONS: sms, email. You CANNOT switch TO Instagram DM — only FROM it. If a lead asks to be contacted on Instagram, politely decline and offer SMS or email instead.\n\nINPUT (required JSON):\n- contact_id: string — CONTACT_ID from context\n- new_channel: string — must be \"…[TRUNCATED]"
+          },
+          {
+            "path": "jsonSchemaExample",
+            "value": "{\"contact_id\":\"abc123\",\"new_channel\":\"email\"}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note - Wait Window",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## Wait Window — Message Batching\n\n**60s debounce + batch leader election.**\n\nStamp log ID → wait 60s → query message_log for last 90s of inbound messages from this contact → newest message (by timestamp, id tiebreaker) is the leader.\n\n- TRUE (leader): proceeds through pipeline with `batchedMessageBody` (all messages joined)\n- FALSE (not leader): dead-ends silently — another execution will respond\n\nIf query fails, node fail-safes to leader with single message body (so we never drop a response)."
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Turnaround: Clear State",
+        "type": "n8n-nodes-base.postgres",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "query",
+            "value": "=UPDATE leads SET opt_out_level=NULL, opted_out_at=NULL, opt_out_reason=NULL, sms_paused_until=NULL, status='active_conversation' WHERE contact_id='{{ $('LeadDetails').first().json.contact_id }}'"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Turnaround: Disable DND",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}"
+          },
+          {
+            "path": "jsonBody",
+            "value": "{ \"dnd\": false, \"dndSettings\": { \"Call\": { \"status\": \"inactive\" }, \"Email\": { \"status\": \"inactive\" }, \"SMS\": { \"status\": \"inactive\" }, \"WhatsApp\": { \"status\": \"inactive\" }, \"GMB\": { \"status\": \"inactive\" }, \"FB\": { \"status\": \"inactive\" } } }"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Turnaround: Remove L1 Tag",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Turnaround: Post Note",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/notes"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Apply L1: Enable DND",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}"
+          },
+          {
+            "path": "jsonBody",
+            "value": "{ \"dnd\": true, \"dndSettings\": { \"Call\": { \"status\": \"active\" }, \"Email\": { \"status\": \"active\" }, \"SMS\": { \"status\": \"active\" }, \"WhatsApp\": { \"status\": \"active\" }, \"GMB\": { \"status\": \"active\" }, \"FB\": { \"status\": \"active\" } } }"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Apply L1: Add L1 Tag",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Apply L1: Post Note",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/notes"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Apply L2: Enable DND",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}"
+          },
+          {
+            "path": "jsonBody",
+            "value": "{ \"dnd\": true, \"dndSettings\": { \"Call\": { \"status\": \"active\" }, \"Email\": { \"status\": \"active\" }, \"SMS\": { \"status\": \"active\" }, \"WhatsApp\": { \"status\": \"active\" }, \"GMB\": { \"status\": \"active\" }, \"FB\": { \"status\": \"active\" } } }"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Apply L2: Add L2 Tag",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/tags"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Apply L2: Post Note",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ $('LeadDetails').first().json.contact_id }}/notes"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Newsletter Guard",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "// Always guarantee 1 item with a stable contact_id so Clear Newsletter Flags never receives 0 items\nconst ctx = $('Assemble System Prompt').first().json;\nreturn [{ json: { contactId: ctx.contactId } }];"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Leak Detected?",
+        "type": "n8n-nodes-base.if",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "conditions.conditions[0].leftValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.internal_reasoning_leak_detected === true; } catch(e) { return false; } })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Log AI Leak",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "fieldsUi.fieldValues[6].fieldValue",
+            "value": "={{ (() => { try { const content = $('Analyze Conversation').first().json.message?.content || $('Analyze Conversation').first().json.text || '{}'; const parsed = JSON.parse(content); return parsed.leak_phrase || ''; } catch(e) { return 'parse_error'; } })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Save Inbound Capture",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "fieldsUi.fieldValues[3].fieldId",
+            "value": "ghl_message_id"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Prep Status Check Input",
+        "type": "n8n-nodes-base.set",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "assignments.assignments[0].value",
+            "value": "={{ $json.ghl_message_id }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Log Cap Suppression",
+        "type": "n8n-nodes-base.supabase",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "fieldsUi.fieldValues[2].fieldId",
+            "value": "ghl_error_code"
+          },
+          {
+            "path": "fieldsUi.fieldValues[3].fieldId",
+            "value": "ghl_error_name"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      }
+    ],
+    "prompt_nodes": [
+      {
+        "name": "AI Sentiment Analysis",
+        "type": "@n8n/n8n-nodes-langchain.anthropic",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "messages.values[0].content",
+            "value": "=CONVERSATION CONTEXT (read first — context frames the current message):\n\nConversation Summary: {{ $json.conversationSummary }}\n\nRecent Messages (newest last):\n{{ $json.historyText }}\n\nLead State:\n- First Name: {{ $json.firstName }}\n- Agent: {{ $json.agentName }}\n- Pipeline Stage: {{ $json.pipelineStage }}\n- Pipeline State: {{ $json.pipelineState }}\n\n=== CURRENT MESSAGE (classify using STEP 1 → 4 from system prompt) ===\n{{ $json.currentMessage }}\n\nReturn ONLY valid JSON. No markdown fences. No e…[TRUNCATED]"
+          },
+          {
+            "path": "options.system",
+            "value": "You are a sentiment classifier for SMRT Bot. You analyze inbound messages and classify them into behavioral tiers to route the Brain Engine correctly.\n\nCRITICAL: Your reasoning field is used INTERNALLY by downstream nodes ONLY. It is NEVER shown to the lead. The Brain Engine AI Agent uses its own prompt to write the actual SMS/email reply. Be thorough in your reasoning - it helps downstream routing, it never leaks to the customer.\n\n=== CLASSIFICATION PRIORITY ORDER ===\n\nFollow these steps IN ORD…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Prepare Sentiment Context",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "const d = $input.first().json;\n\nreturn [{\n  json: {\n    ...d,\n    currentMessage: d.currentMessage || '',\n    historyText: d.messageHistory || 'No previous messages',\n    conversationSummary: d.conversationSummary || 'No summary',\n    lastIntent: 'none',\n    agentName: d.agentName || 'Luke Gilbert',\n    contactId: d.contactId || '',\n    locationId: d.locationId || '',\n    firstName: d.firstName || 'Contact',\n    pipelineStage: d.pipelineStage || 'MONTHLY',\n    pipelineState: d.pipelineState || '…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Analyze Conversation",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "messages.values[0].content",
+            "value": "You analyze real estate AI conversation exchanges and extract structured signals.\n\nReturn ONLY a valid JSON object (no markdown, no explanation):\n{\n  \"summary\": \"250-350 word accumulative summary\",\n  \"lead_intent\": \"buy|sell|both|unknown\",\n  \"lead_timeline\": \"now|3_months|6_months|1_year|unknown\",\n  \"appointment_discussed\": true or false,\n  \"appointment_outcome\": \"offered|accepted|rejected|rescheduled|null\",\n  \"newsletter_discussed\": true or false,\n  \"newsletter_declined\": true or false,\n  \"news…[TRUNCATED]"
+          },
+          {
+            "path": "messages.values[1].content",
+            "value": "=Previous Summary: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary } catch(e) { try { return $('Get Conversation Summary').first().json.conversation_summary } catch(e2) { return 'None' } } })() }}\nPrevious Intent: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.lead_intent } catch(e) { try { return $('Get Conversation Summary').first().json.lead_intent } catch(e2) { return 'unknown' } } })() }}\nPrevious Timeline: {{ (…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Send SMS",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "https://services.leadconnectorhq.com/conversations/messages"
+          },
+          {
+            "path": "jsonBody",
+            "value": "={{ JSON.stringify({ type: 'SMS', contactId: $('Assemble System Prompt').first().json.contactId, message: $json.responseText || $('AI Agent').first().json.output }) }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Send Email",
+        "type": "n8n-nodes-base.httpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "url",
+            "value": "https://services.leadconnectorhq.com/conversations/messages"
+          },
+          {
+            "path": "jsonBody",
+            "value": "={{ (() => { const raw = $json.responseText || $('AI Agent').first().json.output; const contactId = $('Assemble System Prompt').first().json.contactId; const coordinatorEmail = (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_email } catch(e) { return $('Get Agent Config').first().json.coordinator_email } })(); const coordinatorName = (() => { try { return $('Get Outbound Agent Config').first().json.coordinator_name } catch(e) { try { return $('Get Agent Config').fir…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Merge & Deduplicate Messages",
+        "type": "n8n-nodes-base.code",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "jsCode",
+            "value": "// Merge recent messages + keyword-matched messages, deduplicate by id\nconst allMessages = $input.all().map(item => item.json);\n\n// Deduplicate by id (not message_id)\nconst seen = new Set();\nconst uniqueMessages = [];\n\nfor (const msg of allMessages) {\n  const msgId = msg.id || msg.message_id; // Support both field names\n  if (!seen.has(msgId)) {\n    seen.add(msgId);\n    uniqueMessages.push(msg);\n  }\n}\n\n// Sort by timestamp (newest first)\nuniqueMessages.sort((a, b) => {\n  const timeA = new Date(a…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "searchPastMessages",
+        "type": "n8n-nodes-base.supabaseTool",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "toolDescription",
+            "value": "Search this lead's past message log beyond the 15 most recent messages already in your context.\n\nWHEN TO USE:\n- Lead references something old (\"I told you\", \"I mentioned before\", \"remember when\", \"weeks ago\")\n- You need to verify a claim about a past conversation\n- You need to recall a commitment, date, or topic from earlier in the relationship\n\nWHEN NOT TO USE:\n- For general knowledge or company info (use KB Tool)\n- For information already visible in RECENT MESSAGES (your 15-turn window)\n\nINPUT…[TRUNCATED]"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "getNotes",
+        "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "toolDescription",
+            "value": "Fetch all notes recorded on this lead's GoHighLevel contact by agents or the AI system.\n\nWHEN TO USE:\n- When the lead references a previous conversation or commitment (\"someone told me...\", \"I was promised...\")\n- When you need historical context about what has been discussed or agreed with this lead\n- Before escalating, to check if there are existing agent notes\n\nINPUT: No input needed. Automatically looks up the current lead.\n\nOUTPUT: List of notes with timestamps and content.\n\nRULES:\n- Use to …[TRUNCATED]"
+          },
+          {
+            "path": "url",
+            "value": "=https://services.leadconnectorhq.com/contacts/{{ (() => { try { return $('Assemble System Prompt').first().json.contactId } catch(e) { return $('LeadDetails').first().json.contact_id } })() }}/notes"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Gather Sentiment Data1",
+        "type": "n8n-nodes-base.set",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "assignments.assignments[4].name",
+            "value": "conversationSummary"
+          },
+          {
+            "path": "assignments.assignments[4].value",
+            "value": "={{ (() => { try { return $('Get Conversation Summary').first().json.conversation_summary || ''; } catch(e) { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary || ''; } catch(e2) { return ''; } } })() }}"
+          },
+          {
+            "path": "assignments.assignments[6].value",
+            "value": "={{ (() => { try { const msgs = $('Get Message History').all(); return msgs.slice(0, 15).map(m => (m.json.direction === 'inbound' ? '[lead] ' : '[bot] ') + m.json.message_body).join('\\n'); } catch(e) { return 'No previous messages'; } })() }}"
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      },
+      {
+        "name": "Sticky Note - Wait Window",
+        "type": "n8n-nodes-base.stickyNote",
+        "disabled": false,
+        "matched_parameters": [
+          {
+            "path": "content",
+            "value": "## Wait Window — Message Batching\n\n**60s debounce + batch leader election.**\n\nStamp log ID → wait 60s → query message_log for last 90s of inbound messages from this contact → newest message (by timestamp, id tiebreaker) is the leader.\n\n- TRUE (leader): proceeds through pipeline with `batchedMessageBody` (all messages joined)\n- FALSE (not leader): dead-ends silently — another execution will respond\n\nIf query fails, node fail-safes to leader with single message body (so we never drop a response)."
+          }
+        ],
+        "on_error": null,
+        "retry_on_fail": null
+      }
+    ],
+    "edges": [
+      {
+        "source": "searchLeads",
+        "output_index": 0,
+        "type": "main",
+        "target": "leadExists?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "addLead",
+        "output_index": 0,
+        "type": "main",
+        "target": "carryContactID",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "leadExists?",
+        "output_index": 0,
+        "type": "main",
+        "target": "addLead",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "leadExists?",
+        "output_index": 1,
+        "type": "main",
+        "target": "carryContactID",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "inboundTrue?",
+        "output_index": 0,
+        "type": "main",
+        "target": "whichChannel?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "inboundTrue?",
+        "output_index": 1,
+        "type": "main",
+        "target": "errorLogMessageType",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Set Direction: Inbound",
+        "output_index": 0,
+        "type": "main",
+        "target": "LeadDetails",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Log Outbound Message",
+        "output_index": 0,
+        "type": "main",
+        "target": "Update Last Agent Message",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Log Outbound Message",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Lead Memory (After)",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Log Outbound Message",
+        "output_index": 0,
+        "type": "main",
+        "target": "Has Splinter Data?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Log Outbound Message",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prep Status Check Input",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "AI Sentiment Analysis",
+        "output_index": 0,
+        "type": "main",
+        "target": "Parse Sentiment",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "KB Tool",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "Docs Store",
+        "output_index": 0,
+        "type": "ai_vectorStore",
+        "target": "KB Tool",
+        "target_type": "ai_vectorStore",
+        "target_index": 0
+      },
+      {
+        "source": "Embeddings",
+        "output_index": 0,
+        "type": "ai_embedding",
+        "target": "Docs Store",
+        "target_type": "ai_embedding",
+        "target_index": 0
+      },
+      {
+        "source": "RAG LLM",
+        "output_index": 0,
+        "type": "ai_languageModel",
+        "target": "KB Tool",
+        "target_type": "ai_languageModel",
+        "target_index": 0
+      },
+      {
+        "source": "Set Direction: Inbound2",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Agent Config (RAG)",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Set Direction: Inbound2",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Message History",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Set Direction: Inbound2",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Conversation Summary",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Set Direction: Inbound2",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Lead Memory",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Apply Time Decay",
+        "output_index": 0,
+        "type": "main",
+        "target": "Fetch Outbound Candidates",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Fetch Outbound Candidates",
+        "output_index": 0,
+        "type": "main",
+        "target": "Set Outbound Context",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prepare Sentiment Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "AI Sentiment Analysis",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Check Escalation State",
+        "output_index": 0,
+        "type": "main",
+        "target": "Already Escalated?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Already Escalated?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Update Lead Escalation",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Already Escalated?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Log Already Escalated",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Update Lead Escalation",
+        "output_index": 0,
+        "type": "main",
+        "target": "Add GHL Tag - Needs Review",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Add GHL Tag - Needs Review",
+        "output_index": 0,
+        "type": "main",
+        "target": "Move GHL Pipeline Stage",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Update Conversation Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Determine Action",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Route by Channel1",
+        "output_index": 0,
+        "type": "main",
+        "target": "Cap Lock Check",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Route by Channel1",
+        "output_index": 1,
+        "type": "main",
+        "target": "Send Email",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Send Email",
+        "output_index": 0,
+        "type": "main",
+        "target": "Log Outbound Message",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Send SMS",
+        "output_index": 0,
+        "type": "main",
+        "target": "Log Outbound Message",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Send SMS",
+        "output_index": 0,
+        "type": "main",
+        "target": "Post-Farewell DND Gate",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Pause SMS 30 Days (Tier 2)",
+        "output_index": 0,
+        "type": "main",
+        "target": "Tag Tier 2 in GHL",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Tag Tier 2 in GHL",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prepare Tier Response",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Tier Sub-Router1",
+        "output_index": 0,
+        "type": "main",
+        "target": "Pause SMS 30 Days (Tier 2)",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Tier Sub-Router1",
+        "output_index": 1,
+        "type": "main",
+        "target": "Prepare Tier Response",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Route Intent",
+        "output_index": 0,
+        "type": "main",
+        "target": "Apply L1: Mark Lead",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Route Intent",
+        "output_index": 1,
+        "type": "main",
+        "target": "Tier Sub-Router1",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Route Intent",
+        "output_index": 2,
+        "type": "main",
+        "target": "Block Level Router",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Route Intent",
+        "output_index": 3,
+        "type": "main",
+        "target": "Check Escalation State",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Route Intent",
+        "output_index": 4,
+        "type": "main",
+        "target": "Prepare Tier Response",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Route Intent",
+        "output_index": 5,
+        "type": "main",
+        "target": "Check Qualification Gate",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Log Already Escalated",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prepare Tier Response",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Extract Keywords",
+        "output_index": 0,
+        "type": "main",
+        "target": "Check Keyword Search",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Check Keyword Search",
+        "output_index": 0,
+        "type": "main",
+        "target": "Search Relevant Messages",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Check Keyword Search",
+        "output_index": 1,
+        "type": "main",
+        "target": "Gather Sentiment Data1",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Search Relevant Messages",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge Messages",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Merge Messages",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge & Deduplicate Messages",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Analyze Conversation",
+        "output_index": 0,
+        "type": "main",
+        "target": "Summary Exists?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Analyze Conversation",
+        "output_index": 0,
+        "type": "main",
+        "target": "Leak Detected?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Summary Exists?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Update Conversation Context",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Summary Exists?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Insert Conversation Context",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prepare Tier Response",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Prompt Blocks (SMRT)",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Conversation Summary",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge Context",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Agent Config (RAG)",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge Context",
+        "target_type": "main",
+        "target_index": 2
+      },
+      {
+        "source": "Get Message History",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge Context",
+        "target_type": "main",
+        "target_index": 1
+      },
+      {
+        "source": "Merge Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Extract Keywords",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Set Outbound Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Outbound Agent Config",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Set Outbound Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Outbound Message History",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Set Outbound Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Outbound Conversation Summary",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Set Outbound Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Outbound Lead Memory",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Outbound Conversation Summary",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge Outbound Context",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Outbound Message History",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge Outbound Context",
+        "target_type": "main",
+        "target_index": 1
+      },
+      {
+        "source": "Get Outbound Agent Config",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge Outbound Context",
+        "target_type": "main",
+        "target_index": 2
+      },
+      {
+        "source": "Merge Outbound Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Prompt Blocks (SMRT)",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "LeadDetails",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Agent Config",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Agent Config",
+        "output_index": 0,
+        "type": "main",
+        "target": "inboundTrue?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "getContact",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "getNotes",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "getAppointments",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "deleteAppointment",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "Get Prompt Blocks (SMRT)",
+        "output_index": 0,
+        "type": "main",
+        "target": "Has Custom Personality?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Has Custom Personality?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Get Default Personality",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Assemble System Prompt",
+        "output_index": 0,
+        "type": "main",
+        "target": "AI Agent",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "bookAppointment",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "Insert Conversation Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Determine Action",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Is Qualified?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Fetch Slots",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Is Qualified?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Prepare Tier Response",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "addAppointmentNotes",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "Move GHL Pipeline Stage",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prepare Tier Response",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Fetch Slots",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prepare Tier Response",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Check Qualification Gate",
+        "output_index": 0,
+        "type": "main",
+        "target": "Is Qualified?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "checkQualificationStatus",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "saveQualifyingAnswer",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "getAvailableSlots",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "searchPastMessages",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "rescheduleAppointment",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "Get Lead Memory (After)",
+        "output_index": 0,
+        "type": "main",
+        "target": "Compare Memory",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Compare Memory",
+        "output_index": 0,
+        "type": "main",
+        "target": "Memory Changed?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Compare Memory",
+        "output_index": 0,
+        "type": "main",
+        "target": "Evaluate Pipeline Stage",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Sync Fields to GHL",
+        "output_index": 0,
+        "type": "main",
+        "target": "Post Memory Note to GHL",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get GHL Contact",
+        "output_index": 0,
+        "type": "main",
+        "target": "Build GHL Sync Body",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Build GHL Sync Body",
+        "output_index": 0,
+        "type": "main",
+        "target": "Sync Fields to GHL",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Memory Changed?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get GHL Contact",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "logMessageLeads",
+        "output_index": 0,
+        "type": "main",
+        "target": "Update Inbound Timestamps",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Evaluate Pipeline Stage",
+        "output_index": 0,
+        "type": "main",
+        "target": "Pipeline Changed?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Pipeline Changed?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Move Lead in GHL",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Pipeline Changed?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Pipeline No Change",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Move Lead in GHL",
+        "output_index": 0,
+        "type": "main",
+        "target": "Update Pipeline in DB",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "whichChannel?",
+        "output_index": 0,
+        "type": "main",
+        "target": "setChannelSMS",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "whichChannel?",
+        "output_index": 1,
+        "type": "main",
+        "target": "setChannelEmail",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "whichChannel?",
+        "output_index": 2,
+        "type": "main",
+        "target": "setChannelInstagram",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "setChannelSMS",
+        "output_index": 0,
+        "type": "main",
+        "target": "searchLeads",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "setChannelEmail",
+        "output_index": 0,
+        "type": "main",
+        "target": "searchLeads",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "setChannelInstagram",
+        "output_index": 0,
+        "type": "main",
+        "target": "searchLeads",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "updateContactMemory",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "Schedule Outbound Check",
+        "output_index": 0,
+        "type": "main",
+        "target": "Business Hours Check",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Business Hours Check",
+        "output_index": 0,
+        "type": "main",
+        "target": "Apply Time Decay",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Outbound Lead Memory",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge Outbound Context",
+        "target_type": "main",
+        "target_index": 3
+      },
+      {
+        "source": "Newsletter Offer Needed?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Set Newsletter Pending",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Newsletter Offer Needed?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Newsletter Guard",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Silence Gate",
+        "output_index": 0,
+        "type": "main",
+        "target": "Should Respond?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Should Respond?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Route by Channel1",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Should Respond?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Get Lead Memory (After)",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Should Respond?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Escalation Check?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "subscribeToNewsletter",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "Update Last Agent Message",
+        "output_index": 0,
+        "type": "main",
+        "target": "Escalation Check?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Update Last Agent Message",
+        "output_index": 0,
+        "type": "main",
+        "target": "Newsletter Offer Needed?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Escalation Check?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Notify Agent",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Default Personality",
+        "output_index": 0,
+        "type": "main",
+        "target": "Get Static Prompt Sections",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Get Lead Memory",
+        "output_index": 0,
+        "type": "main",
+        "target": "Merge Context",
+        "target_type": "main",
+        "target_index": 3
+      },
+      {
+        "source": "Get Static Prompt Sections",
+        "output_index": 0,
+        "type": "main",
+        "target": "Gather Prompt Data",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Gather Prompt Data",
+        "output_index": 0,
+        "type": "main",
+        "target": "Assemble System Prompt",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Gather Sentiment Data1",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prepare Sentiment Context",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Merge & Deduplicate Messages",
+        "output_index": 0,
+        "type": "main",
+        "target": "Gather Sentiment Data1",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Anthropic Chat Model",
+        "output_index": 0,
+        "type": "ai_languageModel",
+        "target": "AI Agent",
+        "target_type": "ai_languageModel",
+        "target_index": 0
+      },
+      {
+        "source": "Has Splinter Data?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Record Splinter Usage",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "switchChannel",
+        "output_index": 0,
+        "type": "ai_tool",
+        "target": "AI Agent",
+        "target_type": "ai_tool",
+        "target_index": 0
+      },
+      {
+        "source": "Outbound Bypass?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Route by Channel1",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Outbound Bypass?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Silence Gate",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "AI Agent",
+        "output_index": 0,
+        "type": "main",
+        "target": "Analyze Conversation",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Update Inbound Timestamps",
+        "output_index": 0,
+        "type": "main",
+        "target": "Stamp Batch Key",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Stamp Batch Key",
+        "output_index": 0,
+        "type": "main",
+        "target": "Wait 90s",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Wait 90s",
+        "output_index": 0,
+        "type": "main",
+        "target": "Check Batch Leader",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Check Batch Leader",
+        "output_index": 0,
+        "type": "main",
+        "target": "Am I Batch Leader?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Am I Batch Leader?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Set Direction: Inbound2",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "carryContactID",
+        "output_index": 0,
+        "type": "main",
+        "target": "L2 Hard Block Gate",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "L2 Hard Block Gate",
+        "output_index": 0,
+        "type": "main",
+        "target": "L2 Silent Drop",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "L2 Hard Block Gate",
+        "output_index": 1,
+        "type": "main",
+        "target": "logMessageLeads",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Parse Sentiment",
+        "output_index": 0,
+        "type": "main",
+        "target": "Turnaround Gate",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Turnaround Gate",
+        "output_index": 0,
+        "type": "main",
+        "target": "Turnaround: Clear State",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Turnaround Gate",
+        "output_index": 1,
+        "type": "main",
+        "target": "L1 Drop Gate",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "L1 Drop Gate",
+        "output_index": 0,
+        "type": "main",
+        "target": "L1 Silent Drop",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "L1 Drop Gate",
+        "output_index": 1,
+        "type": "main",
+        "target": "Route Intent",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Turnaround: Clear State",
+        "output_index": 0,
+        "type": "main",
+        "target": "Turnaround: Disable DND",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Turnaround: Disable DND",
+        "output_index": 0,
+        "type": "main",
+        "target": "Turnaround: Remove L1 Tag",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Turnaround: Remove L1 Tag",
+        "output_index": 0,
+        "type": "main",
+        "target": "Turnaround: Post Note",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Turnaround: Post Note",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prepare Tier Response",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Apply L1: Add L1 Tag",
+        "output_index": 0,
+        "type": "main",
+        "target": "Apply L1: Post Note",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Apply L1: Post Note",
+        "output_index": 0,
+        "type": "main",
+        "target": "Send Farewell?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Send Farewell?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Prepare Tier Response",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Send Farewell?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Apply L1: Enable DND",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Block Level Router",
+        "output_index": 0,
+        "type": "main",
+        "target": "Apply L2: Mark Lead",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Block Level Router",
+        "output_index": 1,
+        "type": "main",
+        "target": "Apply L1: Mark Lead",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Apply L2: Mark Lead",
+        "output_index": 0,
+        "type": "main",
+        "target": "Apply L2: Enable DND",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Apply L2: Enable DND",
+        "output_index": 0,
+        "type": "main",
+        "target": "Apply L2: Add L2 Tag",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Apply L2: Add L2 Tag",
+        "output_index": 0,
+        "type": "main",
+        "target": "Apply L2: Post Note",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Apply L2: Post Note",
+        "output_index": 0,
+        "type": "main",
+        "target": "L2 Post-Block Silent",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Apply L1: Mark Lead",
+        "output_index": 0,
+        "type": "main",
+        "target": "Apply L1: Add L1 Tag",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Apply L1: Enable DND",
+        "output_index": 0,
+        "type": "main",
+        "target": "L1 Silent Drop",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Post-Farewell DND Gate",
+        "output_index": 0,
+        "type": "main",
+        "target": "Apply L1: Enable DND",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Post-Farewell DND Gate",
+        "output_index": 1,
+        "type": "main",
+        "target": "No DND Needed",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Newsletter Guard",
+        "output_index": 0,
+        "type": "main",
+        "target": "Clear Newsletter Flags",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Determine Action",
+        "output_index": 0,
+        "type": "main",
+        "target": "Outbound Bypass?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Leak Detected?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Log AI Leak",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Webhook",
+        "output_index": 0,
+        "type": "main",
+        "target": "Save Inbound Capture",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Save Inbound Capture",
+        "output_index": 0,
+        "type": "main",
+        "target": "Check Capture Mode",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Check Capture Mode",
+        "output_index": 0,
+        "type": "main",
+        "target": "Capture Mode On?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Capture Mode On?",
+        "output_index": 0,
+        "type": "main",
+        "target": "End Captured",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Capture Mode On?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Restore Webhook Context",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Restore Webhook Context",
+        "output_index": 0,
+        "type": "main",
+        "target": "Set Direction: Inbound",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Prep Status Check Input",
+        "output_index": 0,
+        "type": "main",
+        "target": "Trigger Status Check",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Cap Lock Check",
+        "output_index": 0,
+        "type": "main",
+        "target": "Quota OK?",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Quota OK?",
+        "output_index": 0,
+        "type": "main",
+        "target": "Send SMS",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Quota OK?",
+        "output_index": 1,
+        "type": "main",
+        "target": "Log Cap Suppression",
+        "target_type": "main",
+        "target_index": 0
+      },
+      {
+        "source": "Log Cap Suppression",
+        "output_index": 0,
+        "type": "main",
+        "target": "Cap Locked Silent",
+        "target_type": "main",
+        "target_index": 0
+      }
+    ]
+  }
+]

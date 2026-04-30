@@ -1,0 +1,47 @@
+# SMRT Newsletter Failure Analysis Matrix
+
+This matrix evaluates the newsletter workflow against the expected product behavior: distinct local data points, macroeconomic context from xAI/Grok, assembled newsletter content, GoHighLevel email delivery, and downstream SMS splinter delivery. The conclusions are based on the active workflow exports, the generated node-setting evidence, and Supabase schema inventory.[1] [2] [3] [4]
+
+## High-Level Diagnosis
+
+The newsletter system is conceptually stronger than expected: the workflow already implements local Altos data, xAI/Grok macro context, newsletter generation, splinter extraction, newsletter storage, weekly-stat storage, embedded document storage, email dispatch, and Brain Engine outbound splinter delivery surfaces.[1] [2] [3] The problem is not that the architecture is missing the newsletter idea. The problem is that several critical handoffs are under-instrumented or permissive, which means the system can plausibly create **partial success**, **false success**, or **unproven delivery** states.
+
+| Severity | Failure Surface | Evidence | Why It Matters | Recommended Fix |
+| --- | --- | --- | --- | --- |
+| Critical | Email dispatch can log success after a GoHighLevel failure. | `Send Email via GHL` uses `onError=continueRegularOutput`; `Log Delivery` is immediately downstream and hardcodes `status=sent`.[2] [5] | This can create false `newsletter_deliveries` rows. Because the table has a unique `(newsletter_id, lead_id)` constraint, a failed send can suppress a later valid resend.[4] | Split delivery logging into explicit success and failure branches. Only write `status=sent` after a verified GHL message ID or success response. Write failures with `status=failed` and `error_message`. |
+| Critical | SMS splinter delivery path is structurally present but not proven live. | The Brain Engine has outbound splinter selection and `delivery_variants` mapping, but `Schedule Outbound Check` is disabled in the active export.[3] [5] | Newsletter splinters may be generated and stored but never delivered unless another trigger invokes the outbound path. | Extract splinter dispatch into a dedicated workflow or enable a controlled scheduler with a run ledger, rate limits, and dry-run mode. |
+| High | Altos data fetch can continue after failure. | `Altos Get Stats` has `continueOnFail=true` and flows into `Condense Altos Data`.[1] [5] | The newsletter may be generated from incomplete or degraded local market data unless downstream validation rejects insufficient data. | Add an explicit data-quality gate: minimum zip coverage, required metric presence, and a `generation_status=failed/degraded` decision before AI generation. |
+| High | xAI/Grok macro context can continue after failure. | `Grok National Context` has `continueOnFail=true` and feeds `Prep Data for AI`.[1] [5] | The macro layer may silently disappear or become empty, even though the newsletter is expected to include global, national, and macroeconomic narrative. | Add macro-context status fields and fallback rules. If xAI fails, record the failure and either block generation or label the issue as local-only/degraded. |
+| High | Naming drift obscures macro provenance. | Workflow uses `Grok National Context` and xAI URL, but storage and prompts still reference `perplexity_data` and `raw_perplexity_data`.[1] [5] | This creates a documentation and debugging mismatch; future developers may not know whether the macro content came from xAI, Perplexity, or another source. | Rename storage/interface fields or add metadata such as `macro_provider`, `macro_model`, `macro_prompt_version`, and `macro_generated_at`. |
+| High | The generation workflow is not clearly scoped to newsletter-enabled agents at the first fetch. | Dispatch explicitly filters `agents.newsletter_enabled=true`, while the generation inventory shows agent fetch and downstream checks rather than an obvious first-node `newsletter_enabled` filter.[1] [2] [5] | The system may generate newsletters or splinters for agents who should not receive newsletter output, depending on hidden code-node gating. | Make enablement an explicit first-class generation gate and log skipped agents with reasons. |
+| Medium | Weekly-stat and newsletter uniqueness constraints can stop duplicate writes without a recovery branch. | `newsletters` is unique on `(agent_id, week_start_date)` and `altos_weekly_stats` is unique on `(location_id, week_start_date)`.[4] | If the branch check and insert race, or if multiple agents share a location, inserts can fail. Without explicit upsert/error handling, later stages can become inconsistent. | Use deterministic upserts for idempotent weekly artifacts or explicitly branch on existing records and reuse IDs. |
+| Medium | Old active splinters are deactivated by `location_id`, not by agent or newsletter. | `Delete Old Splinters` updates `content_splinters` where `location_id` and `active=true`.[1] [5] | If multiple agents share a location, one agent’s generation could deactivate another agent’s active splinters. | Scope deactivation by `agent_id` and `location_id`, or define location-level ownership intentionally. |
+| Medium | Splinter records are rich, but delivery quality depends on prompt/JSON conformance. | `Extract Splinters` asks for canonical records and `Store Splinter` writes many structured fields including `delivery_variants`, `stage_fit`, and `audience_fit`.[1] [5] | If the model returns malformed JSON or missing variants, the Brain Engine may fall back to generic content or fail downstream. | Add schema validation before insert and reject/fix malformed splinters before they become active. |
+| Medium | Embedded market document storage is separate from native Supabase write nodes. | Embedding is generated through OpenAI HTTP and stored through Supabase REST to `documents`.[1] [5] | A newsletter can be created while its retrieval memory document fails, reducing future context quality without visible newsletter failure. | Add a document-storage ledger and treat embedding/storage failure as a degraded but visible state. |
+
+## Assessment Against Desired Behavior
+
+The desired workflow is mostly present in design. The local data path is represented by Altos fetch and weekly-stat storage. The macroeconomic narrative path is represented by an xAI/Grok chat-completions call. The newsletter path is represented by OpenAI generation and `newsletters` persistence. The email path is represented by a separate GoHighLevel dispatch workflow. The SMS splinter concept is represented by canonical `content_splinters`, `delivery_variants`, and Brain Engine outbound selection.[1] [2] [3]
+
+The most important distinction is between **artifact generation** and **delivery confidence**. The system appears designed to generate the right artifacts, but it does not yet prove that each artifact was generated from valid inputs, delivered successfully, and ledgered honestly. That distinction matters because the newsletter system is data-driven. If source quality, macro context, delivery status, or splinter execution is uncertain, then the business effect will look random even when the workflow technically runs.
+
+| Product Layer | Current Confidence | Reason |
+| --- | --- | --- |
+| Local market data ingestion | Medium | Altos path exists, but `continueOnFail=true` and data-quality gates need confirmation.[1] [5] |
+| Macro context generation | Medium | xAI/Grok path exists, but failure fallback and provenance are under-structured.[1] [5] |
+| Newsletter composition | Medium-High | Full newsletter prompt and storage path exist; the bigger risk is upstream input quality and downstream idempotency.[1] |
+| Newsletter email delivery | Low-Medium | GHL send path exists, but false-positive delivery logging is a serious reliability issue.[2] [5] |
+| SMS splinter delivery | Low | Splinter generation exists, but active Brain Engine scheduler is disabled in the export.[3] [5] |
+| Memory/retrieval reuse | Medium | Embedded `market_weekly` document path exists, but storage failure is not clearly surfaced.[1] [4] |
+
+## Developer Validation Questions
+
+The development team should validate the following with one or two production or staging run traces before making prompt-level changes. First, they should confirm whether newsletter generation is intentionally run for all agents or only newsletter-enabled agents. Second, they should confirm what a failed Altos request produces downstream and whether `Condense Altos Data` blocks insufficient data. Third, they should confirm the exact xAI/Grok fallback when the HTTP node returns an error, timeout, or empty response. Fourth, they should inspect a failed or mocked GoHighLevel send and verify whether `newsletter_deliveries.status` still becomes `sent`. Fifth, they should confirm how the Brain Engine outbound path is triggered if the `Schedule Outbound Check` node remains disabled.
+
+## References
+
+[1]: workflows/active/Data_Source_Newsletter_Creation__gI097yamrw7gDU6C.json "Data Source & Newsletter Creation workflow export"
+[2]: workflows/active/Newsletter_Dispatch__XDcom3gft8yqwa5O.json "Newsletter Dispatch workflow export"
+[3]: workflows/active/SMRT_Brain_Engine__mlR5dZuzXxP_JYGaqrqpu.json "SMRT Brain Engine workflow export"
+[4]: data/supabase/schema_inventory_clean.json "Supabase schema inventory"
+[5]: docs/system/newsletter_failure_surface_evidence.md "Generated newsletter failure-surface evidence"
