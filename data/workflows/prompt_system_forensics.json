@@ -1,0 +1,642 @@
+{
+  "workflow": {
+    "name": "🧠 SMRT Brain Engine",
+    "active": true,
+    "node_count": 174
+  },
+  "ai_agent": {
+    "present": true,
+    "type": "@n8n/n8n-nodes-langchain.agent",
+    "system_message": "={{ $json.systemPrompt }}",
+    "text_expression": "={{ $json.userMessage }}",
+    "max_iterations": 10
+  },
+  "summary": {
+    "tool_nodes_total": 15,
+    "ai_agent_connected_tool_count": 15,
+    "connected_tool_description_chars": 5170,
+    "connected_tool_description_est_tokens": 1292,
+    "mandatory_or_critical_connected_tools": 4,
+    "summary_related_node_count": 22,
+    "tool_type_counts": {
+      "@n8n/n8n-nodes-langchain.toolVectorStore": 1,
+      "@n8n/n8n-nodes-langchain.toolHttpRequest": 3,
+      "@n8n/n8n-nodes-langchain.toolCode": 8,
+      "n8n-nodes-base.supabaseTool": 3
+    }
+  },
+  "ai_agent_connected_tools": [
+    {
+      "name": "addAppointmentNotes",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]",
+      "has_when_to_use": false,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "bookAppointment",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]",
+      "has_when_to_use": false,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "checkQualificationStatus",
+      "type": "n8n-nodes-base.supabaseTool",
+      "description_length": 512,
+      "description_excerpt": "Check how many of the 3 qualifying questions this lead has answered so far.  WHEN TO USE: - BEFORE calling saveQualifyingAnswer, to get the current qualifying_answers object - When the lead says they want to book an appointment, to verify they are qualified - When you are unsure which qualifying questions have already been answered  INPUT: No input needed. Automatically looks up this lead's conversation_context record.  OUTPUT: Returns the qualifying_answers JSONB object with keys q1, q2, q3. - …[TRUNCATED]",
+      "has_when_to_use": true,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "deleteAppointment",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]",
+      "has_when_to_use": false,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "getAppointments",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "description_length": 512,
+      "description_excerpt": "Fetch all appointments (past and upcoming) for the current lead from GoHighLevel.  WHEN TO USE: - When the lead asks about existing appointments (\"when is my appointment?\", \"do I have anything scheduled?\") - When the lead wants to cancel or reschedule (you need the event_id from here) - When you need to check if the lead already has a booking before offering to schedule  INPUT: No input needed. Automatically looks up the current lead.  OUTPUT: List of appointment objects with event IDs, dates, t…[TRUNCATED]",
+      "has_when_to_use": true,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "getAvailableSlots",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]",
+      "has_when_to_use": false,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "getContact",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "description_length": 512,
+      "description_excerpt": "Fetch the full contact profile for the current lead from GoHighLevel, including custom fields, tags, lead source, and all contact details.  WHEN TO USE: - When you need lead details NOT available in the conversation (email, address, tags, lead source) - When the lead asks you to confirm their contact information - When you need CRM context about the lead's history or status  INPUT: No input needed. Automatically looks up the current lead.  OUTPUT: Full contact record with name, email, phone, tag…[TRUNCATED]",
+      "has_when_to_use": true,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "getNotes",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "description_length": 512,
+      "description_excerpt": "Fetch all notes recorded on this lead's GoHighLevel contact by agents or the AI system.  WHEN TO USE: - When the lead references a previous conversation or commitment (\"someone told me...\", \"I was promised...\") - When you need historical context about what has been discussed or agreed with this lead - Before escalating, to check if there are existing agent notes  INPUT: No input needed. Automatically looks up the current lead.  OUTPUT: List of notes with timestamps and content.  RULES: - Use to …[TRUNCATED]",
+      "has_when_to_use": true,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "KB Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "description_length": 512,
+      "description_excerpt": "=Search the approved company knowledge base for client location {{ (() => { try { return $('Set Outbound Context').first().json.location_id } catch(e) { return $('LeadDetails').first().json.location_id } })() }}.  WHEN TO USE: - When the lead asks about commission rates, fees, or pricing - When the lead asks about services offered, property types, or areas served - When the lead asks how the team operates or any company-specific question - ANY question about the business, team, or real estate se…[TRUNCATED]",
+      "has_when_to_use": true,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "rescheduleAppointment",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]",
+      "has_when_to_use": false,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "saveQualifyingAnswer",
+      "type": "n8n-nodes-base.supabaseTool",
+      "description_length": 512,
+      "description_excerpt": "MANDATORY TOOL - Save a qualifying answer to the database after the lead answers one of the 3 qualifying questions.  WHEN TO USE: You MUST call this tool IMMEDIATELY every time the lead provides information that answers Q1, Q2, or Q3. Do NOT wait until all questions are answered. Save each answer the moment you receive it.  The tool updates the qualifying_answers JSONB column in conversation_context for this lead.  INPUT: You must provide a JSON object with the field 'qualifying_answers' contain…[TRUNCATED]",
+      "has_when_to_use": true,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": true
+    },
+    {
+      "name": "searchPastMessages",
+      "type": "n8n-nodes-base.supabaseTool",
+      "description_length": 512,
+      "description_excerpt": "Search this lead's past message log beyond the 15 most recent messages already in your context.  WHEN TO USE: - Lead references something old (\"I told you\", \"I mentioned before\", \"remember when\", \"weeks ago\") - You need to verify a claim about a past conversation - You need to recall a commitment, date, or topic from earlier in the relationship  WHEN NOT TO USE: - For general knowledge or company info (use KB Tool) - For information already visible in RECENT MESSAGES (your 15-turn window)  INPUT…[TRUNCATED]",
+      "has_when_to_use": true,
+      "has_when_not_to_use": true,
+      "has_mandatory_language": false
+    },
+    {
+      "name": "subscribeToNewsletter",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "description_length": 512,
+      "description_excerpt": "Subscribe the current lead to the weekly market newsletter. Updates leads.newsletter_opted_in = true, tags the contact in GHL, and clears pending flags.  INPUT (required JSON): - contact_id: string - the CONTACT_ID from the context header (always required)  CALL THIS TOOL when the lead signals they want market updates, want to stay in the loop, accept the newsletter offer, or agree to receive periodic info. Call it BEFORE you write your response acknowledging the subscription — never acknowledge…[TRUNCATED]",
+      "has_when_to_use": false,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": true
+    },
+    {
+      "name": "switchChannel",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "description_length": 512,
+      "description_excerpt": "Switch the lead's communication channel and send a hardcoded bridge message on the new channel. Call this ONLY when the lead explicitly asks to move to a different channel (e.g. \"just email me\", \"text me instead\").  SUPPORTED DESTINATIONS: sms, email. You CANNOT switch TO Instagram DM — only FROM it. If a lead asks to be contacted on Instagram, politely decline and offer SMS or email instead.  INPUT (required JSON): - contact_id: string — CONTACT_ID from context - new_channel: string — must be \"…[TRUNCATED]",
+      "has_when_to_use": false,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": true
+    },
+    {
+      "name": "updateContactMemory",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "description_length": 512,
+      "description_excerpt": "Update the contact's memory and enrichment fields. Call this when you detect ANY of the signals below. Include ALL detected fields in a single call — never make multiple calls.  INPUT (required JSON): - contact_id: string - CONTACT_ID from context (always required) - Plus any fields below that you detected:  FIELD TRIGGERS — scan every message for these:  IDENTITY / CONTACT INFO - Lead says their name → first_name, last_name - Lead gives their email address → email - Lead gives their phone numbe…[TRUNCATED]",
+      "has_when_to_use": false,
+      "has_when_not_to_use": false,
+      "has_mandatory_language": true
+    }
+  ],
+  "all_tool_nodes": [
+    {
+      "name": "addAppointmentNotes",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "connected_to_ai_agent": true,
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]"
+    },
+    {
+      "name": "bookAppointment",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "connected_to_ai_agent": true,
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]"
+    },
+    {
+      "name": "checkQualificationStatus",
+      "type": "n8n-nodes-base.supabaseTool",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "Check how many of the 3 qualifying questions this lead has answered so far.  WHEN TO USE: - BEFORE calling saveQualifyingAnswer, to get the current qualifying_answers object - When the lead says they want to book an appointment, to verify they are qualified - When you are unsure which qualifying questions have already been answered  INPUT: No input needed. Automatically looks up this lead's conversation_context record.  OUTPUT: Returns the qualifying_answers JSONB object with keys q1, q2, q3. - …[TRUNCATED]"
+    },
+    {
+      "name": "deleteAppointment",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "connected_to_ai_agent": true,
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]"
+    },
+    {
+      "name": "getAppointments",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "Fetch all appointments (past and upcoming) for the current lead from GoHighLevel.  WHEN TO USE: - When the lead asks about existing appointments (\"when is my appointment?\", \"do I have anything scheduled?\") - When the lead wants to cancel or reschedule (you need the event_id from here) - When you need to check if the lead already has a booking before offering to schedule  INPUT: No input needed. Automatically looks up the current lead.  OUTPUT: List of appointment objects with event IDs, dates, t…[TRUNCATED]"
+    },
+    {
+      "name": "getAvailableSlots",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "connected_to_ai_agent": true,
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]"
+    },
+    {
+      "name": "getContact",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "Fetch the full contact profile for the current lead from GoHighLevel, including custom fields, tags, lead source, and all contact details.  WHEN TO USE: - When you need lead details NOT available in the conversation (email, address, tags, lead source) - When the lead asks you to confirm their contact information - When you need CRM context about the lead's history or status  INPUT: No input needed. Automatically looks up the current lead.  OUTPUT: Full contact record with name, email, phone, tag…[TRUNCATED]"
+    },
+    {
+      "name": "getNotes",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "Fetch all notes recorded on this lead's GoHighLevel contact by agents or the AI system.  WHEN TO USE: - When the lead references a previous conversation or commitment (\"someone told me...\", \"I was promised...\") - When you need historical context about what has been discussed or agreed with this lead - Before escalating, to check if there are existing agent notes  INPUT: No input needed. Automatically looks up the current lead.  OUTPUT: List of notes with timestamps and content.  RULES: - Use to …[TRUNCATED]"
+    },
+    {
+      "name": "KB Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "=Search the approved company knowledge base for client location {{ (() => { try { return $('Set Outbound Context').first().json.location_id } catch(e) { return $('LeadDetails').first().json.location_id } })() }}.  WHEN TO USE: - When the lead asks about commission rates, fees, or pricing - When the lead asks about services offered, property types, or areas served - When the lead asks how the team operates or any company-specific question - ANY question about the business, team, or real estate se…[TRUNCATED]"
+    },
+    {
+      "name": "rescheduleAppointment",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "connected_to_ai_agent": true,
+      "description_length": 10,
+      "description_excerpt": "[REDACTED]"
+    },
+    {
+      "name": "saveQualifyingAnswer",
+      "type": "n8n-nodes-base.supabaseTool",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "MANDATORY TOOL - Save a qualifying answer to the database after the lead answers one of the 3 qualifying questions.  WHEN TO USE: You MUST call this tool IMMEDIATELY every time the lead provides information that answers Q1, Q2, or Q3. Do NOT wait until all questions are answered. Save each answer the moment you receive it.  The tool updates the qualifying_answers JSONB column in conversation_context for this lead.  INPUT: You must provide a JSON object with the field 'qualifying_answers' contain…[TRUNCATED]"
+    },
+    {
+      "name": "searchPastMessages",
+      "type": "n8n-nodes-base.supabaseTool",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "Search this lead's past message log beyond the 15 most recent messages already in your context.  WHEN TO USE: - Lead references something old (\"I told you\", \"I mentioned before\", \"remember when\", \"weeks ago\") - You need to verify a claim about a past conversation - You need to recall a commitment, date, or topic from earlier in the relationship  WHEN NOT TO USE: - For general knowledge or company info (use KB Tool) - For information already visible in RECENT MESSAGES (your 15-turn window)  INPUT…[TRUNCATED]"
+    },
+    {
+      "name": "subscribeToNewsletter",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "Subscribe the current lead to the weekly market newsletter. Updates leads.newsletter_opted_in = true, tags the contact in GHL, and clears pending flags.  INPUT (required JSON): - contact_id: string - the CONTACT_ID from the context header (always required)  CALL THIS TOOL when the lead signals they want market updates, want to stay in the loop, accept the newsletter offer, or agree to receive periodic info. Call it BEFORE you write your response acknowledging the subscription — never acknowledge…[TRUNCATED]"
+    },
+    {
+      "name": "switchChannel",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "Switch the lead's communication channel and send a hardcoded bridge message on the new channel. Call this ONLY when the lead explicitly asks to move to a different channel (e.g. \"just email me\", \"text me instead\").  SUPPORTED DESTINATIONS: sms, email. You CANNOT switch TO Instagram DM — only FROM it. If a lead asks to be contacted on Instagram, politely decline and offer SMS or email instead.  INPUT (required JSON): - contact_id: string — CONTACT_ID from context - new_channel: string — must be \"…[TRUNCATED]"
+    },
+    {
+      "name": "updateContactMemory",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "connected_to_ai_agent": true,
+      "description_length": 512,
+      "description_excerpt": "Update the contact's memory and enrichment fields. Call this when you detect ANY of the signals below. Include ALL detected fields in a single call — never make multiple calls.  INPUT (required JSON): - contact_id: string - CONTACT_ID from context (always required) - Plus any fields below that you detected:  FIELD TRIGGERS — scan every message for these:  IDENTITY / CONTACT INFO - Lead says their name → first_name, last_name - Lead gives their email address → email - Lead gives their phone numbe…[TRUNCATED]"
+    }
+  ],
+  "summary_nodes": [
+    {
+      "name": "addAppointmentNotes",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "textish_fields": [
+        {
+          "path": "description",
+          "length": 10,
+          "excerpt": "[REDACTED]"
+        },
+        {
+          "path": "jsCode",
+          "length": 10,
+          "excerpt": "[REDACTED]"
+        },
+        {
+          "path": "jsonSchemaExample",
+          "length": 129,
+          "excerpt": "{\"appointment_time\":\"2026-04-10T09:00\",\"qualifying_summary\":\"Buyer, 500k, pre-approved\",\"conversation_summary\":\"Lead relocating\"}"
+        }
+      ],
+      "total_textish_length": 149,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": true
+    },
+    {
+      "name": "AI Sentiment Analysis",
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "textish_fields": [
+        {
+          "path": "messages.values[0].content",
+          "length": 512,
+          "excerpt": "=CONVERSATION CONTEXT (read first — context frames the current message):  Conversation Summary: {{ $json.conversationSummary }}  Recent Messages (newest last): {{ $json.historyText }}  Lead State: - First Name: {{ $json.firstName }} - Agent: {{ $json.agentName }} - Pipeline Stage: {{ $json.pipelineStage }} - Pipeline State: {{ $json.pipelineState }}  === CURRENT MESSAGE (classify using STEP 1 → 4 from system prompt) === {{ $json.currentMessage }}  Return ONLY valid JSON. No markdown fences. No e…[TRUNCATED]"
+        }
+      ],
+      "total_textish_length": 512,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Analyze Conversation",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "textish_fields": [
+        {
+          "path": "messages.values[0].content",
+          "length": 512,
+          "excerpt": "You analyze real estate AI conversation exchanges and extract structured signals.  Return ONLY a valid JSON object (no markdown, no explanation): {   \"summary\": \"250-350 word accumulative summary\",   \"lead_intent\": \"buy|sell|both|unknown\",   \"lead_timeline\": \"now|3_months|6_months|1_year|unknown\",   \"appointment_discussed\": true or false,   \"appointment_outcome\": \"offered|accepted|rejected|rescheduled|null\",   \"newsletter_discussed\": true or false,   \"newsletter_declined\": true or false,   \"news…[TRUNCATED]"
+        },
+        {
+          "path": "messages.values[0].role",
+          "length": 6,
+          "excerpt": "system"
+        },
+        {
+          "path": "messages.values[1].content",
+          "length": 512,
+          "excerpt": "=Previous Summary: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary } catch(e) { try { return $('Get Conversation Summary').first().json.conversation_summary } catch(e2) { return 'None' } } })() }} Previous Intent: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.lead_intent } catch(e) { try { return $('Get Conversation Summary').first().json.lead_intent } catch(e2) { return 'unknown' } } })() }} Previous Timeline: {{ (…[TRUNCATED]"
+        }
+      ],
+      "total_textish_length": 1030,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": true
+    },
+    {
+      "name": "Check Qualification Gate",
+      "type": "n8n-nodes-base.supabase",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": true,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "checkQualificationStatus",
+      "type": "n8n-nodes-base.supabaseTool",
+      "textish_fields": [
+        {
+          "path": "descriptionType",
+          "length": 6,
+          "excerpt": "manual"
+        },
+        {
+          "path": "toolDescription",
+          "length": 512,
+          "excerpt": "Check how many of the 3 qualifying questions this lead has answered so far.  WHEN TO USE: - BEFORE calling saveQualifyingAnswer, to get the current qualifying_answers object - When the lead says they want to book an appointment, to verify they are qualified - When you are unsure which qualifying questions have already been answered  INPUT: No input needed. Automatically looks up this lead's conversation_context record.  OUTPUT: Returns the qualifying_answers JSONB object with keys q1, q2, q3. - …[TRUNCATED]"
+        }
+      ],
+      "total_textish_length": 518,
+      "mentions_conversation_context": true,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Clear Newsletter Flags",
+      "type": "n8n-nodes-base.supabase",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": true,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Gather Prompt Data",
+      "type": "n8n-nodes-base.set",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": true
+    },
+    {
+      "name": "Gather Sentiment Data1",
+      "type": "n8n-nodes-base.set",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": true
+    },
+    {
+      "name": "Get Conversation Summary",
+      "type": "n8n-nodes-base.supabase",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": true,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Get Outbound Conversation Summary",
+      "type": "n8n-nodes-base.supabase",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": true,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Insert Conversation Context",
+      "type": "n8n-nodes-base.supabase",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": true,
+      "mentions_conversation_summary": true
+    },
+    {
+      "name": "Leak Detected?",
+      "type": "n8n-nodes-base.if",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Log AI Leak",
+      "type": "n8n-nodes-base.supabase",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Newsletter Offer Needed?",
+      "type": "n8n-nodes-base.if",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Notify Agent",
+      "type": "n8n-nodes-base.code",
+      "textish_fields": [
+        {
+          "path": "jsCode",
+          "length": 512,
+          "excerpt": "const input = $input.first().json;  const agentEmail = input.agent_email || null; const agentPhone = input.agent_phone || null; const agentName = input.agent_name || input.agentName || 'Agent'; const firstName = input.first_name || input.firstName || 'A lead'; const message = input.message || input.message_body || ''; const responseText = input.responseText || input.output || ''; const contactId = input.contact_id || input.contactId || '';  const summary = firstName + ' needs ' + agentName + \"\\'…[TRUNCATED]"
+        }
+      ],
+      "total_textish_length": 512,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Prepare Sentiment Context",
+      "type": "n8n-nodes-base.code",
+      "textish_fields": [
+        {
+          "path": "jsCode",
+          "length": 512,
+          "excerpt": "const d = $input.first().json;  return [{   json: {     ...d,     currentMessage: d.currentMessage || '',     historyText: d.messageHistory || 'No previous messages',     conversationSummary: d.conversationSummary || 'No summary',     lastIntent: 'none',     agentName: d.agentName || 'Luke Gilbert',     contactId: d.contactId || '',     locationId: d.locationId || '',     firstName: d.firstName || 'Contact',     pipelineStage: d.pipelineStage || 'MONTHLY',     pipelineState: d.pipelineState || '…[TRUNCATED]"
+        }
+      ],
+      "total_textish_length": 512,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "saveQualifyingAnswer",
+      "type": "n8n-nodes-base.supabaseTool",
+      "textish_fields": [
+        {
+          "path": "descriptionType",
+          "length": 6,
+          "excerpt": "manual"
+        },
+        {
+          "path": "toolDescription",
+          "length": 512,
+          "excerpt": "MANDATORY TOOL - Save a qualifying answer to the database after the lead answers one of the 3 qualifying questions.  WHEN TO USE: You MUST call this tool IMMEDIATELY every time the lead provides information that answers Q1, Q2, or Q3. Do NOT wait until all questions are answered. Save each answer the moment you receive it.  The tool updates the qualifying_answers JSONB column in conversation_context for this lead.  INPUT: You must provide a JSON object with the field 'qualifying_answers' contain…[TRUNCATED]"
+        }
+      ],
+      "total_textish_length": 518,
+      "mentions_conversation_context": true,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Set Newsletter Pending",
+      "type": "n8n-nodes-base.supabase",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": true,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "textish_fields": [
+        {
+          "path": "content",
+          "length": 65,
+          "excerpt": "## Pull Memory  1. Message Logs 2. Conversation_summary/context"
+        }
+      ],
+      "total_textish_length": 65,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "textish_fields": [
+        {
+          "path": "content",
+          "length": 65,
+          "excerpt": "## Pull Memory  1. Message Logs 2. Conversation_summary/context"
+        }
+      ],
+      "total_textish_length": 65,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Summary Exists?",
+      "type": "n8n-nodes-base.if",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": false,
+      "mentions_conversation_summary": false
+    },
+    {
+      "name": "Update Conversation Context",
+      "type": "n8n-nodes-base.supabase",
+      "textish_fields": [],
+      "total_textish_length": 0,
+      "mentions_conversation_context": true,
+      "mentions_conversation_summary": true
+    }
+  ],
+  "prompt_surfaces": [
+    {
+      "name": "Assemble System Prompt",
+      "type": "n8n-nodes-base.code",
+      "textish_total_length": 10,
+      "key_fields": [
+        {
+          "path": "jsCode",
+          "length": 10,
+          "excerpt": "[REDACTED]"
+        }
+      ]
+    },
+    {
+      "name": "Gather Prompt Data",
+      "type": "n8n-nodes-base.set",
+      "textish_total_length": 0,
+      "key_fields": []
+    },
+    {
+      "name": "Get Prompt Blocks (SMRT)",
+      "type": "n8n-nodes-base.postgres",
+      "textish_total_length": 327,
+      "key_fields": [
+        {
+          "path": "query",
+          "length": 327,
+          "excerpt": "SELECT    pb.block_id,   pb.category,   pb.prompt_content,   pb.priority,   pb.conditions FROM prompt_blocks pb WHERE pb.is_active = true ORDER BY    CASE pb.category      WHEN 'mode' THEN 1     WHEN 'channel' THEN 2     WHEN 'relationship' THEN 3     WHEN 'history' THEN 4     WHEN 'situation' THEN 5   END,   pb.priority DESC"
+        }
+      ]
+    },
+    {
+      "name": "Get Static Prompt Sections",
+      "type": "n8n-nodes-base.supabase",
+      "textish_total_length": 0,
+      "key_fields": []
+    },
+    {
+      "name": "Get Conversation Summary",
+      "type": "n8n-nodes-base.supabase",
+      "textish_total_length": 0,
+      "key_fields": []
+    },
+    {
+      "name": "Get Outbound Conversation Summary",
+      "type": "n8n-nodes-base.supabase",
+      "textish_total_length": 0,
+      "key_fields": []
+    },
+    {
+      "name": "Get Message History",
+      "type": "n8n-nodes-base.postgres",
+      "textish_total_length": 272,
+      "key_fields": [
+        {
+          "path": "query",
+          "length": 272,
+          "excerpt": "=SELECT    ml.*,   (SELECT COUNT(*) FROM message_log WHERE contact_id = '{{ $('LeadDetails').first().json.contact_id }}') as interaction_count FROM message_log ml  WHERE ml.contact_id = '{{ $('LeadDetails').first().json.contact_id }}'  ORDER BY ml.timestamp DESC  LIMIT 15"
+        }
+      ]
+    },
+    {
+      "name": "Get Outbound Message History",
+      "type": "n8n-nodes-base.postgres",
+      "textish_total_length": 215,
+      "key_fields": [
+        {
+          "path": "query",
+          "length": 215,
+          "excerpt": "SELECT ml.*, (SELECT COUNT(*) FROM message_log WHERE contact_id = '{{ $json.contact_id }}') as interaction_count FROM message_log ml WHERE ml.contact_id = '{{ $json.contact_id }}' ORDER BY ml.timestamp DESC LIMIT 15"
+        }
+      ]
+    },
+    {
+      "name": "Analyze Conversation",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "textish_total_length": 1030,
+      "key_fields": [
+        {
+          "path": "messages.values[0].content",
+          "length": 512,
+          "excerpt": "You analyze real estate AI conversation exchanges and extract structured signals.  Return ONLY a valid JSON object (no markdown, no explanation): {   \"summary\": \"250-350 word accumulative summary\",   \"lead_intent\": \"buy|sell|both|unknown\",   \"lead_timeline\": \"now|3_months|6_months|1_year|unknown\",   \"appointment_discussed\": true or false,   \"appointment_outcome\": \"offered|accepted|rejected|rescheduled|null\",   \"newsletter_discussed\": true or false,   \"newsletter_declined\": true or false,   \"news…[TRUNCATED]"
+        },
+        {
+          "path": "messages.values[0].role",
+          "length": 6,
+          "excerpt": "system"
+        },
+        {
+          "path": "messages.values[1].content",
+          "length": 512,
+          "excerpt": "=Previous Summary: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.conversation_summary } catch(e) { try { return $('Get Conversation Summary').first().json.conversation_summary } catch(e2) { return 'None' } } })() }} Previous Intent: {{ (() => { try { return $('Get Outbound Conversation Summary').first().json.lead_intent } catch(e) { try { return $('Get Conversation Summary').first().json.lead_intent } catch(e2) { return 'unknown' } } })() }} Previous Timeline: {{ (…[TRUNCATED]"
+        }
+      ]
+    },
+    {
+      "name": "Update Conversation Context",
+      "type": "n8n-nodes-base.supabase",
+      "textish_total_length": 0,
+      "key_fields": []
+    },
+    {
+      "name": "Insert Conversation Context",
+      "type": "n8n-nodes-base.supabase",
+      "textish_total_length": 0,
+      "key_fields": []
+    }
+  ]
+}
