@@ -2,6 +2,76 @@
 
 Author: **Manus AI**
 
+## 2026-05-14 — Portrait Builder v2: Full Agent Review Loop + portrait_versions Integration
+
+### Updated — Portrait Builder Workflow (`MUewekoBJkI5z4Zv`) — v2
+
+Redeployed the Portrait Builder with a revised portrait tone and an additional Stage 5 write to `portrait_versions`. The workflow now seeds two v1 draft rows (section: `portrait` and section: `characteristics`) immediately after generating content, so the homework form can load the agent's portrait without any additional REST calls.
+
+**Portrait tone change:** Autobiography style — personal, honest, grounded. No metaphors, no "journey", no inspirational framing, no Hallmark card language. The compiler prompt now enforces a strict anti-metaphor rule and matches prose energy to the individual agent's character (reserved → measured prose; high-energy → shorter sentences; no-nonsense → plain direct language).
+
+**Stage 5 additions:**
+- After inserting to `onboarding_requests.bio_template`, Stage 5 now inserts two rows into `portrait_versions` (`section: 'portrait'`, `section: 'characteristics'`, both `version: 1`, `status: 'draft'`).
+- Non-fatal: if `portrait_versions` insert fails, the main record is already saved and a warning is logged.
+- Output now includes `portrait_versions_seeded: true` and `pipeline_version: 'portrait_builder_v2'`.
+
+Workflow JSON updated in `workflows/active/Portrait_Builder__MUewekoBJkI5z4Zv.json`.
+
+### Added — Revise Section Workflow (`9VT3BXntmB1DhpHF`)
+
+New webhook-triggered n8n workflow that accepts agent revision notes and regenerates a single section (portrait or characteristics) without re-running the full pipeline.
+
+**Webhook:** `POST https://twodegreesnorth.tech/webhook/portrait-revise`
+
+**Payload:** `{ section: 'portrait'|'characteristics', current_content, agent_notes, submission_id }`
+
+**Pipeline:**
+1. Validate input — checks required fields, computes `current_version` from `portrait_versions` table
+2. Build OpenAI request — runs only the relevant compiler (Stage 4A or 4B) with agent notes injected into the prompt
+3. Parse + persist — inserts new row into `portrait_versions` with `version: current_version + 1`, `status: 'draft'`, `agent_notes` stored for audit trail
+
+Response: `{ success, submission_id, section, version, content, record_id }`
+
+### Added — Homework Form Biography + Characteristics Review Steps (`h/index.html`)
+
+Committed to `SmrtGuys/smrt-command-centre` (commit `ff29cd3`).
+
+**Step 4 — Biography Review (replaces bio bucket fields):**
+- Displays the AI-generated portrait in a read-only panel
+- Agent can click **This is me** (approve) or write revision notes and click **Regenerate**
+- Regenerate calls `POST /webhook/portrait-revise` → updates panel with new version
+- Loop continues until agent approves
+- Approval guard: wizard Next button is blocked until Step 4 is approved
+
+**Step 5 — Characteristics Review (replaces read-only persona textarea):**
+- Same approve/revise loop as Step 4, but for the characteristics brief
+- Approval guard: wizard Next button blocked until Step 5 is approved
+
+**Technical changes:**
+- `loadPortraitContent(packet, portraitData, characteristicsData)` — uses data returned directly from `smrt_homework_verify` RPC (no extra Supabase REST calls)
+- `renderForm(packet, portraitData, characteristicsData)` — passes portrait/characteristics data through from verify response
+- `buildPayload()` — includes `portrait_approved`, `portrait_version_id`, `characteristics_approved`, `characteristics_version_id`
+- `REVISE_WEBHOOK` constant set to `https://twodegreesnorth.tech/webhook/portrait-revise`
+
+### Added — Supabase Schema Migrations (SMRT Page project `kfoijgcbkjeizxxyiwxv`)
+
+Committed to `SmrtGuys/smrt-command-centre`.
+
+**Migration 019 — `portrait_versions` table:**
+- Stores versioned portrait and characteristics content
+- Columns: `id`, `submission_id` (FK → `smrt_saas_submissions`), `section`, `version`, `content`, `agent_notes`, `status`, `approved_at`, `created_at`
+- Unique partial index: one approved version per `(submission_id, section)`
+- RLS disabled (service role writes from n8n HTTP nodes)
+
+**Migration 020 — `agent_homework_packets` approval columns:**
+- Added: `portrait_approved` (bool), `portrait_version_id` (uuid FK), `characteristics_approved` (bool), `characteristics_version_id` (uuid FK)
+
+**RPC patches (applied directly to SMRT Page Supabase):**
+- `smrt_homework_submit` — whitelists new approval fields; writes approved portrait to `agents.agent_bio.full_bio` and approved characteristics to `agents.personality_prompt`
+- `smrt_homework_verify` — returns `portrait` and `characteristics` version data (latest draft row from `portrait_versions`) alongside packet data
+
+---
+
 ## 2026-05-14 — Homework Email Workflow + Onboarding Tab
 
 ### Added — Homework Email Workflow (`W1IcIn6NDN9H8vRm`)
