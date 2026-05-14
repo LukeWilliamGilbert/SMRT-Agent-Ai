@@ -1,6 +1,44 @@
 # SMRT Agent AI Change Log
-
 Author: **Manus AI**
+
+## 2026-05-14 — End-to-End Onboarding Wiring
+
+**Goal:** Admin pastes transcript → Portrait Builder runs → admin clicks Send Homework → agent receives email with clickable button → agent opens homework form to review portrait, approve characteristics, and complete their profile.
+
+### Portrait Builder (`MUewekoBJkI5z4Zv`) — Stage 5 patch
+- Stage 5 now reads `anchor.submission_id` from the incoming webhook payload
+- `portrait_versions` rows are now inserted using `smrt_saas_submissions.id` as the FK (not `onboarding_requests.id`)
+- `portrait_versions_submission_id` returned in Stage 5 response so admin dashboard can use it without a separate lookup
+- Workflow redeployed and active
+
+### Admin Dashboard (`agent-connect-dashboard`) — Onboarding tab rewrite
+- Added `@supabase/supabase-js` client with persistent session (`storageKey: smrt_sb_auth`) — shares auth state with `admin.smrtagent.ai`
+- Added **Submission ID** input field (UUID from `smrt_saas_submissions` — required for homework-send)
+- Auto-populated from Portrait Builder response (`portrait_versions_submission_id`) when available
+- **Send Homework** button now calls `POST /functions/v1/homework-send` with admin JWT + `{ submission_id }`
+  - Creates `agent_homework_packets` row with secure token
+  - Sends agent a clean HTML email with a prominent "Finish onboarding" button
+  - Link expires in 24 hours
+- Removed old `homework-email` n8n webhook call entirely
+- Admin auth status indicator in header (green dot = signed in, amber warning = not signed in)
+- Friendly error messages for all `homework-send` error codes
+- Committed to `LukeWilliamGilbert/agent-connect-dashboard` (commit `6901f8d`)
+
+### What the agent receives
+The `homework-send` edge function sends a clean, minimal HTML email:
+- Subject: `{FirstName}, finish your SMRT onboarding (5 min)`
+- Body: brief intro + prominent blue "Finish onboarding" button
+- Button opens `https://admin.smrtagent.ai/h/{token}`
+- The homework form (`h/index.html`) lets the agent:
+  1. Review and approve (or request revisions to) their portrait
+  2. Review and approve (or request revisions to) their characteristics brief
+  3. Fill in contact info, scheduling preferences, A2P registration
+  4. Submit — writes back to `smrt_saas_submissions.payload` and `agents` table
+
+### Remaining gap
+- The `smrt_saas_submissions` record must have `payload.agent_info.agent_email` populated before `homework-send` is called. If the email is blank, the send will fail with `missing_agent_email`. Admin should verify the email in the Submissions tab before clicking Send Homework.
+
+---
 
 ## 2026-05-14 — Portrait Builder v2: Full Agent Review Loop + portrait_versions Integration
 
