@@ -2,6 +2,27 @@
 
 Author: **Manus AI**
 
+## 2026-05-14
+
+### Portrait Builder — new standalone onboarding workflow (ID: YPNy8brb5LMbD75r)
+
+Built and deployed a new n8n workflow (`🎨 Portrait Builder`) that converts a raw onboarding transcript into two structured AI-generated assets: an **agent portrait** (Hero's Journey narrative) and an **agent characteristics brief** (behavioral/communication profile). Both are persisted to `onboarding_requests.bio_template` in Supabase.
+
+**Webhook:** `POST https://twodegreesnorth.tech/webhook/portrait-builder`
+
+**Pipeline (5 stages, fire-and-forget):**
+1. Pre-processor (Code) — deterministic normalisation, anchor extraction, 4-window topic split
+2. 4× parallel GPT-4o-mini extractors (Operational / Origin & Geography / Method & Character / FAQ & Personal)
+3. Merge & Floor Check (Code) — appends extractor outputs, enforces floor values, flags low-confidence records
+4. 2× parallel GPT-4o compilers (Hero's Journey portrait + behavioral characteristics brief)
+5. Persist to Supabase (Code) — normalises phone/timezone, maps to `onboarding_requests`, inserts with `status = awaiting_launch`
+
+**Live verification:** Execution 10524 — all 14 nodes `success`. Record `96fb5e6c-c465-408e-bf14-97efc8885ed1` created. Portrait: 3,547 chars. Characteristics: 2,090 chars. Pipeline time: ~47s.
+
+Workflow JSON added to `workflows/active/Portrait_Builder__YPNy8brb5LMbD75r.json`. Manifest updated.
+
+---
+
 ## 2026-04-29
 
 Initialized the SMRT system audit repository structure. Added the audit protocol and directories for schema exports, workflow exports, system documentation, diagrams, audit artifacts, and future implementation notes. No production data, schema, workflow, prompt, or configuration changes were made.

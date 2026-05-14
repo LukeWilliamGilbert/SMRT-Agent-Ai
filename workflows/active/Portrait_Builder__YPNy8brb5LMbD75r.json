@@ -1,0 +1,462 @@
+{
+  "name": "\ud83c\udfa8 Portrait Builder",
+  "nodes": [
+    {
+      "id": "node_webhook",
+      "name": "Portrait Builder Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portrait-builder",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "portrait-builder"
+    },
+    {
+      "id": "node_validate",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Validate incoming webhook payload\nconst body = $input.first().json.body || $input.first().json;\n\nconst transcript = body.transcript || '';\nconst anchor = body.anchor || {};\n\nif (!transcript || transcript.trim().length < 500) {\n  throw new Error('Validation failed: transcript missing or too short (minimum 500 chars)');\n}\n\n// Pass through validated payload\nreturn [{\n  json: {\n    transcript: transcript.trim(),\n    anchor: anchor,\n    received_at: new Date().toISOString()\n  }\n}];"
+      }
+    },
+    {
+      "id": "node_stage1",
+      "name": "Stage 1 \u2014 Pre-processor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ============================================================\n// STAGE 1: DETERMINISTIC PRE-PROCESSOR\n// Portrait Builder \u2014 SMRT Onboarding Pipeline\n//\n// Job: Split raw transcript into labeled topic segments and\n// extract hard facts via pattern matching. No LLM. No guessing.\n// Output feeds all 4 parallel Stage 2 extractors.\n// ============================================================\n\nconst input = $input.first().json;\nconst transcript = input.transcript || '';\nconst anchor = input.anchor || {};\n\nif (!transcript || transcript.trim().length < 500) {\n  throw new Error('Transcript too short or missing \u2014 minimum 500 chars required');\n}\n\n// \u2500\u2500 1. HARD FACT EXTRACTION (regex, zero hallucination) \u2500\u2500\u2500\u2500\u2500\u2500\nconst hardFacts = {};\n\n// Email addresses\nconst emailMatches = transcript.match(/\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b/g);\nhardFacts.emails = emailMatches ? [...new Set(emailMatches)] : [];\n\n// Phone numbers (US formats)\nconst phoneMatches = transcript.match(/\\b(\\+?1[-.\\s]?)?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}\\b/g);\nhardFacts.phones = phoneMatches ? [...new Set(phoneMatches)] : [];\n\n// ZIP codes\nconst zipMatches = transcript.match(/\\b\\d{5}(?:-\\d{4})?\\b/g);\nhardFacts.zips = zipMatches ? [...new Set(zipMatches)] : [];\n\n// Years (career-relevant: 1980\u20132030)\nconst yearMatches = transcript.match(/\\b(19[89]\\d|20[0-2]\\d)\\b/g);\nhardFacts.years = yearMatches ? [...new Set(yearMatches)].sort() : [];\n\n// Named states (abbreviated)\nconst statePattern = /\\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)\\b/g;\nconst stateMatches = transcript.match(statePattern);\nhardFacts.states = stateMatches ? [...new Set(stateMatches)] : [];\n\n// License numbers (common real estate formats)\nconst licenseMatches = transcript.match(/\\b(license|lic\\.?|#)\\s*[A-Z0-9]{5,12}\\b/gi);\nhardFacts.licenses = licenseMatches ? [...new Set(licenseMatches)] : [];\n\n// \u2500\u2500 2. SPEAKER TURN SPLITTING \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Detect common transcript formats:\n// \"Luke: ...\", \"Agent: ...\", \"Speaker 1: ...\", \"[Luke]\", \"[Agent]\"\n// Also handles Fathom-style \"Luke Gilbert (00:01:23): ...\"\n\nfunction splitIntoTurns(text) {\n  const turns = [];\n  \n  // Try to detect speaker format\n  const speakerPatterns = [\n    // \"Name (timestamp): text\" \u2014 Fathom format\n    /^([A-Za-z][A-Za-z\\s]{1,30}?)\\s*\\(\\d{2}:\\d{2}(?::\\d{2})?\\)\\s*:\\s*/m,\n    // \"Name: text\" \u2014 simple format\n    /^([A-Za-z][A-Za-z\\s]{1,20}?)\\s*:\\s*/m,\n    // \"[Name] text\" \u2014 bracket format\n    /^\\[([A-Za-z][A-Za-z\\s]{1,20}?)\\]\\s*/m,\n  ];\n  \n  let detectedFormat = null;\n  for (const pattern of speakerPatterns) {\n    if (pattern.test(text)) {\n      detectedFormat = pattern;\n      break;\n    }\n  }\n  \n  if (!detectedFormat) {\n    // No speaker labels detected \u2014 return as single block\n    return [{ speaker: 'UNKNOWN', text: text.trim(), index: 0 }];\n  }\n  \n  // Split by speaker turns using line-by-line approach\n  const lines = text.split('\\n');\n  let currentSpeaker = null;\n  let currentText = [];\n  let turnIndex = 0;\n  \n  for (const line of lines) {\n    // Check if this line starts a new speaker turn\n    const fathomMatch = line.match(/^([A-Za-z][A-Za-z\\s]{1,30}?)\\s*\\(\\d{2}:\\d{2}(?::\\d{2})?\\)\\s*:\\s*(.*)/);\n    const simpleMatch = line.match(/^([A-Za-z][A-Za-z\\s]{1,20}?)\\s*:\\s*(.*)/);\n    const bracketMatch = line.match(/^\\[([A-Za-z][A-Za-z\\s]{1,20}?)\\]\\s*(.*)/);\n    \n    const match = fathomMatch || simpleMatch || bracketMatch;\n    \n    if (match) {\n      // Save previous turn\n      if (currentSpeaker && currentText.length > 0) {\n        turns.push({\n          speaker: currentSpeaker.trim().toUpperCase(),\n          text: currentText.join(' ').trim(),\n          index: turnIndex++\n        });\n      }\n      currentSpeaker = match[1];\n      currentText = [match[2] || ''];\n    } else if (line.trim() && currentSpeaker) {\n      currentText.push(line.trim());\n    }\n  }\n  \n  // Save last turn\n  if (currentSpeaker && currentText.length > 0) {\n    turns.push({\n      speaker: currentSpeaker.trim().toUpperCase(),\n      text: currentText.join(' ').trim(),\n      index: turnIndex\n    });\n  }\n  \n  return turns;\n}\n\nconst turns = splitIntoTurns(transcript);\n\n// \u2500\u2500 3. IDENTIFY INTERVIEWER vs AGENT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// The interviewer is typically Luke / SMRT CSM\n// The agent is the person being onboarded\n\nconst speakerCounts = {};\nfor (const turn of turns) {\n  speakerCounts[turn.speaker] = (speakerCounts[turn.speaker] || 0) + turn.text.length;\n}\n\n// Sort by total text volume \u2014 agent usually speaks more\nconst speakers = Object.entries(speakerCounts).sort((a, b) => b[1] - a[1]);\n\n// Heuristic: if \"LUKE\" or \"SMRT\" or \"CSM\" appears, that's the interviewer\nlet interviewerSpeaker = null;\nlet agentSpeaker = null;\n\nfor (const [speaker] of speakers) {\n  const s = speaker.toLowerCase();\n  if (s.includes('luke') || s.includes('smrt') || s.includes('csm') || s.includes('host')) {\n    interviewerSpeaker = speaker;\n  }\n}\n\n// Agent is the highest-volume non-interviewer speaker\nfor (const [speaker] of speakers) {\n  if (speaker !== interviewerSpeaker) {\n    agentSpeaker = speaker;\n    break;\n  }\n}\n\n// If we couldn't identify, use anchor or fall back\nif (!agentSpeaker && anchor.expected_agent_name) {\n  agentSpeaker = anchor.expected_agent_name.toUpperCase().split(' ')[0];\n}\n\n// Filter to agent turns only\nconst agentTurns = turns.filter(t => \n  agentSpeaker ? t.speaker === agentSpeaker : t.speaker !== interviewerSpeaker\n);\n\n// \u2500\u2500 4. TOPIC SEGMENT LABELING \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Label each agent turn with one or more topic categories\n\nconst TOPIC_KEYWORDS = {\n  origin_story: [\n    'started', 'got into', 'began', 'first', 'license', 'licensed', 'career', \n    'before real estate', 'used to', 'prior to', 'originally', 'came from',\n    'decided to', 'transition', 'switched', 'left', 'quit', 'recession', '2008',\n    'broker', 'mentor', 'inspired', 'why i', 'how i got'\n  ],\n  market_geography: [\n    'area', 'market', 'city', 'county', 'zip', 'neighborhood', 'region', 'territory',\n    'serve', 'cover', 'focus', 'specialize in', 'work in', 'based in', 'located',\n    'north', 'south', 'east', 'west', 'metro', 'suburb', 'rural', 'downtown',\n    'boise', 'nampa', 'caldwell', 'meridian', 'eagle', 'kuna', 'star', 'middleton'\n  ],\n  client_types: [\n    'client', 'buyer', 'seller', 'investor', 'first-time', 'first time', 'move-up',\n    'downsiz', 'relocation', 'relo', 'luxury', 'military', 'veteran', 'divorce',\n    'estate', 'probate', 'work with', 'help', 'serve', 'typical', 'ideal',\n    'who i', 'my clients', 'people i'\n  ],\n  work_method: [\n    'process', 'approach', 'method', 'system', 'how i', 'strategy', 'communicate',\n    'text', 'call', 'email', 'respond', 'available', 'follow up', 'follow-up',\n    'transaction', 'contract', 'offer', 'negotiat', 'represent', 'advocate',\n    'explain', 'educate', 'walk through', 'step', 'timeline', 'closing'\n  ],\n  boundaries: [\n    'won\\'t', 'will not', 'don\\'t', 'refuse', 'fire', 'fired', 'let go', 'walk away',\n    'not willing', 'boundary', 'limit', 'tolerance', 'respect', 'treat', 'expect',\n    'demand', 'disrespect', 'rude', 'scream', 'yell', 'abuse', 'right fit',\n    'not a good fit', 'interview clients', 'qualify'\n  ],\n  competitive_edge: [\n    'different', 'unique', 'stand out', 'better', 'advantage', 'value', 'why me',\n    'why choose', 'what i offer', 'what sets', 'expertise', 'experience', 'track record',\n    'result', 'sold', 'closed', 'volume', 'award', 'recognition', 'top', 'best',\n    'proven', 'reputation', 'referral', 'repeat', 'testimonial'\n  ],\n  personal_background: [\n    'family', 'kids', 'children', 'married', 'wife', 'husband', 'partner', 'dog',\n    'hobby', 'hobbies', 'outside of work', 'personal', 'passion', 'love to',\n    'enjoy', 'weekend', 'travel', 'sport', 'fitness', 'gym', 'run', 'golf',\n    'grew up', 'born', 'raised', 'hometown', 'roots', 'community', 'volunteer',\n    'church', 'faith', 'values', 'believe'\n  ],\n  qa_exchange: [] // Catch-all for direct Q&A \u2014 labeled by context\n};\n\nfunction labelTurn(turnText) {\n  const text = turnText.toLowerCase();\n  const labels = new Set();\n  \n  for (const [topic, keywords] of Object.entries(TOPIC_KEYWORDS)) {\n    if (topic === 'qa_exchange') continue;\n    for (const kw of keywords) {\n      if (text.includes(kw)) {\n        labels.add(topic);\n        break;\n      }\n    }\n  }\n  \n  // If no labels matched, mark as qa_exchange\n  if (labels.size === 0) {\n    labels.add('qa_exchange');\n  }\n  \n  return [...labels];\n}\n\nconst labeledTurns = agentTurns.map(turn => ({\n  ...turn,\n  topics: labelTurn(turn.text)\n}));\n\n// \u2500\u2500 5. BUILD SEGMENT BUNDLES \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Group turns by topic for each parallel extractor\n\nfunction getSegmentText(topics) {\n  const relevant = labeledTurns.filter(t => \n    t.topics.some(topic => topics.includes(topic))\n  );\n  return relevant.map(t => t.text).join('\\n\\n');\n}\n\nconst segments = {\n  // For Call A: full agent turns (operational fields need full context)\n  operational: agentTurns.map(t => t.text).join('\\n\\n'),\n  \n  // For Call B: origin story + geography\n  origin_and_geography: getSegmentText(['origin_story', 'market_geography', 'personal_background']),\n  \n  // For Call C: method + character\n  method_and_character: getSegmentText(['client_types', 'work_method', 'boundaries', 'competitive_edge']),\n  \n  // For Call D: FAQ + personal\n  faq_and_personal: getSegmentText(['qa_exchange', 'personal_background', 'origin_story']),\n  \n  // Full agent text for compilers\n  full_agent_text: agentTurns.map(t => t.text).join('\\n\\n')\n};\n\n// Ensure no segment is empty \u2014 fall back to full agent text\nfor (const key of Object.keys(segments)) {\n  if (!segments[key] || segments[key].trim().length < 100) {\n    segments[key] = segments.full_agent_text;\n  }\n}\n\n// \u2500\u2500 6. METADATA \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nconst meta = {\n  total_turns: turns.length,\n  agent_turns: agentTurns.length,\n  interviewer_speaker: interviewerSpeaker,\n  agent_speaker: agentSpeaker,\n  speaker_detection_confidence: agentSpeaker ? 'detected' : 'fallback',\n  topic_distribution: {},\n  hard_facts: hardFacts,\n  anchor: anchor\n};\n\nfor (const turn of labeledTurns) {\n  for (const topic of turn.topics) {\n    meta.topic_distribution[topic] = (meta.topic_distribution[topic] || 0) + 1;\n  }\n}\n\nreturn [{\n  json: {\n    segments,\n    meta,\n    transcript // pass through for Stage 2 calls that need full context\n  }\n}];\n"
+      }
+    },
+    {
+      "id": "node_call_a",
+      "name": "Call A \u2014 Operational Fields",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        60
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0PgQmc1HTjnPbGBo",
+          "name": "SMRT - OpenAi Credentials"
+        }
+      },
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"model\": \"gpt-4o\", \"temperature\": 0.3, \"max_tokens\": 2000, \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"You are extracting structured operational data from a real estate agent onboarding interview.\\n\\nRULES:\\n- Only extract facts explicitly stated by the AGENT (not the interviewer).\\n- If a field is not clearly stated, return null \\u2014 do not guess.\\n- Confidence scale 1\\u201310: only return fields with confidence >= 7.\\n- Hard facts (email, phone, zip) have been pre-extracted by regex \\u2014 use those as ground truth if present.\\n\\nReturn ONLY valid JSON matching this exact schema. No commentary.\"}, {\"role\": \"user\", \"content\": \"='HARD FACTS (regex-extracted, high confidence):\\\\n' + JSON.stringify($('Stage 1 \\u2014 Pre-processor').first().json.meta.hard_facts, null, 2) + '\\\\n\\\\nANCHOR (caller-supplied hint \\u2014 trust transcript over anchor if conflict):\\\\n' + JSON.stringify($('Stage 1 \\u2014 Pre-processor').first().json.meta.anchor, null, 2) + '\\\\n\\\\nAGENT TRANSCRIPT SEGMENTS:\\\\n' + $('Stage 1 \\u2014 Pre-processor').first().json.segments.operational + '\\\\n\\\\nExtract the following fields. Return null for any field not clearly stated.\\\\n\\\\n{\\\\n  \\\\\\\"agent_full_name\\\\\\\": string | null,\\\\n  \\\\\\\"agent_first_name\\\\\\\": string | null,\\\\n  \\\\\\\"agent_last_name\\\\\\\": string | null,\\\\n  \\\\\\\"agent_title\\\\\\\": string | null,\\\\n  \\\\\\\"business_name\\\\\\\": string | null,\\\\n  \\\\\\\"agent_email\\\\\\\": string | null,\\\\n  \\\\\\\"agent_phone\\\\\\\": string | null,\\\\n  \\\\\\\"company_website\\\\\\\": string | null,\\\\n  \\\\\\\"funnel_url\\\\\\\": string | null,\\\\n  \\\\\\\"office_address\\\\\\\": { \\\\\\\"street\\\\\\\": string | null, \\\\\\\"city\\\\\\\": string | null, \\\\\\\"state\\\\\\\": string | null, \\\\\\\"zip\\\\\\\": string | null },\\\\n  \\\\\\\"market_area\\\\\\\": string | null,\\\\n  \\\\\\\"market_name\\\\\\\": string | null,\\\\n  \\\\\\\"timezone\\\\\\\": string | null,\\\\n  \\\\\\\"specialties_keywords\\\\\\\": [string],\\\\n  \\\\\\\"preferred_area_codes\\\\\\\": [string],\\\\n  \\\\\\\"coverage_cities\\\\\\\": [string],\\\\n  \\\\\\\"ai_coordinator_name\\\\\\\": string | null,\\\\n  \\\\\\\"agent_notes\\\\\\\": string | null,\\\\n  \\\\\\\"years_in_real_estate\\\\\\\": number | null,\\\\n  \\\\\\\"license_year\\\\\\\": number | null,\\\\n  \\\\\\\"confidence_notes\\\\\\\": string\\\\n}'\"}]}",
+        "options": {
+          "timeout": 120000
+        }
+      }
+    },
+    {
+      "id": "node_call_b",
+      "name": "Call B \u2014 Origin & Geography",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        220
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0PgQmc1HTjnPbGBo",
+          "name": "SMRT - OpenAi Credentials"
+        }
+      },
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"model\": \"gpt-4o\", \"temperature\": 0.3, \"max_tokens\": 2000, \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"You are a skilled biographer writing rich, specific portrait paragraphs about a real estate agent based on their onboarding interview.\\n\\nYOUR JOB: Write two portrait paragraphs \\u2014 Background and Areas Served.\\n\\nRULES:\\n- Write in third person, present tense for professional facts, past tense for history.\\n- Use the agent's actual words and phrasing where they are vivid and specific.\\n- NEVER invent facts. Only use what is in the transcript.\\n- NEVER use first person (I, my, me).\\n- Minimum 900 characters per paragraph. Aim for 1,200\\u20131,600.\\n- Be specific. Generic sentences like \\\"Chris is passionate about real estate\\\" are worthless. Find the story.\\n- The Background paragraph should feel like the opening of a biography \\u2014 the reader should understand who this person is and how they got here.\\n- The Areas Served paragraph should convey not just WHERE but WHY \\u2014 their connection to the territory, their knowledge of it, what makes them the right person for it.\\n\\nBEFORE RETURNING: Count characters in each paragraph. If either is under 900 chars, expand it. State the character count in a scratchpad line before the JSON.\"}, {\"role\": \"user\", \"content\": \"='AGENT NAME: ' + ($('Stage 1 \\u2014 Pre-processor').first().json.meta.anchor.expected_agent_name || 'the agent') + '\\\\n\\\\nRELEVANT TRANSCRIPT SEGMENTS (origin story, geography, personal background):\\\\n' + $('Stage 1 \\u2014 Pre-processor').first().json.segments.origin_and_geography + '\\\\n\\\\nWrite the following two portrait paragraphs. Return as JSON.\\\\n\\\\n{\\\\n  \\\\\\\"scratchpad\\\\\\\": \\\\\\\"background: [X] chars | areas_served: [Y] chars\\\\\\\",\\\\n  \\\\\\\"background\\\\\\\": \\\\\\\"[Full background paragraph \\u2014 900-1600 chars. Career origin, prior life, pivot moment, values, worldview. End with what drives them now.]\\\\\\\",\\\\n  \\\\\\\"areas_served\\\\\\\": \\\\\\\"[Full areas served paragraph \\u2014 900-1400 chars. Where they work, why they know it, their connection to the community, what they understand about the territory that others don\\\\'t.]\\\\\\\"\\n}'\"}]}",
+        "options": {
+          "timeout": 120000
+        }
+      }
+    },
+    {
+      "id": "node_call_c",
+      "name": "Call C \u2014 Method & Character",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        380
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0PgQmc1HTjnPbGBo",
+          "name": "SMRT - OpenAi Credentials"
+        }
+      },
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"model\": \"gpt-4o\", \"temperature\": 0.3, \"max_tokens\": 2000, \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"You are a skilled biographer writing rich, specific portrait paragraphs about a real estate agent based on their onboarding interview.\\n\\nYOUR JOB: Write two portrait paragraphs \\u2014 Specialties and Style.\\n\\nRULES:\\n- Write in third person, present tense.\\n- Use the agent's actual words and phrasing where they are vivid and specific.\\n- NEVER invent facts. Only use what is in the transcript.\\n- NEVER use first person (I, my, me).\\n- Specialties: minimum 1,200 characters. Open with a narrative paragraph about what they do best and who they help most. Follow with 5\\u20138 bulleted strengths drawn from specific stories or statements in the transcript. Close with a sentence on how they work with other agents or professionals.\\n- Style: minimum 900 characters. Cover: how they communicate, how they handle pressure, what they value in client relationships, their honesty principle, what they refuse to tolerate. Include a boundary statement if present. Use their actual phrasing where it crackles.\\n\\nBEFORE RETURNING: Count characters in each section. State counts in scratchpad. Expand if under minimums.\"}, {\"role\": \"user\", \"content\": \"='AGENT NAME: ' + ($('Stage 1 \\u2014 Pre-processor').first().json.meta.anchor.expected_agent_name || 'the agent') + '\\\\n\\\\nRELEVANT TRANSCRIPT SEGMENTS (client types, work method, boundaries, competitive edge):\\\\n' + $('Stage 1 \\u2014 Pre-processor').first().json.segments.method_and_character + '\\\\n\\\\nWrite the following two portrait sections. Return as JSON.\\\\n\\\\n{\\\\n  \\\\\\\"scratchpad\\\\\\\": \\\\\\\"specialties: [X] chars | style: [Y] chars\\\\\\\",\\\\n  \\\\\\\"specialties\\\\\\\": \\\\\\\"[Full specialties section \\u2014 1200+ chars. Narrative paragraph + 5-8 specific bullets + closing sentence.]\\\\\\\",\\\\n  \\\\\\\"style\\\\\\\": \\\\\\\"[Full style paragraph \\u2014 900+ chars. Communication approach, pressure handling, client relationship values, boundaries, non-negotiables. Use their actual phrasing.]\\\\\\\"\\\\n}'\"}]}",
+        "options": {
+          "timeout": 120000
+        }
+      }
+    },
+    {
+      "id": "node_call_d",
+      "name": "Call D \u2014 FAQ & Personal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        540
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0PgQmc1HTjnPbGBo",
+          "name": "SMRT - OpenAi Credentials"
+        }
+      },
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"model\": \"gpt-4o\", \"temperature\": 0.3, \"max_tokens\": 2000, \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"You are extracting FAQ content and personal details from a real estate agent onboarding interview.\\n\\nYOUR JOB: Write 8\\u201310 FAQ pairs and a personal interests/lifestyle note.\\n\\nFAQ RULES:\\n- Pull from the interviewer's actual questions in the transcript wherever possible.\\n- Fill gaps with standard onboarding questions (list below).\\n- Format: \\\"Q: ...\\\\nA: ...\\\" with a blank line between pairs.\\n- Use the agent's first name in each question.\\n- Answers: 2\\u20134 sentences in third-person voice, using their actual phrasing where strong.\\n- Total FAQ section: minimum 1,500 characters. Aim for 2,000\\u20132,500.\\n- OMIT any question with no transcript material \\u2014 do not include empty answers.\\n\\nSTANDARD QUESTIONS TO ATTEMPT (use agent's first name):\\n- How long has [Name] been in real estate?\\n- What kind of clients does [Name] work with?\\n- What makes [Name] different?\\n- Does [Name] work more with buyers or sellers?\\n- What's [Name]'s communication style?\\n- How does [Name] handle tough situations or losses?\\n- What's [Name]'s competitive edge?\\n- What does the perfect [Name] client look like?\\n- Where did [Name] start in the business?\\n- What does [Name] do outside of real estate?\\n\\nPERSONAL NOTE RULES:\\n- 2\\u20134 sentences capturing life outside work: family, hobbies, interests, community involvement.\\n- Only include what was explicitly mentioned. Return null if nothing personal was shared.\\n\\nBEFORE RETURNING: Count FAQ characters. State count in scratchpad. Expand if under 1,500.\"}, {\"role\": \"user\", \"content\": \"='AGENT NAME: ' + ($('Stage 1 \\u2014 Pre-processor').first().json.meta.anchor.expected_agent_name || 'the agent') + '\\\\nAGENT FIRST NAME: ' + (($('Stage 1 \\u2014 Pre-processor').first().json.meta.anchor.expected_agent_name || 'the agent').split(' ')[0]) + '\\\\n\\\\nRELEVANT TRANSCRIPT SEGMENTS (Q&A exchanges, personal background):\\\\n' + $('Stage 1 \\u2014 Pre-processor').first().json.segments.faq_and_personal + '\\\\n\\\\nReturn as JSON.\\\\n\\\\n{\\\\n  \\\\\\\"scratchpad\\\\\\\": \\\\\\\"faq: [X] chars\\\\\\\",\\\\n  \\\\\\\"faq\\\\\\\": \\\\\\\"[Full FAQ section \\u2014 8-10 Q&A pairs, 1500+ chars total]\\\\\\\",\\\\n  \\\\\\\"personal_note\\\\\\\": \\\\\\\"[2-4 sentences about life outside work, or null if nothing mentioned]\\\\\\\"\\\\n}'\"}]}",
+        "options": {
+          "timeout": 120000
+        }
+      }
+    },
+    {
+      "id": "node_merge4",
+      "name": "Merge 4 Extractors",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1000,
+        300
+      ],
+      "parameters": {
+        "mode": "append",
+        "options": {}
+      }
+    },
+    {
+      "id": "node_stage3",
+      "name": "Stage 3 \u2014 Merge & Floor Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        300
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ============================================================\n// STAGE 3: MERGE + FLOOR CHECK\n// Portrait Builder \u2014 SMRT Onboarding Pipeline\n//\n// Pulls from each named extractor node directly.\n// Enforces 800-char floor per bio section.\n// Flags violations for human review.\n// ============================================================\n\nfunction safeParseJSON(str) {\n  if (!str) return {};\n  const cleaned = str.replace(/^```json\\s*/i, '').replace(/\\s*```$/i, '').trim();\n  try {\n    return JSON.parse(cleaned);\n  } catch (e) {\n    const jsonMatch = cleaned.match(/\\{[\\s\\S]*\\}/);\n    if (jsonMatch) {\n      try { return JSON.parse(jsonMatch[0]); } catch (e2) { return { _parse_error: str.substring(0, 200) }; }\n    }\n    return { _parse_error: str.substring(0, 200) };\n  }\n}\n\nfunction extractFromNode(nodeName) {\n  try {\n    const item = $(nodeName).first().json;\n    // n8n HTTP Request returns the OpenAI response directly\n    const content = item.choices?.[0]?.message?.content || item.body?.choices?.[0]?.message?.content || '';\n    if (content) return safeParseJSON(content);\n    return item;\n  } catch (e) {\n    return { _node_error: `Could not read from ${nodeName}: ${e.message}` };\n  }\n}\n\n// Pull from each extractor by name\nconst callA = extractFromNode('Call A \\u2014 Operational Fields');\nconst callB = extractFromNode('Call B \\u2014 Origin & Geography');\nconst callC = extractFromNode('Call C \\u2014 Method & Character');\nconst callD = extractFromNode('Call D \\u2014 FAQ & Personal');\n\n// Get Stage 1 meta\nconst stage1 = $('Stage 1 \\u2014 Pre-processor').first().json;\nconst meta = stage1.meta || {};\n\n// -- FLOOR CHECK ---\nconst FLOORS = {\n  background: 800,\n  areas_served: 800,\n  specialties: 1000,\n  style: 800,\n  faq: 1200\n};\n\nconst bioSections = {\n  background: callB.background || '',\n  areas_served: callB.areas_served || '',\n  specialties: callC.specialties || '',\n  style: callC.style || '',\n  faq: callD.faq || ''\n};\n\nconst floorViolations = [];\nconst sectionLengths = {};\n\nfor (const [section, minLen] of Object.entries(FLOORS)) {\n  const actual = bioSections[section].length;\n  sectionLengths[section] = actual;\n  if (actual < minLen) {\n    floorViolations.push({\n      section,\n      actual_chars: actual,\n      required_chars: minLen,\n      shortfall: minLen - actual\n    });\n  }\n}\n\nconst needsReview = floorViolations.length > 0;\n\n// -- OPERATIONAL FIELDS MERGE ---\nconst operationalFields = {\n  agent_full_name: callA.agent_full_name || meta.anchor?.expected_agent_name || null,\n  agent_first_name: callA.agent_first_name || null,\n  agent_last_name: callA.agent_last_name || null,\n  agent_title: callA.agent_title || null,\n  business_name: callA.business_name || null,\n  agent_email: callA.agent_email || (meta.hard_facts?.emails?.[0] || null),\n  agent_phone: callA.agent_phone || (meta.hard_facts?.phones?.[0] || null),\n  company_website: callA.company_website || null,\n  funnel_url: callA.funnel_url || null,\n  office_address: callA.office_address || { street: null, city: null, state: null, zip: null },\n  market_area: callA.market_area || null,\n  market_name: callA.market_name || null,\n  timezone: callA.timezone || null,\n  specialties_keywords: callA.specialties_keywords || [],\n  preferred_area_codes: callA.preferred_area_codes || [],\n  coverage_cities: callA.coverage_cities || [],\n  ai_coordinator_name: callA.ai_coordinator_name || null,\n  agent_notes: callA.agent_notes || null,\n  years_in_real_estate: callA.years_in_real_estate || null,\n  license_year: callA.license_year || null\n};\n\n// -- MERGED RECORD ---\nconst mergedRecord = {\n  ...operationalFields,\n  \n  bio: {\n    background: bioSections.background,\n    areas_served: bioSections.areas_served,\n    specialties: bioSections.specialties,\n    style: bioSections.style,\n    faq: bioSections.faq,\n    personal_note: callD.personal_note || null\n  },\n  \n  quality: {\n    section_lengths: sectionLengths,\n    floor_violations: floorViolations,\n    needs_review: needsReview,\n    review_reasons: floorViolations.map(v => \n      `${v.section} is ${v.actual_chars} chars (minimum ${v.required_chars}, shortfall ${v.shortfall})`\n    ),\n    speaker_detection: meta.speaker_detection_confidence || 'unknown',\n    agent_speaker_label: meta.agent_speaker || 'unknown',\n    topic_distribution: meta.topic_distribution || {}\n  },\n  \n  _meta: meta\n};\n\nreturn [{ json: mergedRecord }];\n"
+      }
+    },
+    {
+      "id": "node_portrait_compiler",
+      "name": "Stage 4A \u2014 Portrait Compiler",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1420,
+        180
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0PgQmc1HTjnPbGBo",
+          "name": "SMRT - OpenAi Credentials"
+        }
+      },
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"model\": \"gpt-4o\", \"temperature\": 0.5, \"max_tokens\": 4000, \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"You are a gifted writer. You have been given five rich biographical sections about a real estate agent, extracted from a personal interview. Your job is to weave them into a single, flowing portrait document.\\n\\nThis document will be sent to the agent as a gift \\u2014 the first thing they receive after their onboarding interview. It should feel like someone truly listened to them, understood them, and captured who they are.\\n\\nTONE: Warm, specific, respectful. Not promotional. Not a sales pitch. A portrait.\\n\\nSTRUCTURE \\u2014 follow this Hero's Journey arc:\\n\\n1. OPENING (2-3 sentences): A vivid, specific opening that captures the essence of who this person is. Start with something concrete from their story \\u2014 not a generic intro.\\n\\n2. THE WORLD BEFORE: Where they came from. Their life before real estate. What they left behind or what led them here. (Draw from background section)\\n\\n3. THE CALL: The moment or reason they got into real estate. The pivot. The decision. (Draw from background section)\\n\\n4. THE TERRITORY: Where they work and why. Their connection to the land and community. What they know that others don't. (Draw from areas_served section)\\n\\n5. THE METHOD: How they operate. Who they serve. What they're known for. Their edge. (Draw from specialties section)\\n\\n6. THE CODE: How they communicate. What they protect. What they won't tolerate. Their values in action. (Draw from style section)\\n\\n7. CLOSING (2-3 sentences): A forward-looking close that captures where they're headed and what they stand for.\\n\\nRULES:\\n- Third person throughout. Never \\\"I\\\" or \\\"my.\\\"\\n- Use the agent's actual phrasing where it's vivid and specific. Quote sparingly but powerfully.\\n- No bullet points in the portrait \\u2014 flowing prose only.\\n- Minimum 2,500 characters. Aim for 3,000\\u20134,000.\\n- Do NOT include section headers like \\\"THE WORLD BEFORE\\\" \\u2014 the sections should flow naturally.\\n- This is not a resume. It is a portrait.\"}, {\"role\": \"user\", \"content\": \"='AGENT NAME: ' + ($('Stage 3 \\u2014 Merge & Floor Check').first().json.agent_full_name || 'the agent') + '\\\\nAGENT FIRST NAME: ' + ($('Stage 3 \\u2014 Merge & Floor Check').first().json.agent_first_name || 'the agent') + '\\\\nMARKET: ' + ($('Stage 3 \\u2014 Merge & Floor Check').first().json.market_name || $('Stage 3 \\u2014 Merge & Floor Check').first().json.market_area || 'their market') + '\\\\n\\\\nBACKGROUND SECTION:\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.background + '\\\\n\\\\nAREAS SERVED SECTION:\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.areas_served + '\\\\n\\\\nSPECIALTIES SECTION:\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.specialties + '\\\\n\\\\nSTYLE SECTION:\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.style + '\\\\n\\\\nFAQ SECTION (use for additional color and specific details):\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.faq + '\\\\n\\\\nWrite the portrait document. Return as JSON:\\\\n{\\\\n  \\\\\\\"agent_portrait\\\\\\\": \\\\\\\"[Full flowing portrait \\u2014 2500-4000 chars, Hero\\\\'s Journey arc, no section headers, no bullet points]\\\\\\\"\\\\n}'\"}]}",
+        "options": {
+          "timeout": 240000
+        }
+      }
+    },
+    {
+      "id": "node_characteristics_compiler",
+      "name": "Stage 4B \u2014 Characteristics Compiler",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1420,
+        420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "0PgQmc1HTjnPbGBo",
+          "name": "SMRT - OpenAi Credentials"
+        }
+      },
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"model\": \"gpt-4o\", \"temperature\": 0.5, \"max_tokens\": 4000, \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"You are building a behavioral brief for an AI agent named Jon. Jon will represent a real estate agent in text conversations with their leads.\\n\\nYou have been given biographical sections extracted from the agent's onboarding interview. Your job is to translate that material into a precise behavioral brief that tells Jon:\\n- How this agent communicates (their actual style, cadence, vocabulary)\\n- Who their ideal clients are and how to identify them\\n- What Jon should emphasize about this agent's value\\n- What Jon should NEVER say or do on their behalf\\n- How to handle pressure, objections, and difficult moments\\n- What this agent's non-negotiables are\\n\\nTONE: Direct, instructional. Written for an AI to follow, not for a human to read.\\n\\nSTRUCTURE:\\n\\n## VOICE & TONE\\nHow this agent actually communicates. Their cadence, their humor (or lack of it), their vocabulary. Specific phrases they use. What they sound like.\\n\\n## IDEAL CLIENT PROFILE\\nWho this agent works best with. Who to qualify in. Who to qualify out. Red flags.\\n\\n## VALUE PROPOSITION\\nWhat makes this agent different. What to emphasize when leads ask \\\"why should I work with you?\\\" Use their actual differentiators, not generic claims.\\n\\n## NON-NEGOTIABLES\\nWhat this agent will not tolerate. Situations where Jon should set a boundary or escalate to the agent. Things Jon must never promise or commit to on their behalf.\\n\\n## PRESSURE & OBJECTION HANDLING\\nHow this agent handles tough moments. Their philosophy on losses, difficult clients, and hard conversations. How Jon should respond when leads push back.\\n\\n## THINGS TO NEVER SAY\\nSpecific phrases, claims, or commitments that are off-limits. Based on what the agent said about their values and approach.\\n\\nRULES:\\n- Minimum 1,500 characters total.\\n- Be specific. Generic instructions like \\\"be professional\\\" are useless.\\n- Ground every instruction in something the agent actually said or demonstrated in the interview.\\n- Write in second person to Jon: \\\"When a lead asks X, respond by...\\\"\"}, {\"role\": \"user\", \"content\": \"='AGENT NAME: ' + ($('Stage 3 \\u2014 Merge & Floor Check').first().json.agent_full_name || 'the agent') + '\\\\nAGENT FIRST NAME: ' + ($('Stage 3 \\u2014 Merge & Floor Check').first().json.agent_first_name || 'the agent') + '\\\\n\\\\nBACKGROUND:\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.background + '\\\\n\\\\nSPECIALTIES:\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.specialties + '\\\\n\\\\nSTYLE:\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.style + '\\\\n\\\\nAREAS SERVED:\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.areas_served + '\\\\n\\\\nFAQ (additional behavioral signals):\\\\n' + $('Stage 3 \\u2014 Merge & Floor Check').first().json.bio.faq + '\\\\n\\\\nBuild the behavioral brief for Jon. Return as JSON:\\\\n{\\\\n  \\\\\\\"agent_characteristics\\\\\\\": \\\\\\\"[Full behavioral brief \\u2014 1500+ chars, structured with ## headers as specified]\\\\\\\",\\\\n  \\\\\\\"personality_prompt\\\\\\\": \\\\\\\"[The full agent_personality.prompt \\u2014 1500-4500 chars. Template header + ## Core Principles + ## Agent Specifics bullets.]\\\\\\\"\\\\n}'\"}]}",
+        "options": {
+          "timeout": 240000
+        }
+      }
+    },
+    {
+      "id": "node_merge2",
+      "name": "Merge 2 Compilers",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1660,
+        300
+      ],
+      "parameters": {
+        "mode": "append",
+        "options": {}
+      }
+    },
+    {
+      "id": "node_stage5",
+      "name": "Stage 5 \u2014 Persist to Supabase",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        300
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ============================================================\n// STAGE 5: NORMALIZE + PERSIST\n// Portrait Builder \u2014 SMRT Onboarding Pipeline\n//\n// Maps extracted data to onboarding_requests schema.\n// ============================================================\n\nfunction safeParseJSON(str) {\n  if (!str) return {};\n  const cleaned = str.replace(/^```json\\s*/i, '').replace(/\\s*```$/i, '').trim();\n  try {\n    return JSON.parse(cleaned);\n  } catch (e) {\n    const jsonMatch = cleaned.match(/\\{[\\s\\S]*\\}/);\n    if (jsonMatch) {\n      try { return JSON.parse(jsonMatch[0]); } catch (e2) { return {}; }\n    }\n    return {};\n  }\n}\n\nfunction extractFromNode(nodeName) {\n  try {\n    const item = $(nodeName).first().json;\n    const content = item.choices?.[0]?.message?.content || item.body?.choices?.[0]?.message?.content || '';\n    if (content) return safeParseJSON(content);\n    return item;\n  } catch (e) {\n    return {};\n  }\n}\n\n// Pull from named nodes\nconst mergedRecord = $('Stage 3 \\u2014 Merge & Floor Check').first().json;\nconst portraitOutput = extractFromNode('Stage 4A \\u2014 Portrait Compiler');\nconst characteristicsOutput = extractFromNode('Stage 4B \\u2014 Characteristics Compiler');\n\nconst agentPortrait = portraitOutput.agent_portrait || '';\nconst agentCharacteristics = characteristicsOutput.agent_characteristics || '';\nconst personalityPrompt = characteristicsOutput.personality_prompt || '';\n\n// -- NORMALIZE FIELDS ---\nfunction normalizePhone(phone) {\n  if (!phone) return null;\n  const digits = phone.replace(/\\D/g, '');\n  if (digits.length === 10) return `+1${digits}`;\n  if (digits.length === 11 && digits[0] === '1') return `+${digits}`;\n  return phone;\n}\n\nfunction normalizeTimezone(tz) {\n  if (!tz) return null;\n  const tzMap = {\n    'pacific': 'America/Los_Angeles', 'mountain': 'America/Denver',\n    'central': 'America/Chicago', 'eastern': 'America/New_York',\n    'pst': 'America/Los_Angeles', 'pdt': 'America/Los_Angeles',\n    'mst': 'America/Denver', 'mdt': 'America/Denver',\n    'cst': 'America/Chicago', 'cdt': 'America/Chicago',\n    'est': 'America/New_York', 'edt': 'America/New_York'\n  };\n  const lower = tz.toLowerCase();\n  for (const [key, val] of Object.entries(tzMap)) {\n    if (lower.includes(key)) return val;\n  }\n  return tz;\n}\n\n// -- MAP TO onboarding_requests SCHEMA ---\n// bio_template stores all bio sections as jsonb\nconst bioTemplate = {\n  background: mergedRecord.bio?.background || '',\n  areas_served: mergedRecord.bio?.areas_served || '',\n  specialties: mergedRecord.bio?.specialties || '',\n  style: mergedRecord.bio?.style || '',\n  faq: mergedRecord.bio?.faq || '',\n  personal_note: mergedRecord.bio?.personal_note || null,\n  agent_portrait: agentPortrait,\n  agent_characteristics: agentCharacteristics,\n  extraction_quality: mergedRecord.quality || {}\n};\n\nconst upsertPayload = {\n  agent_name: mergedRecord.agent_full_name,\n  agent_first_name: mergedRecord.agent_first_name,\n  agent_last_name: mergedRecord.agent_last_name,\n  agent_title: mergedRecord.agent_title || 'REALTOR\\u00ae',\n  business_name: mergedRecord.business_name,\n  agent_email: mergedRecord.agent_email,\n  agent_phone: normalizePhone(mergedRecord.agent_phone),\n  agent_website: mergedRecord.company_website,\n  agent_funnel_url: mergedRecord.funnel_url,\n  office_address: mergedRecord.office_address,\n  market_area: mergedRecord.market_area,\n  market_name: mergedRecord.market_name,\n  agent_timezone: normalizeTimezone(mergedRecord.timezone),\n  specialties: mergedRecord.specialties_keywords || [],\n  preferred_area_codes: mergedRecord.preferred_area_codes || [],\n  coverage_cities: mergedRecord.coverage_cities || [],\n  coordinator_name: mergedRecord.ai_coordinator_name || 'Jon',\n  agent_notes: mergedRecord.agent_notes,\n  personality_prompt: personalityPrompt,\n  bio_template: bioTemplate,\n  status: 'awaiting_launch'  // Valid: pending_ghl, awaiting_launch, launched, ghl_complete, failed\n};\n\n// -- WRITE TO SUPABASE ---\nconst SUPABASE_URL = $env.SUPABASE_URL || 'https://kfoijgcbkjeizxxyiwxv.supabase.co';\nconst SUPABASE_KEY = $env.SUPABASE_SERVICE_ROLE_KEY;\n\nif (!SUPABASE_KEY) {\n  return [{\n    json: {\n      success: true,\n      record_id: null,\n      agent_name: upsertPayload.agent_full_name,\n      status: upsertPayload.status,\n      needs_review: mergedRecord.quality?.needs_review || false,\n      review_reasons: mergedRecord.quality?.review_reasons || [],\n      portrait_length: agentPortrait.length,\n      characteristics_length: agentCharacteristics.length,\n      _warning: 'SUPABASE_SERVICE_KEY not set \u2014 record not persisted'\n    }\n  }];\n}\n\nconst upsertResponse = await globalThis.fetch(\n  SUPABASE_URL + '/rest/v1/onboarding_requests',\n  {\n    method: 'POST',\n    headers: {\n      'apikey': SUPABASE_KEY,\n      'Authorization': 'Bearer ' + SUPABASE_KEY,\n      'Content-Type': 'application/json',\n      'Prefer': 'return=representation'\n    },\n    body: JSON.stringify(upsertPayload)\n  }\n);\n\nconst upsertBody = await upsertResponse.json();\n\nif (!upsertResponse.ok) {\n  throw new Error(`Supabase insert failed: ${upsertResponse.status} \u2014 ${JSON.stringify(upsertBody)}`);\n}\n\nconst savedRecord = Array.isArray(upsertBody) ? upsertBody[0] : upsertBody;\n\nreturn [{\n  json: {\n    success: true,\n    record_id: savedRecord?.id || null,\n    agent_name: upsertPayload.agent_full_name,\n    status: upsertPayload.status,\n    needs_review: mergedRecord.quality?.needs_review || false,\n    review_reasons: mergedRecord.quality?.review_reasons || [],\n    portrait_length: agentPortrait.length,\n    characteristics_length: agentCharacteristics.length,\n    pipeline_version: 'portrait_builder_v1',\n    extracted_at: new Date().toISOString()\n  }\n}];\n"
+      }
+    },
+    {
+      "id": "node_respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        300
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($input.first().json) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Portrait Builder Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Stage 1 \u2014 Pre-processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage 1 \u2014 Pre-processor": {
+      "main": [
+        [
+          {
+            "node": "Call A \u2014 Operational Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call B \u2014 Origin & Geography",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call C \u2014 Method & Character",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call D \u2014 FAQ & Personal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call A \u2014 Operational Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge 4 Extractors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call B \u2014 Origin & Geography": {
+      "main": [
+        [
+          {
+            "node": "Merge 4 Extractors",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Call C \u2014 Method & Character": {
+      "main": [
+        [
+          {
+            "node": "Merge 4 Extractors",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Call D \u2014 FAQ & Personal": {
+      "main": [
+        [
+          {
+            "node": "Merge 4 Extractors",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge 4 Extractors": {
+      "main": [
+        [
+          {
+            "node": "Stage 3 \u2014 Merge & Floor Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage 3 \u2014 Merge & Floor Check": {
+      "main": [
+        [
+          {
+            "node": "Stage 4A \u2014 Portrait Compiler",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Stage 4B \u2014 Characteristics Compiler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage 4A \u2014 Portrait Compiler": {
+      "main": [
+        [
+          {
+            "node": "Merge 2 Compilers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage 4B \u2014 Characteristics Compiler": {
+      "main": [
+        [
+          {
+            "node": "Merge 2 Compilers",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge 2 Compilers": {
+      "main": [
+        [
+          {
+            "node": "Stage 5 \u2014 Persist to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stage 5 \u2014 Persist to Supabase": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  }
+}

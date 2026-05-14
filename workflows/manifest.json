@@ -84,6 +84,16 @@
       "node_count": 174
     },
     {
+      "id": "YPNy8brb5LMbD75r",
+      "name": "🎨 Portrait Builder",
+      "active": true,
+      "path": "workflows/active/Portrait_Builder__YPNy8brb5LMbD75r.json",
+      "updatedAt": "2026-05-14T16:05:01.226Z",
+      "node_count": 14,
+      "webhook": "https://twodegreesnorth.tech/webhook/portrait-builder",
+      "description": "Converts onboarding transcript to agent portrait + characteristics brief. Persists to onboarding_requests.bio_template."
+    },
+    {
       "id": "XTyRuyi47ZKYfpCO",
       "name": "My workflow",
       "active": false,
