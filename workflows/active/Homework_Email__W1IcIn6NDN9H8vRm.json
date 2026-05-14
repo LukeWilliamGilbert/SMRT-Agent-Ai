@@ -1,0 +1,127 @@
+{
+  "name": "\ud83d\udcec Onboarding \u2014 Homework Email",
+  "nodes": [
+    {
+      "id": "edc409ad-6c37-4da9-9e8f-7920b6c9acb1",
+      "name": "Homework Email Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "homework-email",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "620d6d64-8126-465e-8998-9d68b169d9af",
+      "name": "Build Email HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "\nconst body = $input.first().json;\n\nconst agentFirstName = body.agent_first_name || body.agent_full_name?.split(' ')[0] || 'there';\nconst agentFullName = body.agent_full_name || 'Agent';\nconst portrait = (body.agent_portrait || '').trim();\nconst characteristics = (body.agent_characteristics || '').trim();\n\n// Convert plain text paragraphs to HTML paragraphs\nfunction textToHtml(text) {\n  if (!text) return '';\n  return text\n    .split(/\\n\\n+/)\n    .map(p => p.trim())\n    .filter(Boolean)\n    .map(p => `<p style=\"margin:0 0 16px 0;line-height:1.7;\">${p.replace(/\\n/g, '<br>')}</p>`)\n    .join('');\n}\n\nconst portraitHtml = textToHtml(portrait);\nconst characteristicsHtml = textToHtml(characteristics);\n\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Your SMRT Homework</title>\n</head>\n<body style=\"margin:0;padding:0;background:#f5f5f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;\">\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#f5f5f0;padding:40px 16px;\">\n    <tr>\n      <td align=\"center\">\n        <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:600px;width:100%;\">\n\n          <!-- Header -->\n          <tr>\n            <td style=\"padding-bottom:32px;\">\n              <p style=\"margin:0;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#888;\">SMRT</p>\n              <h1 style=\"margin:8px 0 0;font-size:24px;font-weight:600;letter-spacing:-0.02em;color:#1a1a1a;\">\n                Your homework, ${agentFirstName}.\n              </h1>\n            </td>\n          </tr>\n\n          <!-- Intro -->\n          <tr>\n            <td style=\"background:#fff;border-radius:12px;padding:32px;margin-bottom:24px;\">\n              <p style=\"margin:0 0 16px;line-height:1.7;color:#444;\">\n                Before we go live, we want you to read through two things we put together from your onboarding call.\n                The first is your <strong>agent portrait</strong> \u2014 a narrative that tells your story in your own words.\n                The second is your <strong>agent characteristics brief</strong> \u2014 a structured summary of how you work,\n                who you serve, and what makes you different.\n              </p>\n              <p style=\"margin:0;line-height:1.7;color:#444;\">\n                Read both carefully. If anything is off \u2014 a wrong city, a detail that doesn't sound like you,\n                anything that feels inaccurate \u2014 reply to this email and we'll fix it before launch.\n              </p>\n            </td>\n          </tr>\n\n          <tr><td style=\"height:24px;\"></td></tr>\n\n          <!-- Portrait -->\n          <tr>\n            <td style=\"background:#fff;border-radius:12px;padding:32px;\">\n              <p style=\"margin:0 0 20px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#888;font-weight:500;\">\n                Your Agent Portrait\n              </p>\n              <div style=\"font-size:15px;color:#1a1a1a;\">\n                ${portraitHtml}\n              </div>\n            </td>\n          </tr>\n\n          <tr><td style=\"height:24px;\"></td></tr>\n\n          <!-- Characteristics -->\n          <tr>\n            <td style=\"background:#fff;border-radius:12px;padding:32px;\">\n              <p style=\"margin:0 0 20px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#888;font-weight:500;\">\n                Your Agent Characteristics\n              </p>\n              <div style=\"font-size:14px;color:#1a1a1a;font-family:'Courier New',Courier,monospace;line-height:1.7;\">\n                ${characteristicsHtml}\n              </div>\n            </td>\n          </tr>\n\n          <tr><td style=\"height:24px;\"></td></tr>\n\n          <!-- Footer -->\n          <tr>\n            <td style=\"padding:0 4px;\">\n              <p style=\"margin:0;font-size:12px;color:#aaa;line-height:1.6;\">\n                This email was sent by the SMRT onboarding team. Reply directly to this email with any corrections.\n              </p>\n            </td>\n          </tr>\n\n        </table>\n      </td>\n    </tr>\n  </table>\n</body>\n</html>`;\n\nreturn [{\n  json: {\n    to: body.agent_email,\n    subject: `Your SMRT homework \u2014 ${agentFullName}`,\n    html,\n    record_id: body.record_id,\n    agent_full_name: agentFullName,\n  }\n}];\n"
+      }
+    },
+    {
+      "id": "894b7493-5972-49b5-b7cc-9424a2ce96b2",
+      "name": "Send Homework Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "operation": "send",
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {
+          "replyTo": "luke@twodegreesnorth.tech"
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xRc0dD2ziIa7j0CG",
+          "name": "SMRT - Gmail OAuth Credential"
+        }
+      }
+    },
+    {
+      "id": "4d778c1d-bbc9-4727-a1f1-f957ca21a428",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, to: $json.to, agent: $json.agent_full_name }) }}"
+      }
+    },
+    {
+      "id": "7bc7c632-8101-4dc2-9b69-fb97f60ad5e1",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        720,
+        160
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 500,
+        "responseBody": "={ \"ok\": false, \"error\": \"Email send failed\" }"
+      }
+    }
+  ],
+  "connections": {
+    "Homework Email Webhook": {
+      "main": [
+        [
+          {
+            "node": "Build Email HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Email HTML": {
+      "main": [
+        [
+          {
+            "node": "Send Homework Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Homework Email": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

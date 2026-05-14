@@ -2,6 +2,35 @@
 
 Author: **Manus AI**
 
+## 2026-05-14 — Homework Email Workflow + Onboarding Tab
+
+### Added — Homework Email Workflow (`W1IcIn6NDN9H8vRm`)
+
+New webhook-triggered n8n workflow (`📬 Onboarding — Homework Email`) that receives an approved portrait and characteristics brief from the admin dashboard and sends a formatted HTML email to the agent for review before launch.
+
+**Webhook:** `POST https://twodegreesnorth.tech/webhook/homework-email`
+
+**Pipeline (3 nodes):**
+1. Webhook — receives `agent_email`, `agent_full_name`, `agent_portrait`, `agent_characteristics`, `record_id`
+2. Build Email HTML (Code) — renders a clean two-section HTML email (portrait + characteristics) with SMRT branding
+3. Send Homework Email (Gmail) — sends via `SMRT - Gmail OAuth Credential`; reply-to `luke@twodegreesnorth.tech`
+
+Workflow JSON added to `workflows/active/Homework_Email__W1IcIn6NDN9H8vRm.json`. Manifest updated.
+
+### Added — Onboarding Tab in `agent-connect-dashboard`
+
+New `/onboarding` route added to `LukeWilliamGilbert/agent-connect-dashboard` (commit `a75aa9d`).
+
+**Flow:**
+1. Staff pastes transcript + agent name/email → clicks **Build Portrait**
+2. Portrait Builder runs (~50s) → portrait and characteristics appear side-by-side in editable panels
+3. Staff reviews and edits if needed → clicks **Approve & Send Homework**
+4. Homework Email workflow fires → agent receives formatted email
+
+Top nav added to `DashboardShell` for Dashboard ↔ Onboarding switching.
+
+---
+
 ## 2026-05-14
 
 ### Portrait Builder — new standalone onboarding workflow (ID: YPNy8brb5LMbD75r)
